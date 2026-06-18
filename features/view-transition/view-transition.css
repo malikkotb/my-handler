@@ -1,0 +1,32 @@
+:root {
+  --vt-duration: 1000ms;
+  --vt-easing: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* Set on `document.documentElement` by `ViewTransitionProvider` while a route VT runs. */
+html[data-vt-loading],
+html[data-vt-loading] * {
+  cursor: wait;
+}
+
+@keyframes vt-root-old {
+  to {
+    opacity: 0.2;
+    transform: scale(0.94) translateY(-100px);
+  }
+}
+
+@keyframes vt-root-new {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+::view-transition-old(root) {
+  animation: vt-root-old var(--vt-duration) var(--vt-easing) both;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+  animation: vt-root-new var(--vt-duration) var(--vt-easing) both;
+}
