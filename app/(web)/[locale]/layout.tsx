@@ -1,15 +1,35 @@
 import "~/features/style/tailwind.css";
 import { draftMode } from "next/headers";
+import { notFound } from "next/navigation";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import type * as React from "react";
 import type { WebPage, WebSite, WithContext } from "schema-dts";
 import { SharedWebLayout } from "~/app/shared-web-layout";
 import { env } from "~/env";
 import { sanityFetch } from "~/features/sanity/client";
 import { SiteQuery } from "~/features/site/query";
+import { routing } from "~/i18n/routing";
 import { SANITY_SINGLETON_SITE_ID } from "~/sanity/constants";
 import type { SiteQueryResult } from "~/sanity/types";
 
-export default async function Layout(props: { children: React.ReactNode }) {
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function Layout(props: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
+  const { locale } = await props.params;
+
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+
+  setRequestLocale(locale);
+
+  // Load messages for the actual route locale and hand them to the client provider
+  // explicitly — server-side `requestLocale` is unreliable behind the custom proxy.
+  const messages = await getMessages({ locale });
+
   const { isEnabled: isDraft } = await draftMode();
 
   const site = await sanityFetch<SiteQueryResult>({
@@ -31,7 +51,7 @@ export default async function Layout(props: { children: React.ReactNode }) {
     url: env.NEXT_PUBLIC_URL,
     name: siteName,
     description,
-    inLanguage: "en",
+    inLanguage: locale,
   };
 
   const webpageJsonLd: WithContext<WebPage> = {
@@ -44,12 +64,13 @@ export default async function Layout(props: { children: React.ReactNode }) {
     isPartOf: {
       "@id": `${env.NEXT_PUBLIC_URL}/#website`,
     },
-    inLanguage: "en",
+    inLanguage: locale,
   };
 
   return (
     <SharedWebLayout
       isDraft={isDraft}
+      locale={locale}
       bodyStart={
         <>
           <script
@@ -65,7 +86,9 @@ export default async function Layout(props: { children: React.ReactNode }) {
         </>
       }
     >
-      {props.children}
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        {props.children}
+      </NextIntlClientProvider>
     </SharedWebLayout>
   );
 }

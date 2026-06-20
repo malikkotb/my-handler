@@ -1,17 +1,32 @@
-import { GeistMono } from "geist/font/mono";
-import { GeistPixelCircle, GeistPixelGrid, GeistPixelLine, GeistPixelSquare, GeistPixelTriangle } from "geist/font/pixel";
-import { GeistSans } from "geist/font/sans";
+import localFont from "next/font/local";
 
 /**
- * Loaded on `<html>` so `--font-geist-*` variables exist for Tailwind `font-sans`, `font-mono`,
- * and `font-pixel-*` utilities.
+ * Brand fonts for My Handler. Loaded on `<html>` so the `--font-pp-museum-*` and
+ * `--font-suisse-light` variables exist for the `.type-*` typography classes
+ * (see `~/features/style/brand.css`).
  */
-export const fonts = [
-  GeistSans,
-  GeistMono,
-  GeistPixelSquare,
-  GeistPixelGrid,
-  GeistPixelCircle,
-  GeistPixelTriangle,
-  GeistPixelLine,
-];
+const ppMuseumLight = localFont({
+  src: "../../public/fonts/PPMuseum-Light.woff2",
+  weight: "300",
+  style: "normal",
+  display: "swap",
+  variable: "--font-pp-museum-light",
+});
+
+const ppMuseumThin = localFont({
+  src: "../../public/fonts/PPMuseum-Thin.woff2",
+  weight: "100",
+  style: "normal",
+  display: "swap",
+  variable: "--font-pp-museum-thin",
+});
+
+const suisseLight = localFont({
+  src: "../../public/fonts/SuisseIntl-Light.woff2",
+  weight: "300",
+  style: "normal",
+  display: "swap",
+  variable: "--font-suisse-light",
+});
+
+export const fonts = [ppMuseumLight, ppMuseumThin, suisseLight];

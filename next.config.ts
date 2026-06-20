@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 import { env } from "./env";
 import { SANITY_SINGLETON_SITE_ID, SANITY_STUDIO_APP_SEGMENT } from "./sanity/constants";
+
+const withNextIntl = createNextIntlPlugin();
 
 const SANITY_REDIRECTS_QUERY = `*[_type == "${SANITY_SINGLETON_SITE_ID}"][0].redirects[defined(coalesce(from, @->from)) && defined(coalesce(to, @->to))]{
   "from": coalesce(from, @->from),
@@ -114,4 +117,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

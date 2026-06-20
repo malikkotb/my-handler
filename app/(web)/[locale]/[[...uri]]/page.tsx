@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
 import { defineQuery } from "next-sanity";
 import { env } from "~/env";
 import { PageSections } from "~/features/page-builder/page-sections";
 import { sanityFetch } from "~/features/sanity/client";
+import { HomePage } from "~/features/sections/home-page";
 import { SeoMetadataFragment } from "~/features/site/seo/fragment";
 import { seo } from "~/features/site/seo/utils";
 import { SiteShell } from "~/features/site/site-shell";
@@ -53,7 +55,7 @@ export async function generateStaticParams() {
   });
 }
 
-export async function generateMetadata(props: { params: Promise<{ uri?: string[] }> }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ locale: string; uri?: string[] }> }): Promise<Metadata> {
   const params = await props.params;
   const uri = params.uri ? `/${params.uri.join("/")}` : "/";
   const page = await fetchPage(uri);
@@ -79,9 +81,16 @@ export async function generateMetadata(props: { params: Promise<{ uri?: string[]
   });
 }
 
-export default async function Page(props: { params: Promise<{ uri?: string[] }> }) {
+export default async function Page(props: { params: Promise<{ locale: string; uri?: string[] }> }) {
   const params = await props.params;
+  setRequestLocale(params.locale);
   const uri = params.uri ? `/${params.uri.join("/")}` : "/";
+
+  // The homepage is bespoke (not CMS page-builder driven).
+  if (uri === "/") {
+    return <HomePage />;
+  }
+
   const page = await fetchPage(uri);
 
   if (!page) {

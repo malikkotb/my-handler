@@ -1,0 +1,340 @@
+/*
+ * My Handler brand design system — ported from the legacy Nuxt site.
+ * Fonts are loaded via next/font (`~/features/fonts`), which sets the
+ * `--font-pp-museum-*` / `--font-suisse-light` variables on `<html>`.
+ */
+
+@theme {
+  /* Brand spacing (absolute, independent of the 1px --spacing unit) */
+  --spacing-dvh-1: 100dvh;
+  --spacing-dvh-2: 200dvh;
+  /* Height of the rotated service-preview image stack on the homepage. */
+  --spacing-services-preview: 30vh;
+
+  /*
+   * Fluid type scale — clamp(min @ 375px, slope·vw + intercept, max @ 1920px).
+   * Hits the original desktop values exactly at 1440px, then continues to 1920px.
+   */
+  --text-h1: clamp(4rem, 13.852vw + 0.753rem, 17.375rem);
+  --text-h2: clamp(2.25rem, 4.131vw + 1.282rem, 6.25rem);
+  --text-h3: clamp(2rem, 1.502vw + 1.648rem, 3.451rem);
+  --text-h3-alt: clamp(1.25rem, 1.849vw + 0.817rem, 2rem);
+  --text-h4: clamp(1.25rem, 1.878vw + 0.81rem, 3.063rem);
+  --text-eyebrow: 1rem;
+  --text-eyebrow-alt: clamp(1rem, 0.376vw + 0.912rem, 1.375rem);
+  --text-eyebrow-xs: 0.75rem;
+  --text-body: clamp(0.875rem, 0.188vw + 0.831rem, 1.056rem);
+  /* Namespaced: the starter's typography.css already owns `--text-cta`. */
+  --text-brand-cta: 1rem;
+  --text-cursor: clamp(0.875rem, -0.188vw + 1.044rem, 1rem);
+  /* Enlarged nav label used in the mobile menu + footer (was `text-2xl`). */
+  --text-nav-mobile: 1.5rem;
+
+  /* Letter spacing scale */
+  --tracking-snug: -0.04em; /* eyebrow-xs */
+  --tracking-tight: -0.02em; /* h1, h3 */
+  --tracking-slight: -0.01em; /* eyebrow, eyebrow-alt */
+  --tracking-normal: 0em; /* h2, h4, body */
+  --tracking-open: 0.29em; /* cta, cursor */
+
+  /* Line height scale */
+  --leading-tighter: 1.1;
+  --leading-tight: 1.2;
+  --leading-normal: 1.3;
+  --leading-relaxed: 1.4;
+
+  /* Section spacing */
+  --section-py: 2.5rem;
+  --section-px: 1.25rem;
+  --cta-pt: 1.25rem;
+  --featured-images-gap: 0.875rem;
+
+  /* Client preview sizing */
+  --client-preview-width: 6.875rem;
+  --client-preview-height: 5.5rem;
+
+  /* Optical glyph alignment (↗ arrow in CtaButton) */
+  --translate-arrow: -0.025em;
+
+  /* Reusable easing / durations / aspect ratios */
+  --ease-service: cubic-bezier(0.36, 0.33, 0, 1);
+  --transition-duration-service: 480ms;
+  --aspect-service-card: 4 / 5;
+
+  /* Mobile menu enter/exit */
+  @keyframes menuIn {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes menuOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-1rem);
+    }
+  }
+
+  --animate-menu-in: menuIn 350ms ease-out;
+  --animate-menu-out: menuOut 350ms ease-out;
+
+  /* Services page: directional image swap */
+  @keyframes slideUpIn {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideDownIn {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  --animate-slide-up-in: slideUpIn 300ms ease-in-out;
+  --animate-slide-down-in: slideDownIn 300ms ease-in-out;
+}
+
+/*
+ * Rebrand the document base. The starter ships a dark theme (`global.css` sets
+ * `body`/`main` to `bg-black` as UNLAYERED rules, which beat Tailwind utility
+ * classes regardless of specificity). These unlayered overrides come later in the
+ * import order, so they win and restore the cream brand surface.
+ */
+body {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+}
+
+main {
+  background-color: var(--color-surface);
+}
+
+/* Optical nudge for the ↗ glyph in CtaButton. */
+@utility translate-y-arrow {
+  transform: translateY(var(--translate-arrow));
+}
+
+/* Initial collapsed state for the homepage service-preview images (GSAP reveals them). */
+@utility clip-hidden {
+  clip-path: inset(50% 50% 50% 50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-menu-in,
+  .animate-menu-out,
+  .animate-slide-up-in,
+  .animate-slide-down-in {
+    animation: none;
+  }
+}
+
+/* ─── Custom variants ────────────────────────────────────────────────────── */
+
+/* Hover only on devices that support true hover (excludes touch) */
+@custom-variant pointer-hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
+/* ─── Desktop token overrides (≥1024px) ──────────────────────────────────── */
+
+@media (min-width: 1024px) {
+  :root {
+    --section-py: 5rem;
+    --section-px: 2.5rem;
+    --cta-pt: 2.5rem;
+    --featured-images-gap: 1rem;
+  }
+}
+
+/* ─── Typography classes ─────────────────────────────────────────────────── */
+
+@layer components {
+  .type-h1 {
+    font-family: var(--font-pp-museum-light);
+    font-size: var(--text-h1);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .type-h2 {
+    text-transform: uppercase;
+    font-family: var(--font-pp-museum-light);
+    font-size: var(--text-h2);
+    line-height: var(--leading-tighter);
+    letter-spacing: var(--tracking-normal);
+  }
+
+  .type-h3 {
+    font-family: var(--font-pp-museum-light);
+    font-size: var(--text-h3);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .type-h3-alt {
+    font-family: var(--font-pp-museum-light);
+    font-size: var(--text-h3-alt);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .type-h4 {
+    font-family: var(--font-pp-museum-light);
+    font-size: var(--text-h4);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-normal);
+  }
+
+  .type-eyebrow {
+    font-family: var(--font-pp-museum-light);
+    font-size: var(--text-eyebrow);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-slight);
+    text-transform: uppercase;
+  }
+
+  .type-eyebrow-alt {
+    font-family: var(--font-pp-museum-light);
+    font-size: var(--text-eyebrow-alt);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-slight);
+  }
+
+  .type-eyebrow-xs {
+    font-family: var(--font-suisse-light);
+    font-size: var(--text-eyebrow-xs);
+    line-height: var(--leading-relaxed);
+    letter-spacing: var(--tracking-snug);
+  }
+
+  .type-eyebrow-lowercase {
+    font-family: var(--font-pp-museum-light);
+    font-size: var(--text-eyebrow);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-normal);
+  }
+
+  .type-body {
+    font-family: var(--font-suisse-light);
+    font-size: var(--text-body);
+    line-height: var(--leading-relaxed);
+    letter-spacing: var(--tracking-normal);
+    color: var(--color-body);
+  }
+
+  .type-cta {
+    font-family: var(--font-pp-museum-light);
+    font-size: var(--text-brand-cta);
+    line-height: var(--leading-relaxed);
+    letter-spacing: var(--tracking-open);
+
+    @media (min-width: 1024px) {
+      line-height: var(--leading-tight);
+    }
+  }
+
+  .type-cursor {
+    font-family: var(--font-pp-museum-light);
+    font-size: var(--text-cursor);
+    line-height: var(--leading-relaxed);
+    letter-spacing: var(--tracking-open);
+
+    @media (min-width: 1024px) {
+      line-height: var(--leading-tight);
+    }
+  }
+
+  /* ── Char-split rows injected by MainLink's GSAP animation ── */
+  .char-split-row {
+    display: inline-flex;
+  }
+
+  .char-split-row-copy {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .char-split-glyph {
+    display: inline-block;
+  }
+
+  /* ── Inner grid row — use only inside .layout-grid; inherits --grid-gutter ── */
+  .layout-grid-row {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    column-gap: var(--grid-gutter);
+  }
+}
+
+/* ─── Layout grid ────────────────────────────────────────────────────────── */
+
+@utility layout-grid {
+  --grid-gutter: 5px;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  column-gap: var(--grid-gutter);
+}
+
+@media (min-width: 1024px) {
+  .layout-grid,
+  .lg\:layout-grid {
+    --grid-gutter: 1.25rem;
+  }
+}
+
+/* ─── Spacing / utility helpers ──────────────────────────────────────────── */
+
+@utility section-py {
+  padding-block: var(--section-py);
+}
+
+@utility section-px {
+  padding-inline: var(--section-px);
+}
+
+@utility section-padding {
+  padding-block: var(--section-py);
+  padding-inline: var(--section-px);
+}
+
+@utility cta-pt {
+  padding-top: var(--cta-pt);
+}
+
+@utility featured-images-gap {
+  row-gap: var(--featured-images-gap);
+}
+
+@utility client-preview-size {
+  width: var(--client-preview-width);
+  height: var(--client-preview-height);
+}
+
+@utility transition-transform-opacity {
+  transition-property: transform, opacity;
+}
+
+@utility transition-transform-color {
+  transition-property: transform, color;
+}

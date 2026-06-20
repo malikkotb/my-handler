@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "events": "Événements",
+    "services": "Services",
+    "contact": "Contact"
+  },
+  "header": {
+    "switchLang": "EN",
+    "menu": "Menu",
+    "close": "Fermer"
+  },
+  "footer": {
+    "legal": "Mentions légales",
+    "copyright": "© 2026 MY HANDLER"
+  },
+  "cta": {
+    "viewAllEvents": "Voir tous les événements",
+    "exploreServices": "Découvrir nos services"
+  },
+  "hero": {
+    "line1": "Agence Événementielle &",
+    "line2": "Conciergerie de Luxe"
+  },
+  "intro": {
+    "tagline": "My Handler est là pour accompagner ses clients dans la réussite de leurs événements de la manière la plus durable possible, avec un service de haute expertise, partout dans le monde.",
+    "missionEyebrow": "Notre Mission",
+    "missionBody": "Comprendre vos besoins et les satisfaire en vous apportant notre sens de l'excellence.",
+    "commitmentEyebrow": "Notre Engagement",
+    "commitmentBody": "Une sélection rigoureuse pour chacune de vos demandes, un service client réactif pour traiter vos demandes de dernière minute."
+  },
+  "services": {
+    "heading": "Services",
+    "eventManagement": "Gestion d'Événements",
+    "conciergeServices": "Services de Conciergerie",
+    "travelArrangements": "Organisation de Voyages",
+    "transportation": "Transport"
+  },
+  "clients": {
+    "heading": "Clients"
+  },
+  "about": {
+    "philosophy": {
+      "heading": "Notre Philosophie",
+      "firstParagraph": "My Handler imagine une entreprise dans laquelle chaque membre peut accéder à un environnement de travail unique qui lui permet d'atteindre ses objectifs, d'améliorer ses compétences et de contribuer à faire progresser les secteurs de l'événementiel et du voyage.",
+      "secondParagraph": "Nous croyons en un lieu où nous pouvons avoir un impact positif grâce à un équilibre entre responsabilité sociale, environnementale et économique."
+    },
+    "values": {
+      "heading": "Nos Valeurs",
+      "loyalty": {
+        "title": "Loyauté",
+        "body": "My Handler est ancrée dans la confiance. Elle constitue le fondement de relations humaines fortes, authentiques et durables, et se trouve au cœur même de notre travail."
+      },
+      "goodwill": {
+        "title": "Bienveillance",
+        "body": "Elle est tout aussi centrale dans notre façon de travailler. Le respect, l'ouverture et la capacité à avancer, à grandir et à être fiers de ce que nous construisons sont essentiels pour nous. La bienveillance est une force qui nous permet d'aborder chaque situation avec clarté, équité et équilibre."
+      },
+      "boldness": {
+        "title": "Audace",
+        "body": "C'est ce qui nous distingue. Elle nous pousse vers l'avenir, nourrit l'émergence de nouveaux projets et inspire la création artistique et le renouveau. Grâce à l'audace, le champ des possibles s'élargit."
+      },
+      "beauty": {
+        "title": "Beauté",
+        "body": "Elle est à la fois une valeur personnelle et structurante. Elle reflète notre recherche constante de sens, d'harmonie, de précision et d'excellence. La beauté guide notre façon de créer, d'organiser et d'accompagner nos clients. Elle élève chaque expérience, approfondit l'émotion et exprime la manière dont l'agence se relie au monde."
+      }
+    }
+  }
+}

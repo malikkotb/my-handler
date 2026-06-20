@@ -7,6 +7,7 @@ import { KeyboardFocusMode } from "~/features/dom/keyboard-focus-mode";
 import { DraftModeProvider } from "~/features/draft-mode/context";
 import { fonts } from "~/features/fonts";
 import { Lenis } from "~/features/lenis";
+import { ScrollTriggerBridge } from "~/features/motion/scroll-trigger-bridge";
 import { cx } from "~/features/style/utils";
 import { ViewTransitions } from "~/features/view-transition/app-view-transitions";
 import { ViewTransitionProvider } from "~/features/view-transition/context";
@@ -18,6 +19,7 @@ const DisableDraftMode = dynamic(() => import("~/features/draft-mode").then((mod
 export type SharedWebLayoutProps = {
   children: React.ReactNode;
   isDraft: boolean;
+  locale?: string;
   bodyStart?: React.ReactNode;
   bodyEnd?: React.ReactNode;
 };
@@ -25,7 +27,7 @@ export type SharedWebLayoutProps = {
 export function SharedWebLayout(props: SharedWebLayoutProps) {
   return (
     <ViewTransitions>
-      <html lang="en" className={cx([fonts.map((f) => f.variable)])}>
+      <html lang={props.locale ?? "en"} className={cx([fonts.map((f) => f.variable)])}>
         <body>
           <KeyboardFocusMode />
           {props.bodyStart}
@@ -38,7 +40,10 @@ export function SharedWebLayout(props: SharedWebLayoutProps) {
               </React.Suspense>
             )}
             <ViewTransitionProvider>
-              <Lenis>{props.children}</Lenis>
+              <Lenis>
+                <ScrollTriggerBridge />
+                {props.children}
+              </Lenis>
             </ViewTransitionProvider>
           </DraftModeProvider>
           <Credits />

@@ -3,6 +3,7 @@
 @import "./typography.css";
 @import "./animations.css";
 @import "./global.css";
+@import "./brand.css";
 @import "../view-transition/view-transition.css";
 
 @theme {

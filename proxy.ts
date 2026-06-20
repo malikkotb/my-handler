@@ -1,8 +1,12 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import createIntlMiddleware from "next-intl/middleware";
 import { env } from "~/env";
 import { getSanityBasicAuthState } from "~/features/auth/sanity-basic-auth-proxy";
+import { routing } from "~/i18n/routing";
 import { SANITY_STUDIO_APP_BASE_PATH } from "~/sanity/constants";
+
+const intlMiddleware = createIntlMiddleware(routing);
 
 function normalizePathname(pathname: string): string {
   if (pathname === "/") {
@@ -102,7 +106,7 @@ export async function proxy(request: NextRequest) {
 
   // Draft Mode / Sanity preview: Next sets `__prerender_bypass` when draft mode is enabled — Basic Auth must not run.
   if (request.cookies.has("__prerender_bypass")) {
-    return NextResponse.next();
+    return intlMiddleware(request);
   }
 
   // Early exit: if Basic Auth env vars aren't configured, no auth can run.
@@ -122,7 +126,7 @@ export async function proxy(request: NextRequest) {
     const hasValidCreds = creds && timingSafeEqual(creds.username, username) && timingSafeEqual(creds.password, password);
 
     if (hasValidCreds) {
-      return NextResponse.next();
+      return intlMiddleware(request);
     }
   }
 
@@ -134,7 +138,7 @@ export async function proxy(request: NextRequest) {
 
     // Fast path: nothing protected at all → skip everything.
     if (!siteWideEnabled && paths.length === 0) {
-      return NextResponse.next();
+      return intlMiddleware(request);
     }
 
     const normalizedPath = normalizePathname(pathname);
@@ -142,7 +146,7 @@ export async function proxy(request: NextRequest) {
     const needsAuth = siteWideEnabled || isEntryProtected;
 
     if (!needsAuth) {
-      return NextResponse.next();
+      return intlMiddleware(request);
     }
 
     if (!configured) {
@@ -157,7 +161,7 @@ export async function proxy(request: NextRequest) {
   } catch (error) {
     console.error("proxy: Sanity basic auth fetch failed", error);
 
-    return NextResponse.next();
+    return intlMiddleware(request);
   }
 }
 
@@ -169,21 +173,15 @@ export const config = {
      * - /_next (Next.js internals, including data, static, image)
      * - Static files with extensions
      *
-     * Skip the proxy on RSC prefetches and Next.js prefetch requests — those are
-     * follow-ups to a page request that already passed auth. Re-checking on every
-     * prefetch doubles proxy invocations for nothing.
+     * NOTE: must run on RSC/prefetch requests too — next-intl rewrites the locale on
+     * EVERY navigation (including client-side RSC fetches). Excluding `rsc`/prefetch here
+     * skips the locale rewrite during client navigation, which leaves the new route
+     * unresolved and freezes the View Transition. Basic-auth early-exits keep this cheap.
      *
      * Public Studio path (`NEXT_PUBLIC_SANITY_STUDIO_BASE_PATH`) and `sanity-studio` app
      * path are handled inside `proxy()` (skip auth / canonical redirect) — the matcher is
      * not env-aware so the segment is not hardcoded here.
      */
-    {
-      source: "/((?!api|_next/static|_next/image|_next/data|_next/webpack-hmr|favicon.ico|.*\\.).*)",
-      missing: [
-        { type: "header", key: "next-router-prefetch" },
-        { type: "header", key: "purpose", value: "prefetch" },
-        { type: "header", key: "rsc" },
-      ],
-    },
+    "/((?!api|_next/static|_next/image|_next/data|_next/webpack-hmr|favicon.ico|.*\\.).*)",
   ],
 };

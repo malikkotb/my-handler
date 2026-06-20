@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "events": "Events",
+    "services": "Services",
+    "contact": "Contact"
+  },
+  "header": {
+    "switchLang": "FR",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "footer": {
+    "legal": "Legal",
+    "copyright": "© 2026 MY HANDLER"
+  },
+  "cta": {
+    "viewAllEvents": "View all events",
+    "exploreServices": "Explore our services"
+  },
+  "hero": {
+    "line1": "Event Agency &",
+    "line2": "Luxury Concierge"
+  },
+  "intro": {
+    "tagline": "My Handler is here to support its clients in the success of their events in the most sustainable way possible with a high-expertise service, all over the world.",
+    "missionEyebrow": "Our Mission",
+    "missionBody": "To understand your requirements and meet them by bringing you our sense of excellence.",
+    "commitmentEyebrow": "Our Commitment",
+    "commitmentBody": "A rigorous selection for each of your requests, a responsive customer service to handle your last-minute requests."
+  },
+  "services": {
+    "heading": "Services",
+    "eventManagement": "Event Management",
+    "conciergeServices": "Concierge Services",
+    "travelArrangements": "Travel Arrangements",
+    "transportation": "Transportation"
+  },
+  "clients": {
+    "heading": "Clients"
+  },
+  "about": {
+    "philosophy": {
+      "heading": "Our Philosophy",
+      "firstParagraph": "My Handler envisions a company in which each member can access and enjoy a unique workplace that enables them to achieve their goals, improve their skills and contribute to improving the events and travel industry.",
+      "secondParagraph": "We believe in a place where we can have a positive impact through a balance between social, environmental and economic responsibility."
+    },
+    "values": {
+      "heading": "Our Values",
+      "loyalty": {
+        "title": "Loyalty",
+        "body": "My Handler is rooted in trust. It forms the foundation of strong, authentic, and lasting human relationships, and sits at the very core of our work."
+      },
+      "goodwill": {
+        "title": "Goodwill",
+        "body": "Is equally central to how we operate. Respect, openness, and the ability to move forward, grow, and take pride in what we build are essential to us. Goodwill is a strength that allows us to approach every situation with clarity, fairness, and balance."
+      },
+      "boldness": {
+        "title": "Boldness",
+        "body": "Is what sets us apart. It drives us toward the future, fuels the emergence of new projects, and inspires artistic creation and renewal. Through boldness, the realm of possibility expands."
+      },
+      "beauty": {
+        "title": "Beauty",
+        "body": "Is both a personal and a structuring value. It reflects our constant pursuit of meaning, harmony, precision, and excellence. Beauty guides the way we create, organize, and support our clients. It elevates every experience, deepens emotion, and expresses how the agency connects with the world."
+      }
+    }
+  }
+}

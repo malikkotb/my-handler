@@ -12,9 +12,9 @@ export function SiteShell(props: SiteShellProps) {
   const { children, showHeader = true, showFooter = true } = props;
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col bg-surface text-ink">
       {showHeader && <SiteHeader />}
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 bg-surface">{children}</main>
       {showFooter && <SiteFooter />}
     </div>
   );

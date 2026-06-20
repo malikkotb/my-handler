@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
 import { defineQuery } from "next-sanity";
 import { env } from "~/env";
 import { PageSections } from "~/features/page-builder/page-sections";
@@ -51,7 +52,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata(props: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const params = await props.params;
   const slug = params.slug;
   const article = await fetchArticle(`/articles/${slug}`);
@@ -71,8 +72,9 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   });
 }
 
-export default async function ArticlePage(props: { params: Promise<{ slug: string }> }) {
+export default async function ArticlePage(props: { params: Promise<{ locale: string; slug: string }> }) {
   const params = await props.params;
+  setRequestLocale(params.locale);
   const slug = params.slug;
   const article = await fetchArticle(`/articles/${slug}`);
 
