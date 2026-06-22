@@ -1,6 +1,5 @@
 "use client";
 
-import { useLenis } from "lenis/react";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { createPortal } from "react-dom";
@@ -24,7 +23,6 @@ export function SiteHeader() {
   const switchHref = getPathname({ href: pathname, locale: otherLocale });
 
   const isInverted = useHeaderTheme();
-  const lenis = useLenis();
   const [menu, setMenu] = React.useState<MenuState>("closed");
   const [mounted, setMounted] = React.useState(false);
 
@@ -35,19 +33,6 @@ export function SiteHeader() {
   const closeMenu = React.useCallback(() => {
     setMenu((s) => (s === "open" ? "closing" : "closed"));
   }, []);
-
-  // Lock Lenis while the overlay is visible.
-  React.useEffect(() => {
-    if (!lenis) {
-      return;
-    }
-    if (menuVisible) {
-      lenis.stop();
-    } else {
-      lenis.start();
-    }
-    return () => lenis.start();
-  }, [lenis, menuVisible]);
 
   // Escape closes the menu.
   React.useEffect(() => {

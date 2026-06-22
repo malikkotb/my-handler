@@ -9,6 +9,7 @@
 *.tsbuildinfo
 .eslintcache
 .prettiercache
+/tmp/
 
 # testing
 /coverage

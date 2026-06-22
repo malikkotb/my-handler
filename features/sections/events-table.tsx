@@ -1,9 +1,11 @@
 "use client";
 
 import * as React from "react";
+import { CURSOR_REFRESH_EVENT } from "~/features/dom/dynamic-text-cursor";
+import { useDragScroll } from "~/features/dom/use-drag-scroll";
 import { loadGsap } from "~/features/motion/gsap";
 import { cx } from "~/features/style/utils";
-import { EVENTS } from "./events-data";
+import { type EventImage, EVENTS } from "./events-data";
 
 type GsapBundle = Awaited<ReturnType<typeof loadGsap>>;
 
@@ -39,23 +41,30 @@ export function EventsTable() {
     };
   }, []);
 
+  // Toggling a row swaps its `data-cursor-text` ("View Project" ⇄ "Close") without the
+  // pointer moving. Nudge the dynamic cursor to re-read once the new value is committed.
+  React.useEffect(() => {
+    window.dispatchEvent(new Event(CURSOR_REFRESH_EVENT));
+  }, [activeId]);
+
   const animateDetails = React.useCallback((element: HTMLElement, open: boolean) => {
     const bundle = gsapRef.current;
 
     if (!bundle || reduceMotionRef.current) {
       // Instant fallback (also covers reduced motion).
-      element.style.height = open ? "auto" : "0px";
       element.style.opacity = open ? "1" : "0";
+      element.style.height = open ? "auto" : "0px";
       return;
     }
 
     bundle.gsap.killTweensOf(element);
-    bundle.gsap.to(element, {
-      height: open ? "auto" : 0,
-      opacity: open ? 1 : 0,
-      duration: 0.48,
-      ease: "eventReveal",
-    });
+
+    if (!open) {
+      element.style.opacity = "0";
+      bundle.gsap.to(element, { height: 0, duration: 0.48, ease: "eventReveal" });
+    } else {
+      bundle.gsap.to(element, { height: "auto", opacity: 1, duration: 0.48, ease: "eventReveal" });
+    }
   }, []);
 
   const toggleEvent = React.useCallback(
@@ -109,14 +118,19 @@ export function EventsTable() {
             const isOpen = activeId === event.id;
             return (
               <React.Fragment key={event.id}>
-                <tr className="cursor-pointer" onClick={() => toggleEvent(event.id)}>
+                <tr
+                  className="cursor-pointer"
+                  onClick={() => toggleEvent(event.id)}
+                  data-cursor-hover
+                  data-cursor-text={isOpen ? "Close" : "View Project"}
+                >
                   <th
                     scope="row"
-                    className="type-h4 whitespace-nowrap p-0 py-10 text-left align-middle font-normal uppercase lg:py-12"
+                    className="type-h3-alt whitespace-nowrap p-0 py-10 text-left align-middle font-normal uppercase lg:py-12"
                   >
                     <button
                       type="button"
-                      className="w-full whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8"
+                      className="w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8"
                       aria-expanded={isOpen}
                       aria-controls={`event-details-${event.id}`}
                     >
@@ -142,23 +156,7 @@ export function EventsTable() {
                     >
                       <div className="py-20 lg:py-28">
                         <p className="type-body max-w-xl">{event.description}</p>
-                        <div className="mt-20 flex items-end gap-8 overflow-x-auto lg:gap-12">
-                          {event.images.map((image) => (
-                            // biome-ignore lint/performance/noImgElement: remote Unsplash sample images, not Sanity assets
-                            <img
-                              key={image.src}
-                              src={image.src}
-                              alt={image.alt}
-                              className={cx(
-                                "h-192 max-h-288 w-auto shrink-0 object-cover lg:h-288",
-                                image.orientation === "landscape" ? "aspect-3/2" : "aspect-4/5"
-                              )}
-                              width={image.orientation === "landscape" ? 1200 : 960}
-                              height={image.orientation === "landscape" ? 800 : 1200}
-                              loading="lazy"
-                            />
-                          ))}
-                        </div>
+                        <EventImageStrip images={event.images} />
                       </div>
                     </div>
                   </td>
@@ -169,5 +167,34 @@ export function EventsTable() {
         </tbody>
       </table>
     </section>
+  );
+}
+
+/** Horizontal image strip: native wheel/trackpad scroll plus click-and-drag, scrollbar hidden. */
+function EventImageStrip({ images }: { images: EventImage[] }) {
+  const scrollRef = useDragScroll<HTMLDivElement>();
+
+  return (
+    <div
+      ref={scrollRef}
+      className="scrollbar-invisible mt-20 flex cursor-grab items-end gap-8 overflow-x-auto data-[dragging]:cursor-grabbing lg:gap-12"
+    >
+      {images.map((image) => (
+        // biome-ignore lint/performance/noImgElement: remote Unsplash sample images, not Sanity assets
+        <img
+          key={image.src}
+          src={image.src}
+          alt={image.alt}
+          className={cx(
+            "h-192 max-h-288 w-auto shrink-0 select-none object-cover lg:h-288",
+            image.orientation === "landscape" ? "aspect-3/2" : "aspect-4/5"
+          )}
+          width={image.orientation === "landscape" ? 1200 : 960}
+          height={image.orientation === "landscape" ? 800 : 1200}
+          loading="lazy"
+          draggable={false}
+        />
+      ))}
+    </div>
   );
 }

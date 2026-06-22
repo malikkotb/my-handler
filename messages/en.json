@@ -15,6 +15,15 @@
     "legal": "Legal",
     "copyright": "© 2026 MY HANDLER"
   },
+  "legal": {
+    "title": "Legal",
+    "body": "Legal information will be added here."
+  },
+  "notFound": {
+    "title": "404",
+    "body": "The page you are looking for could not be found.",
+    "home": "Back home"
+  },
   "cta": {
     "viewAllEvents": "View all events",
     "exploreServices": "Explore our services"

@@ -5,7 +5,7 @@ import * as React from "react";
 import { Link } from "~/components/link";
 import { loadGsap } from "~/features/motion/gsap";
 import { cx } from "~/features/style/utils";
-import { getPathname } from "~/i18n/navigation";
+import { getPathname, usePathname } from "~/i18n/navigation";
 
 type MainLinkTone = "inherit" | "ink" | "surface";
 type MainLinkSize = "default" | "mobileLarge";
@@ -34,32 +34,43 @@ type MainLinkProps = MainLinkOwnProps &
     "aria-controls"?: string;
   };
 
-/** Builds one row of per-character glyph spans. */
-function makeRow(chars: string[], isHidden: boolean) {
-  const row = document.createElement("span");
-  row.classList.add("char-split-row");
-  if (isHidden) {
-    row.classList.add("char-split-row-copy");
-  }
+type CharSplitRowProps = {
+  chars: string[];
+  isHidden?: boolean;
+};
 
-  const spans = chars.map((char) => {
-    const span = document.createElement("span");
-    span.classList.add("char-split-glyph");
-    span.textContent = char === " " ? " " : char;
-    if (isHidden) {
-      span.setAttribute("aria-hidden", "true");
-    }
-    row.appendChild(span);
-    return span;
-  });
-
-  return { row, spans };
+function CharSplitRow({ chars, isHidden = false }: CharSplitRowProps) {
+  return (
+    <span
+      className={cx("char-split-row", isHidden && "char-split-row-copy")}
+      data-main-link-row={isHidden ? "copy" : "original"}
+      aria-hidden={isHidden || undefined}
+    >
+      {chars.map((char, index) => (
+        <span key={`${char}-${index}`} className="char-split-glyph">
+          {char === " " ? " " : char}
+        </span>
+      ))}
+    </span>
+  );
 }
 
 export function MainLink(props: MainLinkProps) {
-  const { to, locale, href, type = "button", tone = "inherit", size = "default", className, children, ...rest } = props;
+  const {
+    to,
+    locale,
+    href,
+    type = "button",
+    tone = "inherit",
+    size = "default",
+    className,
+    children,
+    ...rest
+  } = props;
   const activeLocale = useLocale();
+  const pathname = usePathname();
   const hostRef = React.useRef<HTMLSpanElement>(null);
+  const chars = Array.from(children.trim());
 
   React.useEffect(() => {
     const host = hostRef.current;
@@ -67,23 +78,23 @@ export function MainLink(props: MainLinkProps) {
       return;
     }
 
-    const text = children.trim();
-    if (!text) {
+    if (chars.length === 0) {
       return;
     }
 
     const root = host.closest("a, button") ?? host;
-    const chars = Array.from(text);
-    const { row: origRow, spans: origSpans } = makeRow(chars, false);
-    const { row: copyRow, spans: copySpans } = makeRow(chars, true);
+    const origSpans = Array.from(host.querySelectorAll<HTMLElement>('[data-main-link-row="original"] .char-split-glyph'));
+    const copySpans = Array.from(host.querySelectorAll<HTMLElement>('[data-main-link-row="copy"] .char-split-glyph'));
 
-    host.textContent = "";
-    host.appendChild(origRow);
-    host.appendChild(copyRow);
-
+    let isCancelled = false;
     let detach: (() => void) | undefined;
 
     loadGsap().then(({ gsap }) => {
+      if (isCancelled) {
+        return;
+      }
+
+      gsap.set(origSpans, { y: "0%" });
       gsap.set(copySpans, { y: "100%" });
 
       if (
@@ -117,8 +128,11 @@ export function MainLink(props: MainLinkProps) {
       };
     });
 
-    return () => detach?.();
-  }, [children]);
+    return () => {
+      isCancelled = true;
+      detach?.();
+    };
+  }, [children, pathname]);
 
   const classes = cx(
     "type-eyebrow relative inline-flex overflow-hidden align-middle uppercase no-underline",
@@ -132,7 +146,8 @@ export function MainLink(props: MainLinkProps) {
   const label = rest["aria-label"] ?? children;
   const inner = (
     <span ref={hostRef} className="inline-flex">
-      {children}
+      <CharSplitRow chars={chars} />
+      <CharSplitRow chars={chars} isHidden />
     </span>
   );
 

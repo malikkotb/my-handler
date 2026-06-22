@@ -15,6 +15,15 @@
     "legal": "Mentions légales",
     "copyright": "© 2026 MY HANDLER"
   },
+  "legal": {
+    "title": "Mentions légales",
+    "body": "Les informations légales seront ajoutées ici."
+  },
+  "notFound": {
+    "title": "404",
+    "body": "La page que vous recherchez est introuvable.",
+    "home": "Retour à l’accueil"
+  },
   "cta": {
     "viewAllEvents": "Voir tous les événements",
     "exploreServices": "Découvrir nos services"

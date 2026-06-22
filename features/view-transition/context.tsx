@@ -72,10 +72,14 @@ export function ViewTransitionProvider({ children }: { children: React.ReactNode
       setTransitionPending();
 
       const transition = original(...args);
-
-      void transition.finished.finally(() => {
+      const onTransitionFinished = () => {
         setTransitionComplete();
-      });
+      };
+
+      // A slow or failed App Router update can make the browser abort the transition.
+      // Treat that as a completed gate: navigation owns its own error handling, and the
+      // rejected `finished` promise must not become an unhandled rejection.
+      void transition.finished.then(onTransitionFinished, onTransitionFinished);
 
       return transition;
     };

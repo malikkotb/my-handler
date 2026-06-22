@@ -1,4 +1,6 @@
+import { getTranslations } from "next-intl/server";
 import { Button } from "~/components/button";
+import { MainLink } from "~/components/main-link";
 import { AnimatedSanityRichText } from "~/features/rich-text";
 import { sanityFetch } from "~/features/sanity/client";
 import { SanityLink } from "~/features/sanity/link";
@@ -8,6 +10,7 @@ import { SANITY_SINGLETON_SITE_ID } from "~/sanity/constants";
 import type { SiteErrorQResult } from "~/sanity/types";
 
 export async function SiteError() {
+  const t = await getTranslations("notFound");
   const site = await sanityFetch<SiteErrorQResult>({
     query: SiteErrorQ,
     options: { next: { tags: [SANITY_SINGLETON_SITE_ID] } },
@@ -21,7 +24,15 @@ export async function SiteError() {
         <div className="flex min-h-0 flex-1 flex-col gap-72">
           <div className="flex justify-between gap-48 px-16 pt-16 lg:px-48 lg:pt-48">
             <div className="flex max-w-600 flex-col gap-32">
-              <AnimatedSanityRichText value={text} viewport={false} />
+              {text ? (
+                <AnimatedSanityRichText value={text} viewport={false} />
+              ) : (
+                <>
+                  <h1 className="type-h2">{t("title")}</h1>
+                  <p className="type-body">{t("body")}</p>
+                  <MainLink to="/">{t("home")}</MainLink>
+                </>
+              )}
               {link?.href && (
                 <Button asChild>
                   <SanityLink link={link}>{link.text}</SanityLink>

@@ -76,8 +76,15 @@ export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
       preview.style.opacity = "1";
 
       const url = `url(${client.maskUrl})`;
-      logo.style.maskImage = url;
-      logo.style.webkitMaskImage = url;
+      const s = logo.style;
+      s.maskImage = url;
+      s.maskSize = "contain";
+      s.maskRepeat = "no-repeat";
+      s.maskPosition = "center";
+      s.setProperty("-webkit-mask-image", url);
+      s.setProperty("-webkit-mask-size", "contain");
+      s.setProperty("-webkit-mask-repeat", "no-repeat");
+      s.setProperty("-webkit-mask-position", "center");
     },
     [relativeTop]
   );

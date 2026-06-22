@@ -45,7 +45,7 @@ export function SiteFooter() {
     <footer ref={footerRef} className="relative h-dvh-1 overflow-clip" data-inverted>
       <div className="relative -top-dvh-1 h-dvh-2">
         <div className="sticky top-0 flex h-dvh-1 items-center bg-ink text-surface">
-          <div className="section-px flex w-full flex-col gap-80 lg:flex-row lg:justify-between">
+          <div className="section-px flex w-full flex-col gap-80 pb-0 lg:pb-80 lg:flex-row lg:justify-between">
             {/* Logo: desktop only, centered */}
             <div
               ref={logoRef}
