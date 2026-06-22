@@ -1,0 +1,70 @@
+☐ add parallax scrolling to images in about page
+☐ fix animations in sticky footer with reveal
+☐ create sticky reveal of content beneath/after Hero in home page
+
+☐ three.js jouney to make 3d hero peng as fuck
+☐ use HEYCLICKY to make 3d hero peng af in blender
+
+☐ text reveal animations on scroll for headings
+
+☐ page transitions!!! (OSMO)
+☐ text stagger animations on all texts (check osmo for examples)
+
+☐ fix all the spacing for headings in all pages, and make them unifrom (mobile and desktop)
+
+Events page
+☐ fix easing and duration of opening accordion in events page list
+☐ add smoothy perhaps to the carousel of iamges when you view the details of an event
+☐ fix spacing of events header
+☐ add micro interactions on the events page table rows, like a shift translate to the right, similar to monolog website or tony m
+☐ the scrollable list for events: https://www.edicioneselfuerte.com/
+
+☐ for CTA hover transitions: maybe we can use a blur flicker through ? where the letters translate slighly and blur from left to right ?
+
+☐ will need to change appropriate fonts to PP Museum Thin (H3) when its bought
+
+☐ remove all inline styles from the pages and components
+
+✔ design system tailwind for the website based on breakpoints (use claude to do this) @done(26-05-14 20:09)
+    ✔ included in design system: typography (font sizes, weights, families), colors, spacing, breakpoints, etc. @done(26-05-14 20:09)
+    ✔ gaps, paddings, margin @done(26-05-29 11:48)
+    ✔ fluid typography @done(26-05-29 19:34)
+
+☐ emil design engineering
+
+☐ todo: make the services section (on home page) animaton on hover smoother like https://paronyme.com/ (tony)
+☐ check his website and his work for interactions and stuff generally (he does great work)
+
+☐ need to buy appropriate fonts for the website
+
+☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
+
+☐ fix easings of all interactions
+
+☐ add webhooks in sanity and vercel for immediate content updates (maybe this is done through the content architecture already)
+
+☐ buy fonts museum light and thin
+☐ suisse intl light
+
+☐ french version of impressum page
+
+☐ TODOS throughout page
+
+☐ hover interactions for links
+
+☐ use parrallax on the footer + add a blur perhaps similar to: https://www.lorunser.com/at/about & their footer
+
+here are 3 small things that instantly make a website feel more premium:
+
+    1. lenis scroll
+    
+    lenis adds a bit of weight to scrolling. not floaty or weird, but smoother and more intentional than default browser scroll. you don’t really notice it the site just feels calmer (if done correctly).
+    
+    2. view transitions
+    
+    instead of pages hard-cutting, they ease between states. fades, subtle movement, shared elements. it feels like you’re staying inside the same experience instead of jumping between pages. gives you a SPA feel even for a MPA website.
+    
+    3. pressed states on buttons
+    
+    everyone knows hover states. not everyone uses pressed states.
+    my go-to is a simple scale(0.99) on press. tiny change, big difference. gives you that clicky ux feedback.
