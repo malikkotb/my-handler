@@ -13,6 +13,8 @@ import { getPathname, usePathname } from "~/i18n/navigation";
 
 type MenuState = "closed" | "open" | "closing";
 
+const MENU_ANIMATION_MS = 350;
+
 export function SiteHeader() {
   const t = useTranslations();
   const locale = useLocale();
@@ -33,6 +35,16 @@ export function SiteHeader() {
   const closeMenu = React.useCallback(() => {
     setMenu((s) => (s === "open" ? "closing" : "closed"));
   }, []);
+
+  React.useEffect(() => {
+    if (menu !== "closing") {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => setMenu("closed"), MENU_ANIMATION_MS);
+
+    return () => window.clearTimeout(timeout);
+  }, [menu]);
 
   // Escape closes the menu.
   React.useEffect(() => {
@@ -104,39 +116,43 @@ export function SiteHeader() {
         createPortal(
           <div
             id="mobile-menu"
-            className={cx(
-              "layout-grid fixed inset-0 z-40 flex flex-col justify-between bg-surface p-20 text-ink lg:hidden",
-              menu === "open" ? "animate-menu-in" : "animate-menu-out"
-            )}
-            onAnimationEnd={() => {
-              if (menu === "closing") {
-                setMenu("closed");
-              }
-            }}
+            className="fixed inset-0 z-40 bg-surface text-ink lg:hidden"
           >
-            <nav className="col-span-3 col-start-1 mt-160 flex flex-col gap-16" aria-label="Primary navigation">
-              {NAV_LINKS.map((link) => (
-                <MainLink key={link.path} to={link.path} tone="ink" size="mobileLarge" onClick={closeMenu}>
-                  {t(link.i18nKey)}
-                </MainLink>
-              ))}
-            </nav>
+            <div
+              className={cx(
+                "layout-grid flex h-full flex-col justify-between p-20",
+                menu === "open" ? "animate-menu-in" : "animate-menu-out"
+              )}
+              onAnimationEnd={() => {
+                if (menu === "closing") {
+                  setMenu("closed");
+                }
+              }}
+            >
+              <nav className="col-span-3 col-start-1 mt-160 flex flex-col gap-16" aria-label="Primary navigation">
+                {NAV_LINKS.map((link) => (
+                  <MainLink key={link.path} to={link.path} tone="ink" size="mobileLarge" onClick={closeMenu}>
+                    {t(link.i18nKey)}
+                  </MainLink>
+                ))}
+              </nav>
 
-            <nav className="col-span-3 col-start-1 flex flex-col gap-4" aria-label="Social links">
-              {SOCIAL_LINKS.map((link) => (
-                <MainLink key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" tone="ink">
-                  {link.label}
-                </MainLink>
-              ))}
-            </nav>
+              <nav className="col-span-3 col-start-1 flex flex-col gap-4" aria-label="Social links">
+                {SOCIAL_LINKS.map((link) => (
+                  <MainLink key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" tone="ink">
+                    {link.label}
+                  </MainLink>
+                ))}
+              </nav>
 
-            <div className="flex justify-between">
-              <MainLink to="/legal" tone="ink" onClick={closeMenu}>
-                {t("footer.legal")}
-              </MainLink>
-              <MainLink href={switchHref} tone="ink" aria-label="Switch language" onClick={closeMenu}>
-                {t("header.switchLang")}
-              </MainLink>
+              <div className="flex justify-between">
+                <MainLink to="/legal" tone="ink" onClick={closeMenu}>
+                  {t("footer.legal")}
+                </MainLink>
+                <MainLink href={switchHref} tone="ink" aria-label="Switch language" onClick={closeMenu}>
+                  {t("header.switchLang")}
+                </MainLink>
+              </div>
             </div>
           </div>,
           document.body

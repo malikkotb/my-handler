@@ -144,7 +144,7 @@ export function EventsTable() {
             return (
               <React.Fragment key={event.id}>
                 <tr
-                  className="cursor-pointer"
+                  className="group cursor-pointer"
                   onClick={() => toggleEvent(event.id)}
                   data-cursor-hover
                   data-cursor-text={isOpen ? "Close" : "View Project"}
@@ -155,7 +155,7 @@ export function EventsTable() {
                   >
                     <button
                       type="button"
-                      className="w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8 motion-safe:transition-transform motion-safe:duration-service motion-safe:ease-service motion-safe:hover:translate-x-12"
+                      className="w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8 motion-safe:transition-transform motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:translate-x-12"
                       aria-expanded={isOpen}
                       aria-controls={`event-details-${event.id}`}
                     >

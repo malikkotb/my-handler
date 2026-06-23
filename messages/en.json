@@ -41,6 +41,7 @@
   },
   "services": {
     "heading": "Services",
+    "introBody": "At My Handler, expertise is defined by the art of anticipation. We design tailored experiences blending strategic thinking, operational excellence, and a refined creative sensibility, we support our clients through projects that demand discretion, adaptability, and attention to detail.",
     "eventManagement": "Event Management",
     "conciergeServices": "Concierge Services",
     "travelArrangements": "Travel Arrangements",
@@ -49,7 +50,12 @@
   "clients": {
     "heading": "Clients"
   },
+  "events": {
+    "heading": "Events"
+  },
   "about": {
+    "introTitle": "Our Team",
+    "introBody": "My Handler brings together a collective of professionals from diverse industries and creative disciplines — including hospitality, luxury services, marketing, music, production, logistics, communication, and event management.",
     "philosophy": {
       "heading": "Our Philosophy",
       "firstParagraph": "My Handler envisions a company in which each member can access and enjoy a unique workplace that enables them to achieve their goals, improve their skills and contribute to improving the events and travel industry.",
