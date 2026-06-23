@@ -40,6 +40,15 @@ const SERVICE_ITEMS: ServiceItem[] = [
   },
 ];
 
+const SERVICE_IMAGES: Array<Pick<ServiceItem, "title" | "image" | "alt">> = [
+  ...SERVICE_ITEMS.map(({ title, image, alt }) => ({ title, image, alt })),
+  {
+    title: "SERVICES FINAL",
+    image: "/about/about_main_desktop.avif",
+    alt: "My Handler lifestyle management detail",
+  },
+];
+
 type StepStatus = "before" | "active" | "after";
 
 export function ServicesDetail() {
@@ -78,7 +87,7 @@ export function ServicesDetail() {
     <section className="layout-grid section-padding overflow-clip">
       <div className="col-span-3 md:col-span-3 lg:sticky lg:top-80 lg:self-start">
         <div className="relative aspect-3/2">
-          {SERVICE_ITEMS.map((service, index) => {
+          {SERVICE_IMAGES.map((service, index) => {
             const status: StepStatus = index < activeIndex ? "before" : index > activeIndex ? "after" : "active";
             const isVisible = status === "before" || status === "active";
 
@@ -115,15 +124,17 @@ export function ServicesDetail() {
               }}
               className="relative flex flex-col gap-20"
             >
-              <div
-                className="pointer-events-none absolute top-0 left-1/2 z-50 h-8 w-screen -translate-x-1/2"
-                style={{ backgroundColor: "#ff0000" }}
-                aria-hidden="true"
-              />
               <h2 className="type-h4 uppercase">{service.title}</h2>
               <p className="type-body">{service.body}</p>
             </article>
           ))}
+          <div
+            ref={(el) => {
+              serviceRefs.current[SERVICE_ITEMS.length] = el;
+            }}
+            className="relative h-0"
+            aria-hidden="true"
+          />
           <CtaButton to="/events">Découvrez nos campagnes</CtaButton>
         </div>
       </div>

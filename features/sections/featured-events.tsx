@@ -82,7 +82,7 @@ export function FeaturedEvents() {
               </figure>
             ))}
 
-            <CtaButton to="/events" className="cta-pt pointer-events-auto pb-40">
+            <CtaButton to="/events" className="cta-pt flex justify-center pointer-events-auto pb-40">
               {t("viewAllEvents")}
             </CtaButton>
           </div>
@@ -104,7 +104,7 @@ export function FeaturedEvents() {
           </article>
         ))}
 
-        <CtaButton to="/events" className="cta-pt col-span-full">
+        <CtaButton to="/events" className="flex justify-center col-span-full">
           {t("viewAllEvents")}
         </CtaButton>
       </section>
