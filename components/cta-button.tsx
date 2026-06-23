@@ -15,7 +15,7 @@ export function CtaButton({ to, children, className }: CtaButtonProps) {
   const href = getPathname({ href: to, locale });
 
   return (
-    <Link href={href} className={cx("type-cta inline-flex justify-center gap-8 text-ink uppercase no-underline", className)}>
+    <Link href={href} className={cx("type-cta justify-center gap-8 text-ink uppercase no-underline", className)}>
       {children}
       <span aria-hidden="true" className="translate-y-arrow pl-8">
         ↗

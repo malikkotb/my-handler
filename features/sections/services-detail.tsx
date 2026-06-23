@@ -17,25 +17,25 @@ const SERVICE_ITEMS: ServiceItem[] = [
   {
     title: "CONSULTANCY",
     body: "We provide strategic and creative guidance to transform ideas into clear, impactful experiences. From concept development to project positioning, we help our clients define direction, uncover opportunities, and bring ambitious visions to life with clarity and purpose.",
-    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=80",
-    alt: "Strategic consultancy session",
+    image: "/img1.avif",
+    alt: "My Handler event production",
   },
   {
     title: "EVENTS",
     body: "We create and produce exceptional events designed with precision and intention. From private celebrations to brand activations and exclusive gatherings, we oversee every stage — creative direction, production, logistics, and execution — to ensure a seamless and memorable experience.",
-    image: "https://images.unsplash.com/photo-1519167758452-54b3d5a7f24a?w=900&q=80",
+    image: "/img2.avif",
     alt: "Luxury event table prepared for guests",
   },
   {
     title: "TRAVEL",
     body: "We curate tailor-made travel experiences shaped around each client's lifestyle, preferences, and expectations. Every itinerary is thoughtfully designed to combine exclusivity, comfort, and effortless organization, with access to unique destinations and carefully selected experiences.",
-    image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=900&q=80",
+    image: "/img3.avif",
     alt: "Private travel experience above the clouds",
   },
   {
     title: "CONCIERGERIE",
     body: "Our conciergerie service offers dedicated, discreet, and highly personalized assistance. From everyday arrangements to exceptional requests, we anticipate needs, manage details, and provide seamless support designed to simplify and elevate every aspect of our clients' lives.",
-    image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=900&q=80",
+    image: "/img4.avif",
     alt: "Discreet luxury hotel concierge setting",
   },
 ];
@@ -75,7 +75,7 @@ export function ServicesDetail() {
   }, [updateActiveService]);
 
   return (
-    <section className="layout-grid section-padding">
+    <section className="layout-grid section-padding overflow-clip">
       <div className="col-span-3 md:col-span-3 lg:sticky lg:top-80 lg:self-start">
         <div className="relative aspect-3/2">
           {SERVICE_ITEMS.map((service, index) => {
@@ -86,14 +86,14 @@ export function ServicesDetail() {
               <div
                 key={service.title}
                 className={cx(
-                  "overflow-hidden bg-body/10",
+                  "h-full w-full overflow-hidden bg-body/10",
                   "transition-[opacity,visibility] duration-500 ease-in-out motion-reduce:transition-none",
                   index === 0 ? "relative" : "hidden lg:block",
                   "lg:absolute lg:inset-0",
                   isVisible ? "lg:visible lg:opacity-100" : "lg:invisible lg:opacity-0"
                 )}
               >
-                {/* biome-ignore lint/performance/noImgElement: remote Unsplash sample images, not Sanity assets */}
+                {/* biome-ignore lint/performance/noImgElement: local static assets */}
                 <img src={service.image} alt={service.alt} width={900} height={1200} className="h-full w-full object-cover" />
               </div>
             );
@@ -115,7 +115,11 @@ export function ServicesDetail() {
               }}
               className="relative flex flex-col gap-20"
             >
-              <div className="pointer-events-none absolute top-0 right-0 left-0 h-px bg-red-500" aria-hidden="true" />
+              <div
+                className="pointer-events-none absolute top-0 left-1/2 z-50 h-8 w-screen -translate-x-1/2"
+                style={{ backgroundColor: "#ff0000" }}
+                aria-hidden="true"
+              />
               <h2 className="type-h4 uppercase">{service.title}</h2>
               <p className="type-body">{service.body}</p>
             </article>
