@@ -116,11 +116,18 @@ export function SiteHeader() {
         createPortal(
           <div
             id="mobile-menu"
-            className="fixed inset-0 z-40 bg-surface text-ink lg:hidden"
+            className="fixed inset-0 z-40 text-ink lg:hidden"
           >
             <div
               className={cx(
-                "layout-grid flex h-full flex-col justify-between p-20",
+                "absolute inset-0 bg-surface",
+                menu === "open" ? "animate-menu-surface-in" : "animate-menu-surface-out"
+              )}
+              aria-hidden
+            />
+            <div
+              className={cx(
+                "layout-grid relative flex h-full flex-col justify-between p-20",
                 menu === "open" ? "animate-menu-in" : "animate-menu-out"
               )}
               onAnimationEnd={() => {
