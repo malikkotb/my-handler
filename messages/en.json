@@ -45,7 +45,29 @@
     "eventManagement": "Event Management",
     "conciergeServices": "Concierge Services",
     "travelArrangements": "Travel Arrangements",
-    "transportation": "Transportation"
+    "transportation": "Transportation",
+    "items": {
+      "consultancy": {
+        "title": "Consultancy",
+        "body": "We provide strategic and creative guidance to transform ideas into clear, impactful experiences. From concept development to project positioning, we help our clients define direction, uncover opportunities, and bring ambitious visions to life with clarity and purpose.",
+        "alt": "My Handler event production"
+      },
+      "events": {
+        "title": "Events",
+        "body": "We create and produce exceptional events designed with precision and intention. From private celebrations to brand activations and exclusive gatherings, we oversee every stage — creative direction, production, logistics, and execution — to ensure a seamless and memorable experience.",
+        "alt": "Luxury event table prepared for guests"
+      },
+      "travel": {
+        "title": "Travel",
+        "body": "We curate tailor-made travel experiences shaped around each client's lifestyle, preferences, and expectations. Every itinerary is thoughtfully designed to combine exclusivity, comfort, and effortless organization, with access to unique destinations and carefully selected experiences.",
+        "alt": "Private travel experience above the clouds"
+      },
+      "conciergerie": {
+        "title": "Conciergerie",
+        "body": "Our conciergerie service offers dedicated, discreet, and highly personalized assistance. From everyday arrangements to exceptional requests, we anticipate needs, manage details, and provide seamless support designed to simplify and elevate every aspect of our clients' lives.",
+        "alt": "Discreet luxury hotel concierge setting"
+      }
+    }
   },
   "clients": {
     "heading": "Clients"
@@ -56,6 +78,7 @@
   "about": {
     "introTitle": "Our Team",
     "introBody": "My Handler brings together a collective of professionals from diverse industries and creative disciplines — including hospitality, luxury services, marketing, music, production, logistics, communication, and event management.",
+    "teamTagline": "Each team member contributes a unique perspective, specialized expertise, and a deep understanding of how to create experiences that feel both seamless and meaningful.",
     "philosophy": {
       "heading": "Our Philosophy",
       "firstParagraph": "My Handler envisions a company in which each member can access and enjoy a unique workplace that enables them to achieve their goals, improve their skills and contribute to improving the events and travel industry.",

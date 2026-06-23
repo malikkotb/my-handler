@@ -45,7 +45,29 @@
     "eventManagement": "Gestion d'Événements",
     "conciergeServices": "Services de Conciergerie",
     "travelArrangements": "Organisation de Voyages",
-    "transportation": "Transport"
+    "transportation": "Transport",
+    "items": {
+      "consultancy": {
+        "title": "Conseil",
+        "body": "Nous apportons une guidance stratégique et créative pour transformer des idées en expériences claires et percutantes. Du développement de concept au positionnement de projet, nous aidons nos clients à définir une direction, à identifier des opportunités et à donner vie à des visions ambitieuses avec clarté et sens.",
+        "alt": "Production événementielle My Handler"
+      },
+      "events": {
+        "title": "Événements",
+        "body": "Nous créons et produisons des événements d'exception conçus avec précision et intention. Des célébrations privées aux activations de marque en passant par les rassemblements exclusifs, nous supervisons chaque étape — direction créative, production, logistique et exécution — pour garantir une expérience fluide et mémorable.",
+        "alt": "Table d'événement de luxe dressée pour les invités"
+      },
+      "travel": {
+        "title": "Voyages",
+        "body": "Nous concevons des expériences de voyage sur mesure façonnées autour du mode de vie, des préférences et des attentes de chaque client. Chaque itinéraire est soigneusement élaboré pour allier exclusivité, confort et organisation sans effort, avec accès à des destinations uniques et des expériences soigneusement sélectionnées.",
+        "alt": "Expérience de voyage privé au-dessus des nuages"
+      },
+      "conciergerie": {
+        "title": "Conciergerie",
+        "body": "Notre service de conciergerie offre une assistance dédiée, discrète et hautement personnalisée. Des arrangements quotidiens aux demandes exceptionnelles, nous anticipons les besoins, gérons les détails et assurons un accompagnement sans faille conçu pour simplifier et élever chaque aspect de la vie de nos clients.",
+        "alt": "Cadre discret de conciergerie hôtelière de luxe"
+      }
+    }
   },
   "clients": {
     "heading": "Clients"
@@ -56,6 +78,7 @@
   "about": {
     "introTitle": "Notre Équipe",
     "introBody": "My Handler réunit un collectif de professionnels issus de secteurs variés et de disciplines créatives — notamment l'hôtellerie, les services de luxe, le marketing, la musique, la production, la logistique, la communication et la gestion d'événements.",
+    "teamTagline": "Chaque membre de l'équipe apporte une perspective unique, une expertise spécialisée et une compréhension profonde de la façon de créer des expériences à la fois fluides et porteuses de sens.",
     "philosophy": {
       "heading": "Notre Philosophie",
       "firstParagraph": "My Handler imagine une entreprise dans laquelle chaque membre peut accéder à un environnement de travail unique qui lui permet d'atteindre ses objectifs, d'améliorer ses compétences et de contribuer à faire progresser les secteurs de l'événementiel et du voyage.",

@@ -10,7 +10,7 @@ export function AboutTextColumns() {
   return (
     <section className="section-padding bg-surface py-0 text-ink" aria-labelledby="about-philosophy-heading">
       <div className="layout-grid">
-        <div className="col-span-6 col-start-5 flex flex-col gap-32 lg:col-span-3 lg:col-start-5">
+        <div className="col-span-8 col-start-3 flex flex-col gap-32 lg:col-span-3 lg:col-start-5">
           <h2 id="about-philosophy-heading" className="type-eyebrow">
             {t("philosophy.heading")}
           </h2>
@@ -20,7 +20,7 @@ export function AboutTextColumns() {
           </div>
         </div>
 
-        <div className="col-span-6 col-start-5 mt-64 flex flex-col gap-32 lg:col-span-3 lg:col-start-8 lg:mt-0">
+        <div className="col-span-8 col-start-3 mt-64 flex flex-col gap-32 lg:col-span-3 lg:col-start-8 lg:mt-0">
           <h2 className="type-eyebrow">{t("values.heading")}</h2>
           <dl className="flex flex-col gap-32">
             {VALUE_KEYS.map((key) => (

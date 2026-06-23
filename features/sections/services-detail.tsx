@@ -2,8 +2,10 @@
 
 import { useWindowEvent } from "@mantine/hooks";
 import { useLenis } from "lenis/react";
+import { useTranslations } from "next-intl";
 import * as React from "react";
 import { CtaButton } from "~/components/cta-button";
+import { useBreakpoint } from "~/features/dom/use-breakpoint";
 import { cx } from "~/features/style/utils";
 
 type ServiceItem = {
@@ -13,68 +15,51 @@ type ServiceItem = {
   alt: string;
 };
 
-const SERVICE_ITEMS: ServiceItem[] = [
-  {
-    title: "CONSULTANCY",
-    body: "We provide strategic and creative guidance to transform ideas into clear, impactful experiences. From concept development to project positioning, we help our clients define direction, uncover opportunities, and bring ambitious visions to life with clarity and purpose.",
-    image: "/img1.avif",
-    alt: "My Handler event production",
-  },
-  {
-    title: "EVENTS",
-    body: "We create and produce exceptional events designed with precision and intention. From private celebrations to brand activations and exclusive gatherings, we oversee every stage — creative direction, production, logistics, and execution — to ensure a seamless and memorable experience.",
-    image: "/img2.avif",
-    alt: "Luxury event table prepared for guests",
-  },
-  {
-    title: "TRAVEL",
-    body: "We curate tailor-made travel experiences shaped around each client's lifestyle, preferences, and expectations. Every itinerary is thoughtfully designed to combine exclusivity, comfort, and effortless organization, with access to unique destinations and carefully selected experiences.",
-    image: "/img3.avif",
-    alt: "Private travel experience above the clouds",
-  },
-  {
-    title: "CONCIERGERIE",
-    body: "Our conciergerie service offers dedicated, discreet, and highly personalized assistance. From everyday arrangements to exceptional requests, we anticipate needs, manage details, and provide seamless support designed to simplify and elevate every aspect of our clients' lives.",
-    image: "/img4.avif",
-    alt: "Discreet luxury hotel concierge setting",
-  },
-];
-
-const SERVICE_IMAGES: Array<Pick<ServiceItem, "title" | "image" | "alt">> = [
-  ...SERVICE_ITEMS.map(({ title, image, alt }) => ({ title, image, alt })),
-  {
-    title: "SERVICES FINAL",
-    image: "/about/about_main_desktop.avif",
-    alt: "My Handler lifestyle management detail",
-  },
+const SERVICE_IMAGES_STATIC = [
+  { key: "consultancy" as const, image: "/img1.avif" },
+  { key: "events" as const, image: "/img2.avif" },
+  { key: "travel" as const, image: "/img3.avif" },
+  { key: "conciergerie" as const, image: "/img4.avif" },
 ];
 
 type StepStatus = "before" | "active" | "after";
 
 export function ServicesDetail() {
+  const t = useTranslations("services.items");
+  const isDesktop = useBreakpoint("lg");
   const [activeIndex, setActiveIndex] = React.useState(0);
+
+  const serviceItems: ServiceItem[] = SERVICE_IMAGES_STATIC.map(({ key, image }) => ({
+    title: t(`${key}.title`),
+    body: t(`${key}.body`),
+    image,
+    alt: t(`${key}.alt`),
+  }));
+
+  const serviceImages: Array<Pick<ServiceItem, "title" | "image" | "alt">> = [
+    ...serviceItems.map(({ title, image, alt }) => ({ title, image, alt })),
+  ];
   const serviceRefs = React.useRef<(HTMLElement | null)[]>([]);
 
   const updateActiveService = React.useCallback(() => {
-    const viewportCenter = window.innerHeight / 2;
-    let minDistance = Number.POSITIVE_INFINITY;
-    let nearest = 0;
+    if (!isDesktop) {
+      setActiveIndex(0);
+      return;
+    }
 
-    serviceRefs.current.forEach((el, index) => {
+    const crossedCount = serviceRefs.current.reduce((count, el) => {
       if (!el) {
-        return;
+        return count;
       }
 
       const rect = el.getBoundingClientRect();
-      const distance = Math.abs(rect.top + rect.height / 2 - viewportCenter);
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearest = index;
-      }
-    });
+      const articleCenter = rect.top + rect.height / 2;
 
-    setActiveIndex(nearest);
-  }, []);
+      return articleCenter <= 0 ? count + 1 : count;
+    }, 0);
+
+    setActiveIndex(Math.min(crossedCount, serviceImages.length - 1));
+  }, [isDesktop, serviceImages.length]);
 
   useLenis(updateActiveService);
   useWindowEvent("resize", updateActiveService);
@@ -84,12 +69,18 @@ export function ServicesDetail() {
   }, [updateActiveService]);
 
   return (
-    <section className="layout-grid section-padding overflow-clip">
-      <div className="col-span-3 md:col-span-3 lg:sticky lg:top-80 lg:self-start">
-        <div className="relative aspect-3/2">
-          {SERVICE_IMAGES.map((service, index) => {
-            const status: StepStatus = index < activeIndex ? "before" : index > activeIndex ? "after" : "active";
-            const isVisible = status === "before" || status === "active";
+    <section className='layout-grid section-padding gap-y-40 overflow-clip'>
+      <div className='col-span-full lg:sticky lg:top-80 lg:col-span-3 lg:self-start'>
+        <div className='relative aspect-3/2'>
+          {serviceImages.map((service, index) => {
+            const status: StepStatus =
+              index < activeIndex
+                ? "before"
+                : index > activeIndex
+                  ? "after"
+                  : "active";
+            const isVisible =
+              status === "before" || status === "active";
 
             return (
               <div
@@ -99,43 +90,44 @@ export function ServicesDetail() {
                   "transition-[opacity,visibility] duration-500 ease-in-out motion-reduce:transition-none",
                   index === 0 ? "relative" : "hidden lg:block",
                   "lg:absolute lg:inset-0",
-                  isVisible ? "lg:visible lg:opacity-100" : "lg:invisible lg:opacity-0"
+                  isVisible
+                    ? "lg:visible lg:opacity-100"
+                    : "lg:invisible lg:opacity-0",
                 )}
               >
                 {/* biome-ignore lint/performance/noImgElement: local static assets */}
-                <img src={service.image} alt={service.alt} width={900} height={1200} className="h-full w-full object-cover" />
+                <img
+                  src={service.image}
+                  alt={service.alt}
+                  width={900}
+                  height={1200}
+                  className='h-full w-full object-cover'
+                />
               </div>
             );
           })}
         </div>
       </div>
 
-      <div className="col-span-5 col-start-5 flex flex-col">
-        <h3 className="type-h3-alt pb-120">
+      <div className='col-span-full flex flex-col lg:col-span-5 lg:col-start-5'>
+        {/* <h3 className="type-h3-alt pb-120">
           Whether shaping a brand experience, producing a private event, curating a journey, or managing day-to-day requests, our
           approach remains the same: thoughtful, fluid, and entirely bespoke.
-        </h3>
-        <div id="services" className="flex flex-col gap-40">
-          {SERVICE_ITEMS.map((service, index) => (
+        </h3> */}
+        <div id='services' className='flex flex-col gap-40'>
+          {serviceItems.map((service, index) => (
             <article
               key={service.title}
               ref={(el) => {
                 serviceRefs.current[index] = el;
               }}
-              className="relative flex flex-col gap-20"
+              className='relative flex flex-col gap-20'
             >
-              <h2 className="type-h4 uppercase">{service.title}</h2>
-              <p className="type-body">{service.body}</p>
+              <h2 className='type-h4 uppercase'>{service.title}</h2>
+              <p className='type-body'>{service.body}</p>
             </article>
           ))}
-          <div
-            ref={(el) => {
-              serviceRefs.current[SERVICE_ITEMS.length] = el;
-            }}
-            className="relative h-0"
-            aria-hidden="true"
-          />
-          <CtaButton to="/events">Découvrez nos campagnes</CtaButton>
+          <CtaButton to='/events'>Découvrez nos campagnes</CtaButton>
         </div>
       </div>
     </section>

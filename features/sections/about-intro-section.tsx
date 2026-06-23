@@ -1,9 +1,11 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import * as React from "react";
 import { loadGsap } from "~/features/motion/gsap";
 
 export function AboutIntroSection() {
+  const t = useTranslations("about");
   const parallaxRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -63,11 +65,8 @@ export function AboutIntroSection() {
           loading="eager"
         />
       </div>
-      <div className="layout-grid section-padding pb-0">
-        <h3 className="type-h3 col-span-full">
-          Each team member contributes a unique perspective, specialized expertise, and a deep understanding of how to create
-          experiences that feel both seamless and meaningful.
-        </h3>
+      <div className="layout-grid section-padding pb-0 lg:pr-[25%]">
+        <h3 className="type-h3-alt col-span-full">{t("teamTagline")}</h3>
       </div>
     </>
   );
