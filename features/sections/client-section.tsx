@@ -60,8 +60,8 @@ export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
   }, []);
 
   const activate = React.useCallback(
-    (index: number) => {
-      const li = liRefs.current[index];
+    (index: number, positionIndex = index) => {
+      const li = liRefs.current[positionIndex];
       const preview = previewRef.current;
       const logo = logoRef.current;
       const client = CLIENTS[index];
@@ -109,15 +109,16 @@ export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
       mm.add("(max-width: 1023px)", () => {
         isDesktopRef.current = false;
         updateBaseTop();
-        activate(0);
+        const lastIndex = CLIENTS.length - 1;
+        activate(0, lastIndex);
 
         const triggers = (liRefs.current.filter(Boolean) as HTMLLIElement[]).map((li, index) =>
           ScrollTrigger.create({
             trigger: li,
             start: "top center",
             end: "bottom center",
-            onEnter: () => activate(index),
-            onEnterBack: () => activate(index),
+            onEnter: () => activate(index, lastIndex),
+            onEnterBack: () => activate(index, lastIndex),
           })
         );
 

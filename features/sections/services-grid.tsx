@@ -11,22 +11,22 @@ const SERVICES = [
   {
     id: "1",
     labelKey: "eventManagement",
-    image: "https://images.unsplash.com/photo-1519167758452-54b3d5a7f24a?w=480&h=600&fit=crop&q=80",
+    image: "/img1.avif",
   },
   {
     id: "2",
     labelKey: "conciergeServices",
-    image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=480&h=600&fit=crop&q=80",
+    image: "/img2.avif",
   },
   {
     id: "3",
     labelKey: "travelArrangements",
-    image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=480&h=600&fit=crop&q=80",
+    image: "/img3.avif",
   },
   {
     id: "4",
     labelKey: "transportation",
-    image: "https://images.unsplash.com/photo-1563720223185-11003d516935?w=480&h=600&fit=crop&q=80",
+    image: "/img4.avif",
   },
 ] as const;
 
@@ -130,10 +130,9 @@ export function ServicesGrid() {
           ))}
         </ul>
 
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-end pr-80" aria-hidden="true">
+        <div className="pointer-events-none absolute inset-0 hidden items-center justify-end pr-80 lg:flex" aria-hidden="true">
           <div className="relative aspect-service-card h-services-preview rotate-10">
             {SERVICES.map((service) => (
-              // biome-ignore lint/performance/noImgElement: remote Unsplash sample images, not Sanity assets
               <img
                 key={service.id}
                 ref={(el) => {
