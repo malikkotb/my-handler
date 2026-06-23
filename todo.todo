@@ -1,4 +1,3 @@
-☐ add parallax scrolling to images in about page
 ☐ fix animations in sticky footer with reveal
 ☐ create sticky reveal of content beneath/after Hero in home page
 
@@ -8,20 +7,17 @@
 ☐ text reveal animations on scroll for headings
 
 ☐ page transitions!!! (OSMO)
-☐ text stagger animations on all texts (check osmo for examples)
+☐ text stagger animations on all texts (check osmo and Monolog and Paronyme for examples)
 
-☐ fix all the spacing for headings in all pages, and make them unifrom (mobile and desktop)
+☐ fix all the spacing for headings in all pages (mobile and desktop)
 
 Events page
 ☐ fix easing and duration of opening accordion in events page list
-☐ add smoothy perhaps to the carousel of iamges when you view the details of an event
-☐ fix spacing of events header
-☐ add micro interactions on the events page table rows, like a shift translate to the right, similar to monolog website or tony m
 ☐ the scrollable list for events: https://www.edicioneselfuerte.com/
+☐ add some type of effect either on the custom cursor or on the list items, when hovering them 
+
 
 ☐ for CTA hover transitions: maybe we can use a blur flicker through ? where the letters translate slighly and blur from left to right ?
-
-☐ will need to change appropriate fonts to PP Museum Thin (H3) when its bought
 
 ☐ remove all inline styles from the pages and components
 
@@ -35,22 +31,15 @@ Events page
 ☐ todo: make the services section (on home page) animaton on hover smoother like https://paronyme.com/ (tony)
 ☐ check his website and his work for interactions and stuff generally (he does great work)
 
-☐ need to buy appropriate fonts for the website
-
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
 ☐ fix easings of all interactions
 
 ☐ add webhooks in sanity and vercel for immediate content updates (maybe this is done through the content architecture already)
 
-☐ buy fonts museum light and thin
-☐ suisse intl light
-
 ☐ french version of impressum page
 
 ☐ TODOS throughout page
-
-☐ hover interactions for links
 
 ☐ use parrallax on the footer + add a blur perhaps similar to: https://www.lorunser.com/at/about & their footer
 

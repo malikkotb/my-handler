@@ -330,7 +330,7 @@ main {
   border-bottom: 7px solid transparent;
   border-left: 12.124px solid var(--color-body);
   /* Nudge up so the triangle steps above the label baseline. */
-  transform: translateY(-16px);
+  transform: translate(6px, -16px) rotate(-10deg);
 }
 
 .dyn-cursor__text {

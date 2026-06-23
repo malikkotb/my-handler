@@ -26,6 +26,12 @@ export function EventsTable() {
       if (!bundle.CustomEase.get("eventReveal")) {
         bundle.CustomEase.create("eventReveal", "0.36, 0.33, 0, 1");
       }
+      if (!bundle.CustomEase.get("eventRevealOpen")) {
+        bundle.CustomEase.create("eventRevealOpen", "0.625, 0.05, 0, 1");
+      }
+      if (!bundle.CustomEase.get("eventContentReveal")) {
+        bundle.CustomEase.create("eventContentReveal", "0.5, 0, 1, 0.55");
+      }
       gsapRef.current = bundle;
     });
 
@@ -36,6 +42,9 @@ export function EventsTable() {
       if (bundle) {
         for (const el of refs.values()) {
           bundle.gsap.killTweensOf(el);
+          if (el.firstElementChild instanceof HTMLElement) {
+            bundle.gsap.killTweensOf(el.firstElementChild);
+          }
         }
       }
     };
@@ -49,21 +58,37 @@ export function EventsTable() {
 
   const animateDetails = React.useCallback((element: HTMLElement, open: boolean) => {
     const bundle = gsapRef.current;
+    const content = element.firstElementChild instanceof HTMLElement ? element.firstElementChild : null;
 
     if (!bundle || reduceMotionRef.current) {
       // Instant fallback (also covers reduced motion).
-      element.style.opacity = open ? "1" : "0";
       element.style.height = open ? "auto" : "0px";
+      if (content) {
+        content.style.opacity = open ? "1" : "0";
+      }
       return;
     }
 
     bundle.gsap.killTweensOf(element);
+    if (content) {
+      bundle.gsap.killTweensOf(content);
+    }
 
     if (!open) {
-      element.style.opacity = "0";
-      bundle.gsap.to(element, { height: 0, duration: 0.48, ease: "eventReveal" });
+      if (content) {
+        bundle.gsap.to(content, { opacity: 0, duration: 0.42, ease: "none" });
+      }
+      bundle.gsap.to(element, {
+        height: 0,
+        duration: 0.48,
+        ease: "eventReveal",
+      });
     } else {
-      bundle.gsap.to(element, { height: "auto", opacity: 1, duration: 0.48, ease: "eventReveal" });
+      if (content) {
+        content.style.opacity = "0";
+        bundle.gsap.to(content, { opacity: 1, duration: 0.28, delay: 0.03, ease: "eventContentReveal" });
+      }
+      bundle.gsap.to(element, { height: "auto", duration: 0.6, ease: "eventRevealOpen" });
     }
   }, []);
 
@@ -151,10 +176,10 @@ export function EventsTable() {
                           detailRefs.current.delete(event.id);
                         }
                       }}
-                      className="h-0 overflow-hidden opacity-0"
+                      className="h-0 overflow-hidden"
                       aria-hidden={!isOpen}
                     >
-                      <div className="py-20 lg:py-28">
+                      <div className="pt-12 pb-20 opacity-0 lg:pb-28">
                         <p className="type-body max-w-xl">{event.description}</p>
                         <EventImageStrip images={event.images} />
                       </div>
