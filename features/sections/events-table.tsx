@@ -1,5 +1,6 @@
 "use client";
 
+import { useLenis } from "lenis/react";
 import * as React from "react";
 import { CURSOR_REFRESH_EVENT } from "~/features/dom/dynamic-text-cursor";
 import { useDragScroll } from "~/features/dom/use-drag-scroll";
@@ -12,8 +13,20 @@ type GsapBundle = Awaited<ReturnType<typeof loadGsap>>;
 export function EventsTable() {
   const [activeId, setActiveId] = React.useState<number | null>(null);
   const detailRefs = React.useRef(new Map<number, HTMLDivElement>());
+  const rowRefs = React.useRef(new Map<number, HTMLTableRowElement>());
   const gsapRef = React.useRef<GsapBundle | null>(null);
   const reduceMotionRef = React.useRef(false);
+  const lenis = useLenis();
+  const lenisRef = React.useRef(lenis);
+  const scrollTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  React.useEffect(() => {
+    lenisRef.current = lenis;
+  }, [lenis]);
+  React.useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current !== null) clearTimeout(scrollTimeoutRef.current);
+    };
+  }, []);
 
   React.useEffect(() => {
     reduceMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -109,6 +122,24 @@ export function EventsTable() {
           if (nextEl) {
             animateDetails(nextEl, true);
           }
+
+          const rowEl = rowRefs.current.get(next);
+          if (rowEl) {
+            const rect = rowEl.getBoundingClientRect();
+            const HEADER = 80;
+            // Scroll if the row is in the bottom third of the viewport — content would expand off-screen.
+            if (rect.top > window.innerHeight * 0.65 || rect.top < HEADER) {
+              if (scrollTimeoutRef.current !== null) clearTimeout(scrollTimeoutRef.current);
+              scrollTimeoutRef.current = setTimeout(() => {
+                scrollTimeoutRef.current = null;
+                lenisRef.current?.scrollTo(rowEl, {
+                  offset: -HEADER,
+                  duration: 1.4,
+                  easing: (t) => 1 - Math.pow(1 - t, 4),
+                });
+              }, 220);
+            }
+          }
         }
 
         return next;
@@ -144,6 +175,10 @@ export function EventsTable() {
             return (
               <React.Fragment key={event.id}>
                 <tr
+                  ref={(el) => {
+                    if (el) rowRefs.current.set(event.id, el);
+                    else rowRefs.current.delete(event.id);
+                  }}
                   className="group cursor-pointer"
                   onClick={() => toggleEvent(event.id)}
                   data-cursor-hover
