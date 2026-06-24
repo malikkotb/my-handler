@@ -106,30 +106,30 @@ export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
         };
       });
 
-      mm.add("(max-width: 1023px)", () => {
-        isDesktopRef.current = false;
-        updateBaseTop();
-        const lastIndex = CLIENTS.length - 1;
-        activate(0, lastIndex);
-
-        const triggers = (liRefs.current.filter(Boolean) as HTMLLIElement[]).map((li, index) =>
-          ScrollTrigger.create({
-            trigger: li,
-            start: "top center",
-            end: "bottom center",
-            onEnter: () => activate(index, lastIndex),
-            onEnterBack: () => activate(index, lastIndex),
-          })
-        );
-
-        ScrollTrigger.refresh();
-
-        return () => {
-          for (const t of triggers) {
-            t.kill();
-          }
-        };
-      });
+      // mm.add("(max-width: 1023px)", () => {
+      //   isDesktopRef.current = false;
+      //   updateBaseTop();
+      //   const lastIndex = CLIENTS.length - 1;
+      //   activate(0, lastIndex);
+      //
+      //   const triggers = (liRefs.current.filter(Boolean) as HTMLLIElement[]).map((li, index) =>
+      //     ScrollTrigger.create({
+      //       trigger: li,
+      //       start: "top center",
+      //       end: "bottom center",
+      //       onEnter: () => activate(index, lastIndex),
+      //       onEnterBack: () => activate(index, lastIndex),
+      //     })
+      //   );
+      //
+      //   ScrollTrigger.refresh();
+      //
+      //   return () => {
+      //     for (const t of triggers) {
+      //       t.kill();
+      //     }
+      //   };
+      // });
 
       cleanup = () => mm.revert();
     });
@@ -157,7 +157,7 @@ export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover preview only */}
         <ul
           ref={listRef}
-          className="group col-span-7 row-start-2 flex flex-col gap-16 lg:col-span-6 lg:col-start-5"
+          className="group col-start-5 col-span-6 row-start-2 flex flex-col gap-16 lg:col-span-6 lg:col-start-5"
           onMouseLeave={onListLeave}
         >
           {CLIENTS.map((client, index) => (
