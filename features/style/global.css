@@ -51,8 +51,4 @@ input[type="search"] {
     @apply outline-none ring-2 ring-[#ff9100];
   }
 
-  ::selection,
-  ::-moz-selection {
-    @apply bg-white text-black;
-  }
 }
