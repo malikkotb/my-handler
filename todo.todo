@@ -11,9 +11,9 @@
 ☐ fix all the spacing for headings in all pages (mobile and desktop)
 
 Events page
-☐ fix easing and duration of opening accordion in events page list
+☐ make the hover interaction snappier like bymonolog
 ☐ the scrollable list for events: https://www.edicioneselfuerte.com/
-☐ add some type of effect either on the custom cursor or on the list items, when hovering them 
+☐ add some type of effect either on the custom cursor or on the list items, when hovering them
 
 
 ☐ for CTA hover transitions: maybe we can use a blur flicker through ? where the letters translate slighly and blur from left to right ?

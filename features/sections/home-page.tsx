@@ -9,8 +9,8 @@ export function HomePage() {
   return (
     <SiteShell>
       <Hero />
-      <FeaturedEvents />
       <IntroSection />
+      <FeaturedEvents />
       <ServicesGrid />
       <ClientSection />
     </SiteShell>
