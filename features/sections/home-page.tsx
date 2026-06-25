@@ -11,6 +11,7 @@ export function HomePage() {
       <Hero />
       <IntroSection />
       <FeaturedEvents />
+      <div className="bg-accent h-1 w-full"></div>
       <ServicesGrid />
       <ClientSection />
     </SiteShell>

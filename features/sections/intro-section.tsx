@@ -6,7 +6,7 @@ export function IntroSection() {
   const t = useTranslations("intro");
 
   return (
-    <section className="section-padding bg-surface text-ink" aria-label="Intro">
+    <section className="section-padding pb-0 bg-surface text-ink" aria-label="Intro">
       <div className="layout-grid">
         <h3 className="type-h3 col-span-full">{t("tagline")}</h3>
 
