@@ -5,6 +5,7 @@ import { defineQuery } from "next-sanity";
 import { env } from "~/env";
 import { PageSections } from "~/features/page-builder/page-sections";
 import { sanityFetch } from "~/features/sanity/client";
+import { ImageFragment } from "~/features/sanity/media/fragment";
 import { HomePage } from "~/features/sections/home-page";
 import { SeoMetadataFragment } from "~/features/site/seo/fragment";
 import { seo } from "~/features/site/seo/utils";
@@ -20,6 +21,17 @@ const PageQ = defineQuery(`
     "uri": coalesce(uri.current, "/"),
     "showHeader": coalesce(showHeader, true),
     "showFooter": coalesce(showFooter, true),
+    featuredEvents[]{
+      "id": _key,
+      name,
+      type,
+      image{${ImageFragment}},
+    },
+    services[]{
+      "id": _key,
+      name,
+      image{${ImageFragment}},
+    },
     seoMetadata{${SeoMetadataFragment}},
   }
 `);
@@ -89,7 +101,9 @@ export default async function Page(props: { params: Promise<{ locale: string; ur
 
   // The homepage is bespoke (not CMS page-builder driven).
   if (uri === "/") {
-    return <HomePage />;
+    const page = await fetchPage(uri);
+
+    return <HomePage page={page} />;
   }
 
   const page = await fetchPage(uri);

@@ -30,18 +30,13 @@ CTA's
 
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
-☐ add webhooks in sanity and vercel for immediate content updates (maybe this is done through the content architecture already)
+☐ add webhooks in sanity and vercel for immediate content updates
+=> just like for ana project
+=> deploy local sanity studio (have a tab open on this, in codex)
 
 ☐ french version of impressum page
 
 ☐ TODOS throughout page
 
-☐ use parrallax on the footer + add a blur perhaps similar to: https://www.lorunser.com/at/about & their footer
-
-here are 3 small things that instantly make a website feel more premium:
-
-    1. lenis scroll
-    2. view transitions
-    3. pressed states on buttons
-    everyone knows hover states. not everyone uses pressed states.
+pressed states on buttons
     my go-to is a simple scale(0.99) on press. tiny change, big difference. gives you that clicky ux feedback.

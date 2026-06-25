@@ -108,9 +108,9 @@ export function ServicesGrid() {
   }, [collapse]);
 
   return (
-    <section className="section-padding bg-surface text-ink" aria-label="Services">
+    <section className="section-padding lg:-mt-80 lg:pt-0 border-accent border-t bg-surface text-ink" aria-label="Services">
       <div className="layout-grid">
-        <h1 className="type-h1 col-span-full lg:text-right uppercase">{t("services.heading")}</h1>
+        <h1 className="type-h1 col-span-full uppercase lg:text-right">{t("services.heading")}</h1>
       </div>
 
       <div className="layout-grid relative">

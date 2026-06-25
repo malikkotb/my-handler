@@ -894,6 +894,31 @@ export type Page = {
         }
     >;
   };
+  featuredEvents?: Array<{
+    image?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    name?: string;
+    type?: string;
+    _type: "featuredEvent";
+    _key: string;
+  }>;
+  services?: Array<{
+    image?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    name?: string;
+    _type: "service";
+    _key: string;
+  }>;
   seoMetadata?: SeoMetadata;
 };
 
@@ -1187,7 +1212,7 @@ export type AllSanitySchemaTypes =
   | SanityImageAsset
   | Geopoint;
 
-// Source: app/(web)/[[...uri]]/page.tsx
+// Source: app/(web)/[locale]/[[...uri]]/page.tsx
 // Variable: PageQ
 // Query: *[_type == "page" && defined(uri.current) && uri.current == $uri][0]{    _id,    _type,    title,    "uri": coalesce(uri.current, "/"),    "showHeader": coalesce(showHeader, true),    "showFooter": coalesce(showFooter, true),    seoMetadata{  title,  description,  image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},  "robots": select(noIndex => "noindex,nofollow", true => undefined),},  }
 export type PageQResult = {
@@ -1215,14 +1240,14 @@ export type PageQResult = {
   } | undefined;
 } | undefined;
 
-// Source: app/(web)/[[...uri]]/page.tsx
+// Source: app/(web)/[locale]/[[...uri]]/page.tsx
 // Variable: PageUrisQ
 // Query: *[_type == "page" && defined(uri.current)]{  "uri": coalesce(uri.current, "/")}
 export type PageUrisQResult = Array<{
   uri: string | "/";
 }>;
 
-// Source: app/(web)/articles/[slug]/page.tsx
+// Source: app/(web)/[locale]/articles/[slug]/page.tsx
 // Variable: ArticlePageQ
 // Query: *[_type == "article" && defined(uri.current) && uri.current == $uri][0]{    _id,    _type,    title,    "uri": coalesce(uri.current, "/articles"),    "showHeader": coalesce(showHeader, true),    "showFooter": coalesce(showFooter, true),    seoMetadata{  title,  description,  image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},  "robots": select(noIndex => "noindex,nofollow", true => undefined),},  }
 export type ArticlePageQResult = {
@@ -1250,7 +1275,7 @@ export type ArticlePageQResult = {
   } | undefined;
 } | undefined;
 
-// Source: app/(web)/articles/[slug]/page.tsx
+// Source: app/(web)/[locale]/articles/[slug]/page.tsx
 // Variable: ArticlePageUrisQ
 // Query: *[_type == "article" && defined(uri.current)]{    "uri": coalesce(uri.current, "/articles")  }
 export type ArticlePageUrisQResult = Array<{
@@ -2243,67 +2268,5 @@ export type SiteErrorQResult = {
     } | undefined;
     showHeader: boolean | true;
     showFooter: boolean | true;
-  } | undefined;
-} | undefined;
-
-// Source: features/site/site-footer/query.ts
-// Variable: SiteFooterQ
-// Query: *[_type == "site"][0]{  name,  footer{    links[]{"key": _key,   type,  "openInNewTab": coalesce(openInNewTab, false),  "canDownload": select(    type == "file" => coalesce(canDownload, false),    true => false  ),  "href": select(    type == "internal" => coalesce(      select(        defined(internal.sectionTarget) && defined(internal.link->pageBuilder.sectionsArray) => internal.link->uri.current + '#' + coalesce(          internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0].sectionSettings.sectionHash.current,          internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0]._key,        ),        true => internal.link->uri.current,      ),      ""    ),    type == "external" => coalesce(external, ""),    type == "email" => "mailto:" + coalesce(email, ""),    type == "phone" => "tel:" + coalesce(phone, ""),    type == "file" => coalesce(file.asset->url, ""),    type == "params" => coalesce(paramsHref, ""),    true => ""  ),  "text": coalesce(    customText,    select(      type == "internal" => coalesce(        select(          defined(internal.sectionTarget) && defined(internal.link->pageBuilder.sectionsArray) => coalesce(            internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0].sectionSettings.sectionTitle,            internal.link->title,          ),          true => internal.link->title,        ),        internal.link->uri.current,        ""      ),      type == "external" => coalesce(external, ""),      type == "email" => coalesce(email, ""),      type == "phone" => coalesce(phone, ""),      type == "file" => coalesce(file.asset->originalFilename, ""),      type == "params" => coalesce(paramsHref, ""),      true => ""    ),    "",  )},    legalLinks[]{"key": _key,   type,  "openInNewTab": coalesce(openInNewTab, false),  "canDownload": select(    type == "file" => coalesce(canDownload, false),    true => false  ),  "href": select(    type == "internal" => coalesce(      select(        defined(internal.sectionTarget) && defined(internal.link->pageBuilder.sectionsArray) => internal.link->uri.current + '#' + coalesce(          internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0].sectionSettings.sectionHash.current,          internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0]._key,        ),        true => internal.link->uri.current,      ),      ""    ),    type == "external" => coalesce(external, ""),    type == "email" => "mailto:" + coalesce(email, ""),    type == "phone" => "tel:" + coalesce(phone, ""),    type == "file" => coalesce(file.asset->url, ""),    type == "params" => coalesce(paramsHref, ""),    true => ""  ),  "text": coalesce(    customText,    select(      type == "internal" => coalesce(        select(          defined(internal.sectionTarget) && defined(internal.link->pageBuilder.sectionsArray) => coalesce(            internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0].sectionSettings.sectionTitle,            internal.link->title,          ),          true => internal.link->title,        ),        internal.link->uri.current,        ""      ),      type == "external" => coalesce(external, ""),      type == "email" => coalesce(email, ""),      type == "phone" => coalesce(phone, ""),      type == "file" => coalesce(file.asset->originalFilename, ""),      type == "params" => coalesce(paramsHref, ""),      true => ""    ),    "",  )}  }}
-export type SiteFooterQResult = {
-  name: string | undefined;
-  footer: {
-    links: Array<{
-      key: string;
-      type:
-        | "email"
-        | "external"
-        | "file"
-        | "internal"
-        | "params"
-        | "phone"
-        | undefined;
-      openInNewTab: boolean | false;
-      canDownload: boolean | false;
-      href: string | "" | "mailto:" | "tel:";
-      text: string | "";
-    }> | undefined;
-    legalLinks: Array<{
-      key: string;
-      type:
-        | "email"
-        | "external"
-        | "file"
-        | "internal"
-        | "params"
-        | "phone"
-        | undefined;
-      openInNewTab: boolean | false;
-      canDownload: boolean | false;
-      href: string | "" | "mailto:" | "tel:";
-      text: string | "";
-    }> | undefined;
-  } | undefined;
-} | undefined;
-
-// Source: features/site/site-header/query.ts
-// Variable: SiteHeaderQ
-// Query: *[_type == "site"][0]{  header{    links[]{"key": _key,   type,  "openInNewTab": coalesce(openInNewTab, false),  "canDownload": select(    type == "file" => coalesce(canDownload, false),    true => false  ),  "href": select(    type == "internal" => coalesce(      select(        defined(internal.sectionTarget) && defined(internal.link->pageBuilder.sectionsArray) => internal.link->uri.current + '#' + coalesce(          internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0].sectionSettings.sectionHash.current,          internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0]._key,        ),        true => internal.link->uri.current,      ),      ""    ),    type == "external" => coalesce(external, ""),    type == "email" => "mailto:" + coalesce(email, ""),    type == "phone" => "tel:" + coalesce(phone, ""),    type == "file" => coalesce(file.asset->url, ""),    type == "params" => coalesce(paramsHref, ""),    true => ""  ),  "text": coalesce(    customText,    select(      type == "internal" => coalesce(        select(          defined(internal.sectionTarget) && defined(internal.link->pageBuilder.sectionsArray) => coalesce(            internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0].sectionSettings.sectionTitle,            internal.link->title,          ),          true => internal.link->title,        ),        internal.link->uri.current,        ""      ),      type == "external" => coalesce(external, ""),      type == "email" => coalesce(email, ""),      type == "phone" => coalesce(phone, ""),      type == "file" => coalesce(file.asset->originalFilename, ""),      type == "params" => coalesce(paramsHref, ""),      true => ""    ),    "",  )}  }}
-export type SiteHeaderQResult = {
-  header: {
-    links: Array<{
-      key: string;
-      type:
-        | "email"
-        | "external"
-        | "file"
-        | "internal"
-        | "params"
-        | "phone"
-        | undefined;
-      openInNewTab: boolean | false;
-      canDownload: boolean | false;
-      href: string | "" | "mailto:" | "tel:";
-      text: string | "";
-    }> | undefined;
   } | undefined;
 } | undefined;

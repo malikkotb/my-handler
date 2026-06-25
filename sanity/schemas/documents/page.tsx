@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 import { SANITY_SINGLETON_HOMEPAGE_ID } from "../../constants";
 import { createPageBuilderField } from "../fields/create-page-builder";
 import { createUriField } from "../fields/create-uri-field";
@@ -23,6 +23,7 @@ export const page = defineType({
   groups: [
     { name: "page", title: "Page", icon: () => <>📄</>, default: true },
     { name: "content", title: "Content", icon: () => <>🍱</> },
+    { name: "homepage", title: "Homepage", icon: () => <>🏠</> },
     { name: "seo", title: "SEO", icon: () => <>🔍</> },
   ],
   fields: [
@@ -90,6 +91,84 @@ export const page = defineType({
     }),
     createPageBuilderField({
       group: "content",
+    }),
+    defineField({
+      group: "homepage",
+      name: "featuredEvents",
+      type: "array",
+      title: "Featured events",
+      hidden: ({ parent }) => !isHomepageDocument(parent),
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "featuredEvent",
+          title: "Featured event",
+          fields: [
+            defineField({
+              name: "image",
+              type: "image",
+              title: "Image",
+              options: {
+                hotspot: true,
+                accept: "image/*",
+              },
+            }),
+            defineField({
+              name: "name",
+              type: "string",
+              title: "Event name",
+            }),
+            defineField({
+              name: "type",
+              type: "string",
+              title: "Event type",
+            }),
+          ],
+          preview: {
+            select: {
+              title: "name",
+              subtitle: "type",
+              media: "image",
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
+      group: "homepage",
+      name: "services",
+      type: "array",
+      title: "Services grid",
+      hidden: ({ parent }) => !isHomepageDocument(parent),
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "service",
+          title: "Service",
+          fields: [
+            defineField({
+              name: "image",
+              type: "image",
+              title: "Image",
+              options: {
+                hotspot: true,
+                accept: "image/*",
+              },
+            }),
+            defineField({
+              name: "name",
+              type: "string",
+              title: "Service name",
+            }),
+          ],
+          preview: {
+            select: {
+              title: "name",
+              media: "image",
+            },
+          },
+        }),
+      ],
     }),
     defineField({
       group: "seo",

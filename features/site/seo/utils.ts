@@ -11,7 +11,10 @@ import type { SiteQueryResult } from "~/sanity/types";
 const FAVICON_PX = 64;
 const OG_IMAGE_WIDTH = 1200;
 const OG_IMAGE_HEIGHT = 630;
+const DEFAULT_FAVICON_URL = "/logos/my-handler-agency-logo.svg";
 const FAVICON_IMAGE_TYPE = "image/png";
+const DEFAULT_FAVICON_IMAGE_TYPE = "image/svg+xml";
+const DEFAULT_FAVICON = { url: DEFAULT_FAVICON_URL, type: DEFAULT_FAVICON_IMAGE_TYPE };
 
 function getFaviconImageSrc(image: ImageFragmentResult): string {
   const imageDimensions = getImageDimensions(image, {
@@ -55,19 +58,20 @@ function getOgImageSrc(image: ImageFragmentResult, options: BuilderOptions = {})
 
 function metadataIconsFromFavicon(favicon: FaviconFragmentResult | null | undefined): Metadata["icons"] | undefined {
   if (!favicon) {
-    return undefined;
+    return { icon: DEFAULT_FAVICON };
   }
 
   const lightScheme = favicon.iconLight?._id != null ? getFaviconImageSrc(favicon.iconLight) : undefined;
   const darkScheme = favicon.iconDark?._id != null ? getFaviconImageSrc(favicon.iconDark) : undefined;
 
   if (!lightScheme && !darkScheme) {
-    return undefined;
+    return { icon: DEFAULT_FAVICON };
   }
 
   if (lightScheme && darkScheme) {
     return {
       icon: [
+        DEFAULT_FAVICON,
         { url: lightScheme, type: FAVICON_IMAGE_TYPE, media: "(prefers-color-scheme: light)" },
         { url: darkScheme, type: FAVICON_IMAGE_TYPE, media: "(prefers-color-scheme: dark)" },
       ],
@@ -75,7 +79,7 @@ function metadataIconsFromFavicon(favicon: FaviconFragmentResult | null | undefi
   }
 
   const single = lightScheme ?? darkScheme;
-  return single ? { icon: { url: single, type: FAVICON_IMAGE_TYPE } } : undefined;
+  return single ? { icon: [DEFAULT_FAVICON, { url: single, type: FAVICON_IMAGE_TYPE }] } : { icon: DEFAULT_FAVICON };
 }
 
 /**
