@@ -33,15 +33,15 @@
     "line2": "Luxury Concierge"
   },
   "intro": {
-    "tagline": "My Handler is here to support its clients in the success of their events in the most sustainable way possible with a high-expertise service, all over the world.",
+    "tagline": "My Handler is a bespoke agency specialising in strategic guidance, creative production, and meticulous execution. We partner closely with our clients to turn their ideas into experiences.",
     "missionEyebrow": "Our Mission",
-    "missionBody": "To understand your requirements and meet them by bringing you our sense of excellence.",
+    "missionBody": "Every project deserves a tailored approach. We bring the insight, creativity, and expertise to shape ideas into solutions built around you.",
     "commitmentEyebrow": "Our Commitment",
-    "commitmentBody": "A rigorous selection for each of your requests, a responsive customer service to handle your last-minute requests."
+    "commitmentBody": "From concept development to execution and post-event follow-up, we oversee every stage with care and precision. Our commitment is to build lasting partnerships and consistently deliver experiences."
   },
   "services": {
     "heading": "Services",
-    "introBody": "At My Handler, expertise is defined by the art of anticipation. We design tailored experiences blending strategic thinking, operational excellence, and a refined creative sensibility, we support our clients through projects that demand discretion, adaptability, and attention to detail.",
+    "introBody": "We design tailored experiences that blend strategic thinking, operational excellence, and creative sensibility. Every project is handled with discretion, adaptability, and uncompromising attention to detail.",
     "eventManagement": "Event Management",
     "conciergeServices": "Concierge Services",
     "travelArrangements": "Travel Arrangements",
@@ -77,8 +77,8 @@
   },
   "about": {
     "introTitle": "Our Team",
-    "introBody": "My Handler brings together a collective of professionals from diverse industries and creative disciplines — including hospitality, luxury services, marketing, music, production, logistics, communication, and event management.",
-    "teamTagline": "Each team member contributes a unique perspective, specialized expertise, and a deep understanding of how to create experiences that feel both seamless and meaningful.",
+    "introBody": "Each team member contributes a unique perspective, specialized expertise, and a deep understanding of how to create experiences that feel both seamless and meaningful.",
+    "teamTagline": "My Handler brings together a collective of professionals from diverse industries and creative disciplines — including hospitality, luxury services, marketing, music, production, logistics, communication, and event management.",
     "philosophy": {
       "heading": "Our Philosophy",
       "firstParagraph": "My Handler envisions a company in which each member can access and enjoy a unique workplace that enables them to achieve their goals, improve their skills and contribute to improving the events and travel industry.",

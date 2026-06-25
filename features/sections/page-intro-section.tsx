@@ -11,7 +11,7 @@ export function PageIntroSection({ title, body, ariaLabel = "Intro" }: PageIntro
       <h1 className="type-h1 col-span-full uppercase md:col-span-6">{title}</h1>
       {body && (
         <div className="layout-grid">
-          <h3 className="type-h3-alt lg:type-h3 lg:pr-[25%] col-span-full mt-16 lg:mt-8">{body}</h3>
+          <h3 className="type-h3 lg:type-h3 col-span-full mt-16 lg:mt-8">{body}</h3>
         </div>
       )}
     </section>

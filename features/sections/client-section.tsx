@@ -152,12 +152,12 @@ export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
   return (
     <section className="section-padding" aria-label="Clients">
       <div ref={containerRef} className="layout-grid relative">
-        <h1 className={cx("type-h1 col-span-6 uppercase", titleAlign === "right" && "lg:col-start-5")}>{t("heading")}</h1>
+        <h1 className={cx("type-h1 pb-20 col-span-6 uppercase", titleAlign === "right" && "lg:col-start-5")}>{t("heading")}</h1>
 
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover preview only */}
         <ul
           ref={listRef}
-          className="group col-start-5 col-span-6 row-start-2 flex flex-col gap-16 lg:col-span-6 lg:col-start-5"
+          className="group col-start-3 col-span-6 row-start-2 flex flex-col gap-16 lg:col-span-6 lg:col-start-5"
           onMouseLeave={onListLeave}
         >
           {CLIENTS.map((client, index) => (

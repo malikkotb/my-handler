@@ -65,8 +65,8 @@ export function AboutIntroSection() {
           loading="eager"
         />
       </div>
-      <div className="layout-grid section-padding pb-0 lg:pr-[25%]">
-        <h3 className="type-h3-alt col-span-full">{t("teamTagline")}</h3>
+      <div className="layout-grid section-padding pb-0">
+        <h3 className="type-h4 col-span-full">{t("teamTagline")}</h3>
       </div>
     </>
   );

@@ -1,13 +1,12 @@
 ☐ fix animations in sticky footer with reveal
 ☐ create sticky reveal of content beneath/after Hero in home page
 
-☐ three.js jouney to make 3d hero peng as fuck
-☐ use HEYCLICKY to make 3d hero peng af in blender
+☐ three.js jouney to make 3d; use HEYCLICKY to make it correct colour
 
 ☐ text reveal animations on scroll for headings
+☐ text stagger animations on all texts (check osmo and Monolog and Paronyme for examples)
 
 ☐ page transitions!!! (OSMO)
-☐ text stagger animations on all texts (check osmo and Monolog and Paronyme for examples)
 
 ☐ fix all the spacing for headings in all pages (mobile and desktop)
 
@@ -28,12 +27,7 @@ Events page
 
 ☐ emil design engineering
 
-☐ todo: make the services section (on home page) animaton on hover smoother like https://paronyme.com/ (tony)
-☐ check his website and his work for interactions and stuff generally (he does great work)
-
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
-
-☐ fix easings of all interactions
 
 ☐ add webhooks in sanity and vercel for immediate content updates (maybe this is done through the content architecture already)
 
@@ -46,14 +40,7 @@ Events page
 here are 3 small things that instantly make a website feel more premium:
 
     1. lenis scroll
-    
-    lenis adds a bit of weight to scrolling. not floaty or weird, but smoother and more intentional than default browser scroll. you don’t really notice it the site just feels calmer (if done correctly).
-    
     2. view transitions
-    
-    instead of pages hard-cutting, they ease between states. fades, subtle movement, shared elements. it feels like you’re staying inside the same experience instead of jumping between pages. gives you a SPA feel even for a MPA website.
-    
     3. pressed states on buttons
-    
     everyone knows hover states. not everyone uses pressed states.
     my go-to is a simple scale(0.99) on press. tiny change, big difference. gives you that clicky ux feedback.

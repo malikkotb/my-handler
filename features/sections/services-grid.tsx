@@ -110,7 +110,7 @@ export function ServicesGrid() {
   return (
     <section className="section-padding bg-surface text-ink" aria-label="Services">
       <div className="layout-grid">
-        <h1 className="type-h1 col-span-full text-right uppercase">{t("services.heading")}</h1>
+        <h1 className="type-h1 col-span-full lg:text-right uppercase">{t("services.heading")}</h1>
       </div>
 
       <div className="layout-grid relative">
@@ -150,7 +150,7 @@ export function ServicesGrid() {
         </div>
       </div>
 
-      <div className="layout-grid pt-24">
+      <div className="layout-grid pt-40">
         <CtaButton to="/services" className="col-span-full text-right">
           {t("cta.exploreServices")}
         </CtaButton>
