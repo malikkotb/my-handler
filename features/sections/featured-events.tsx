@@ -5,20 +5,49 @@ import { useTranslations } from "next-intl";
 import * as React from "react";
 import { CtaButton } from "~/components/cta-button";
 import { loadGsap } from "~/features/motion/gsap";
+import type { ImageFragmentResult } from "~/features/sanity/media/fragment";
+import { SanityImage } from "~/features/sanity/media/image";
 
 type FeaturedCard = {
   id: string;
   name: string;
   type: string;
-  image: string;
+  image: ImageFragmentResult | string | null;
 };
 
-const FEATURED: FeaturedCard[] = [
+type FeaturedEventInput = {
+  id?: string | null;
+  name?: string | null;
+  type?: string | null;
+  image?: ImageFragmentResult | null;
+};
+
+const FALLBACK_FEATURED: FeaturedCard[] = [
   { id: "1", name: "Rabanne for Beyoncé", type: "Luxury", image: "/img1.avif" },
   { id: "2", name: "BNP Paribas", type: "Corporate", image: "/img2.avif" },
   { id: "3", name: "Theodora – Mugler", type: "Luxury", image: "/img3.avif" },
   { id: "4", name: "Ruinart", type: "Luxury", image: "/img4.avif" },
 ];
+
+function FeaturedEventImage({ event }: { event: FeaturedCard }) {
+  if (typeof event.image === "string") {
+    return (
+      // biome-ignore lint/performance/noImgElement: local static fallback asset
+      <img src={event.image} alt={event.name} width={960} height={640} className="aspect-3/2 w-full object-cover" />
+    );
+  }
+
+  return (
+    <SanityImage
+      image={event.image}
+      alt={event.name}
+      width={960}
+      height={640}
+      className="aspect-3/2 w-full object-cover"
+      builderOptions={{ width: 960, height: 640, fit: "crop" }}
+    />
+  );
+}
 
 function FeaturedEventParallaxFrame({ children }: { children: React.ReactNode }) {
   const frameRef = React.useRef<HTMLDivElement>(null);
@@ -66,8 +95,16 @@ function FeaturedEventParallaxFrame({ children }: { children: React.ReactNode })
   );
 }
 
-export function FeaturedEvents() {
+export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | null }) {
   const t = useTranslations("cta");
+  const featured = events?.length
+    ? events.map((event, index) => ({
+        id: event.id ?? String(index),
+        name: event.name ?? "",
+        type: event.type ?? "",
+        image: event.image ?? null,
+      }))
+    : FALLBACK_FEATURED;
   const [activeIndex, setActiveIndex] = React.useState(0);
   const figureRefs = React.useRef<(HTMLElement | null)[]>([]);
 
@@ -101,12 +138,12 @@ export function FeaturedEvents() {
     return () => window.removeEventListener("resize", updateActiveCard);
   }, [updateActiveCard]);
 
-  const active = FEATURED[activeIndex];
+  const active = featured[activeIndex];
 
   return (
     <div>
       {/* Desktop: sticky titles over a scrolling image column */}
-      <section className="relative lg:-mt-160 hidden lg:block text-ink " aria-label="Featured events">
+      <section className="relative hidden text-ink lg:-mt-160 lg:block" aria-label="Featured events">
         <div className="layout-grid section-px pointer-events-none sticky top-0 z-10 h-dvh-1 items-center">
           <span className="type-eyebrow col-span-2 col-start-1 overflow-visible whitespace-nowrap">{active?.name}</span>
           <span className="type-eyebrow col-span-2 col-start-9 overflow-visible whitespace-nowrap text-right">
@@ -116,7 +153,7 @@ export function FeaturedEvents() {
 
         <div className="layout-grid section-px -mt-dvh-1">
           <div className="featured-images-gap col-span-4 col-start-4 mt-400 mb-240 grid">
-            {FEATURED.map((event, i) => (
+            {featured.map((event, i) => (
               <figure
                 key={event.id}
                 ref={(el) => {
@@ -124,8 +161,7 @@ export function FeaturedEvents() {
                 }}
               >
                 <FeaturedEventParallaxFrame>
-                  {/* biome-ignore lint/performance/noImgElement: local static asset */}
-                  <img src={event.image} alt={event.name} width={960} height={640} className="aspect-3/2 w-full object-cover" />
+                  <FeaturedEventImage event={event} />
                 </FeaturedEventParallaxFrame>
               </figure>
             ))}
@@ -139,11 +175,10 @@ export function FeaturedEvents() {
 
       {/* Mobile: stacked cards */}
       <section className="layout-grid featured-images-gap section-px py-40 text-ink lg:hidden" aria-label="Featured events">
-        {FEATURED.map((event) => (
+        {featured.map((event) => (
           <article key={event.id} className="col-span-full grid gap-8">
             <FeaturedEventParallaxFrame>
-              {/* biome-ignore lint/performance/noImgElement: local static asset */}
-              <img src={event.image} alt={event.name} width={960} height={640} className="aspect-3/2 w-full object-cover" />
+              <FeaturedEventImage event={event} />
             </FeaturedEventParallaxFrame>
             <div className="flex justify-between gap-16">
               <span className="type-eyebrow overflow-visible whitespace-nowrap">{event.name}</span>

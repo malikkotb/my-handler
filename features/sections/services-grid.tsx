@@ -4,8 +4,23 @@ import { useTranslations } from "next-intl";
 import * as React from "react";
 import { CtaButton } from "~/components/cta-button";
 import { loadGsap } from "~/features/motion/gsap";
+import type { ImageFragmentResult } from "~/features/sanity/media/fragment";
+import { getImageSrc } from "~/features/sanity/media/image/utils";
 
 type GsapBundle = Awaited<ReturnType<typeof loadGsap>>;
+
+type Service = {
+  id: string;
+  name?: string;
+  labelKey?: string;
+  image: ImageFragmentResult | string | null;
+};
+
+type ServiceInput = {
+  id?: string | null;
+  name?: string | null;
+  image?: ImageFragmentResult | null;
+};
 
 const SERVICES = [
   {
@@ -28,14 +43,59 @@ const SERVICES = [
     labelKey: "transportation",
     image: "/img4.avif",
   },
-] as const;
+] satisfies Service[];
 
 const CLIP_HIDDEN = "inset(50% 50% 50% 50%)";
 const CLIP_VISIBLE = "inset(0% 0% 0% 0%)";
 const DURATION = 0.48;
 
-export function ServicesGrid() {
+function ServiceImage({
+  service,
+  ref,
+}: {
+  service: Service;
+  ref: React.RefCallback<HTMLImageElement>;
+}) {
+  if (typeof service.image === "string") {
+    return (
+      <img
+        ref={ref}
+        src={service.image}
+        alt=""
+        width={480}
+        height={600}
+        className="clip-hidden absolute inset-0 h-full w-full object-cover"
+        loading="eager"
+      />
+    );
+  }
+
+  if (!service.image?._id) {
+    return null;
+  }
+
+  return (
+    <img
+      ref={ref}
+      src={getImageSrc(service.image, { width: 480, height: 600, fit: "crop" })}
+      alt=""
+      width={480}
+      height={600}
+      className="clip-hidden absolute inset-0 h-full w-full object-cover"
+      loading="eager"
+    />
+  );
+}
+
+export function ServicesGrid({ services: servicesInput }: { services?: ServiceInput[] | null }) {
   const t = useTranslations();
+  const services: Service[] = servicesInput?.length
+    ? servicesInput.map((service, index) => ({
+        id: service.id ?? String(index),
+        name: service.name ?? "",
+        image: service.image ?? null,
+      }))
+    : SERVICES;
   const imageRefs = React.useRef<Record<string, HTMLImageElement | null>>({});
   const gsapRef = React.useRef<GsapBundle | null>(null);
   const activeIdRef = React.useRef<string | null>(null);
@@ -99,16 +159,16 @@ export function ServicesGrid() {
     if (!bundle) {
       return;
     }
-    for (const { id } of SERVICES) {
+    for (const { id } of services) {
       const el = imageRefs.current[id];
       if (el && !bundle.gsap.isTweening(el)) {
         collapse(el);
       }
     }
-  }, [collapse]);
+  }, [collapse, services]);
 
   return (
-    <section className="section-padding lg:-mt-80 lg:pt-0 border-accent border-t bg-surface text-ink" aria-label="Services">
+    <section className="section-padding border-accent border-t bg-surface text-ink lg:-mt-80 lg:pt-0" aria-label="Services">
       <div className="layout-grid">
         <h1 className="type-h1 col-span-full uppercase lg:text-right">{t("services.heading")}</h1>
       </div>
@@ -116,7 +176,7 @@ export function ServicesGrid() {
       <div className="layout-grid relative">
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: hover-only progressive enhancement; list links remain keyboard-reachable */}
         <ul className="col-span-full m-0 list-none border-rule border-t p-0" onMouseLeave={onListLeave}>
-          {SERVICES.map((service) => (
+          {services.map((service) => (
             // biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover reveal only
             <li
               key={service.id}
@@ -124,7 +184,7 @@ export function ServicesGrid() {
               onMouseEnter={() => onEnter(service.id)}
             >
               <h4 className="type-h4 col-span-full uppercase motion-safe:transition-transform motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:translate-x-12">
-                {t(`services.${service.labelKey}`)}
+                {service.name || (service.labelKey ? t(`services.${service.labelKey}`) : "")}
               </h4>
             </li>
           ))}
@@ -132,18 +192,13 @@ export function ServicesGrid() {
 
         <div className="pointer-events-none absolute inset-0 hidden items-center justify-end pr-80 lg:flex" aria-hidden="true">
           <div className="relative aspect-service-card h-services-preview rotate-10">
-            {SERVICES.map((service) => (
-              <img
+            {services.map((service) => (
+              <ServiceImage
                 key={service.id}
+                service={service}
                 ref={(el) => {
                   imageRefs.current[service.id] = el;
                 }}
-                src={service.image}
-                alt=""
-                width={480}
-                height={600}
-                className="clip-hidden absolute inset-0 h-full w-full object-cover"
-                loading="eager"
               />
             ))}
           </div>

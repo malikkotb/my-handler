@@ -1214,7 +1214,7 @@ export type AllSanitySchemaTypes =
 
 // Source: app/(web)/[locale]/[[...uri]]/page.tsx
 // Variable: PageQ
-// Query: *[_type == "page" && defined(uri.current) && uri.current == $uri][0]{    _id,    _type,    title,    "uri": coalesce(uri.current, "/"),    "showHeader": coalesce(showHeader, true),    "showFooter": coalesce(showFooter, true),    seoMetadata{  title,  description,  image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},  "robots": select(noIndex => "noindex,nofollow", true => undefined),},  }
+// Query: *[_type == "page" && defined(uri.current) && uri.current == $uri][0]{    _id,    _type,    title,    "uri": coalesce(uri.current, "/"),    "showHeader": coalesce(showHeader, true),    "showFooter": coalesce(showFooter, true),    featuredEvents[]{      "id": _key,      name,      type,      image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},    },    services[]{      "id": _key,      name,      image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},    },    seoMetadata{  title,  description,  image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},  "robots": select(noIndex => "noindex,nofollow", true => undefined),},  }
 export type PageQResult = {
   _id: string;
   _type: "page";
@@ -1222,6 +1222,37 @@ export type PageQResult = {
   uri: string | "/";
   showHeader: boolean | true;
   showFooter: boolean | true;
+  featuredEvents: Array<{
+    id: string;
+    name: string | undefined;
+    type: string | undefined;
+    image: {
+      _id: string | undefined;
+      _rev: string | undefined;
+      altText: string | undefined;
+      description: string | undefined;
+      title: string | undefined;
+      lqip: string | undefined;
+      dimensions: SanityImageDimensions | undefined;
+      crop: SanityImageCrop | undefined;
+      hotspot: SanityImageHotspot | undefined;
+    } | undefined;
+  }> | undefined;
+  services: Array<{
+    id: string;
+    name: string | undefined;
+    image: {
+      _id: string | undefined;
+      _rev: string | undefined;
+      altText: string | undefined;
+      description: string | undefined;
+      title: string | undefined;
+      lqip: string | undefined;
+      dimensions: SanityImageDimensions | undefined;
+      crop: SanityImageCrop | undefined;
+      hotspot: SanityImageHotspot | undefined;
+    } | undefined;
+  }> | undefined;
   seoMetadata: {
     title: string | undefined;
     description: string | undefined;
