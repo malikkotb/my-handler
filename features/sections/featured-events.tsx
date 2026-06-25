@@ -115,7 +115,7 @@ export function FeaturedEvents() {
         </div>
 
         <div className="layout-grid section-px -mt-dvh-1">
-          <div className="featured-images-gap col-span-4 col-start-4 mt-320 mb-160 grid">
+          <div className="featured-images-gap col-span-4 col-start-4 mt-160 mb-80 grid">
             {FEATURED.map((event, i) => (
               <figure
                 key={event.id}
@@ -138,7 +138,7 @@ export function FeaturedEvents() {
       </section>
 
       {/* Mobile: stacked cards */}
-      <section className="layout-grid section-padding featured-images-gap text-ink lg:hidden" aria-label="Featured events">
+      <section className="layout-grid featured-images-gap section-px py-40 text-ink lg:hidden" aria-label="Featured events">
         {FEATURED.map((event) => (
           <article key={event.id} className="col-span-full grid gap-8">
             <FeaturedEventParallaxFrame>

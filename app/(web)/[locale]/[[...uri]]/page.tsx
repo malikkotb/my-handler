@@ -58,16 +58,17 @@ export async function generateStaticParams() {
 export async function generateMetadata(props: { params: Promise<{ locale: string; uri?: string[] }> }): Promise<Metadata> {
   const params = await props.params;
   const uri = params.uri ? `/${params.uri.join("/")}` : "/";
-  const page = await fetchPage(uri);
-
-  if (!page) {
-    return await seo({ title: "Not Found" });
-  }
 
   if (uri === "/") {
     return await seo({
       canonical: `${env.NEXT_PUBLIC_URL}/`,
     });
+  }
+
+  const page = await fetchPage(uri);
+
+  if (!page) {
+    return await seo({ title: "Not Found" });
   }
 
   const { title, description, image, robots } = page?.seoMetadata ?? {};

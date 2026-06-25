@@ -99,7 +99,7 @@ export async function seo(
     },
   });
 
-  const title = props.title ?? site?.seoMetadata?.title;
+  const title = props.title ?? site?.seoMetadata?.title ?? site?.name ?? "My Handler";
   const description = props.description ?? site?.seoMetadata?.description;
   const image = props.image ?? site?.seoMetadata?.image;
   const robots = props.robots ?? site?.seoMetadata?.robots;

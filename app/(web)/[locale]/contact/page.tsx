@@ -1,33 +1,39 @@
-import { setRequestLocale } from "next-intl/server";
-import { ContactForm } from "~/features/page-builder/sections/contact-form-section/contact-form";
-import { PageIntroSection } from "~/features/sections/page-intro-section";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SiteShell } from "~/features/site/site-shell";
 
-export default async function ContactPage({
-  params,
-}: {
+type ContactPageProps = {
   params: Promise<{ locale: string }>;
-}) {
+};
+
+export async function generateMetadata({ params }: ContactPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "nav" });
+
+  return { title: t("contact") };
+}
+
+export default async function ContactPage({ params }: ContactPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
   return (
     <SiteShell>
-      <div className='min-h-screen justify-center w-full flex flex-col items-center'>
-        <div className='flex flex-col gap-32'>
-          <h3 className='type-h4 text-center'>
+      <div className="flex min-h-screen w-full flex-col items-center justify-center">
+        <div className="flex flex-col gap-32">
+          <h3 className="type-h4 text-center">
             Let's make your event
             <br />
             unforgettable.
           </h3>
           <a
-            className='type-h2 uppercase text-center'
-            href='mailto:hello@myhandler.com'
+            className="type-h2 text-center uppercase"
+            href="mailto:hello@myhandler.com"
           >
             hello@myhandler.com
           </a>
         </div>
-        <div className='absolute bottom-32 left-1/2 -translate-x-1/2 flex gap-56 type-eyebrow'>
+        <div className="type-eyebrow absolute bottom-32 left-1/2 flex -translate-x-1/2 gap-56">
           <p>+000 000 000</p>
           <p>PARIS</p>
         </div>
