@@ -1,18 +1,11 @@
 ☐ fix animations in sticky footer with reveal
-☐ create sticky reveal of content beneath/after Hero in home page
 
 ☐ three.js jouney to make 3d; use HEYCLICKY to make it correct colour
 
 ☐ text reveal animations on scroll for headings
 ☐ text stagger animations on all texts (check osmo and Monolog and Paronyme for examples)
 
-☐ page transitions!!! (OSMO)
-
-☐ fix all the spacing for headings in all pages (mobile and desktop)
-
-☐ insert correct images in all sections
-
-☐ MAKE SURE ALL LINKS (CTA LINKS) GO TO CORRECT PAGES AND HAVE MICRO INTERACTIONS
+☐ insert correct images in all sections through SANITY only!
 
 ☐ check if I should stick to using lg: as main breakpoint or use md: instead
 
@@ -22,7 +15,9 @@ Events page
 ☐ add some type of effect either on the custom cursor or on the list items, when hovering them
 
 
+CTA's
 ☐ for CTA hover transitions: maybe we can use a blur flicker through ? where the letters translate slighly and blur from left to right ?
+☐ MAKE SURE ALL LINKS (CTA LINKS) GO TO CORRECT PAGES AND HAVE MICRO INTERACTIONS
 
 ☐ remove all inline styles from the pages and components
 

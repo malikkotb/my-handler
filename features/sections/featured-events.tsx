@@ -4,6 +4,7 @@ import { useLenis } from "lenis/react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { CtaButton } from "~/components/cta-button";
+import { loadGsap } from "~/features/motion/gsap";
 
 type FeaturedCard = {
   id: string;
@@ -18,6 +19,52 @@ const FEATURED: FeaturedCard[] = [
   { id: "3", name: "Theodora – Mugler", type: "Luxury", image: "/img3.avif" },
   { id: "4", name: "Ruinart", type: "Luxury", image: "/img4.avif" },
 ];
+
+function FeaturedEventParallaxFrame({ children }: { children: React.ReactNode }) {
+  const frameRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const el = frameRef.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    let cleanup: (() => void) | undefined;
+
+    loadGsap().then(({ gsap }) => {
+      if (!frameRef.current) {
+        return;
+      }
+
+      const ctx = gsap.context(() => {
+        const images = el.querySelectorAll("img");
+        if (!images.length) {
+          return;
+        }
+
+        gsap.fromTo(
+          images,
+          { yPercent: -20 },
+          {
+            yPercent: 20,
+            ease: "none",
+            scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
+          }
+        );
+      }, el);
+
+      cleanup = () => ctx.revert();
+    });
+
+    return () => cleanup?.();
+  }, []);
+
+  return (
+    <div ref={frameRef} className="w-full overflow-hidden bg-body/10 [&_img]:block [&_img]:w-full [&_img]:scale-150 [&_img]:object-cover">
+      {children}
+    </div>
+  );
+}
 
 export function FeaturedEvents() {
   const t = useTranslations("cta");
@@ -59,7 +106,7 @@ export function FeaturedEvents() {
   return (
     <div>
       {/* Desktop: sticky titles over a scrolling image column */}
-      <section className="relative hidden text-ink lg:block" aria-label="Featured events">
+      <section className="relative hidden bg-accent text-ink lg:block" aria-label="Featured events">
         <div className="layout-grid section-px pointer-events-none sticky top-0 z-10 h-dvh-1 items-center">
           <span className="type-eyebrow col-span-2 col-start-1 overflow-visible whitespace-nowrap">{active?.name}</span>
           <span className="type-eyebrow col-span-2 col-start-9 overflow-visible whitespace-nowrap text-right">
@@ -75,14 +122,15 @@ export function FeaturedEvents() {
                 ref={(el) => {
                   figureRefs.current[i] = el;
                 }}
-                className="w-full bg-body/10"
               >
-                {/* biome-ignore lint/performance/noImgElement: local static asset */}
-                <img src={event.image} alt={event.name} width={960} height={640} className="aspect-3/2 w-full object-cover" />
+                <FeaturedEventParallaxFrame>
+                  {/* biome-ignore lint/performance/noImgElement: local static asset */}
+                  <img src={event.image} alt={event.name} width={960} height={640} className="aspect-3/2 w-full object-cover" />
+                </FeaturedEventParallaxFrame>
               </figure>
             ))}
 
-            <CtaButton to="/events" className="cta-pt flex justify-center pointer-events-auto pb-40">
+            <CtaButton to="/events" className="cta-pt pointer-events-auto flex justify-center pb-40">
               {t("viewAllEvents")}
             </CtaButton>
           </div>
@@ -93,10 +141,10 @@ export function FeaturedEvents() {
       <section className="layout-grid section-padding featured-images-gap text-ink lg:hidden" aria-label="Featured events">
         {FEATURED.map((event) => (
           <article key={event.id} className="col-span-full grid gap-8">
-            <div className="w-full bg-body/10">
+            <FeaturedEventParallaxFrame>
               {/* biome-ignore lint/performance/noImgElement: local static asset */}
               <img src={event.image} alt={event.name} width={960} height={640} className="aspect-3/2 w-full object-cover" />
-            </div>
+            </FeaturedEventParallaxFrame>
             <div className="flex justify-between gap-16">
               <span className="type-eyebrow overflow-visible whitespace-nowrap">{event.name}</span>
               <span className="type-eyebrow overflow-visible whitespace-nowrap text-right">{event.type}</span>
@@ -104,7 +152,7 @@ export function FeaturedEvents() {
           </article>
         ))}
 
-        <CtaButton to="/events" className="flex justify-center col-span-full">
+        <CtaButton to="/events" className="col-span-full flex justify-center">
           {t("viewAllEvents")}
         </CtaButton>
       </section>
