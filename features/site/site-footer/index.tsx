@@ -49,9 +49,9 @@ export function SiteFooter() {
             {/* Logo: desktop only, centered */}
             <div
               ref={logoRef}
-              className="absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center lg:flex"
+              className="absolute top-[40%] left-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center lg:flex"
             >
-              <MyHandlerMonogram aria-label="My Handler logo" className="h-192 w-auto lg:h-256" />
+              <MyHandlerMonogram aria-label="My Handler logo" className="w-auto lg:h-[40vh]" />
             </div>
 
             <nav ref={navRef} className="flex flex-col gap-20" aria-label="Footer navigation">

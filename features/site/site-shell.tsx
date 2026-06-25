@@ -1,4 +1,5 @@
 import type * as React from "react";
+import { LastSection } from "~/features/site/last-section";
 import { SiteFooter } from "~/features/site/site-footer";
 import { SiteHeader } from "~/features/site/site-header";
 
@@ -15,7 +16,10 @@ export function SiteShell(props: SiteShellProps) {
     <div className="flex min-h-dvh flex-col bg-surface text-ink">
       {showHeader && <SiteHeader />}
       <main className="flex-1 bg-surface">{children}</main>
+{/*
       {showFooter && <SiteFooter />}
+
+ */}      {showFooter && <LastSection />}
     </div>
   );
 }
