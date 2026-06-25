@@ -73,7 +73,7 @@ export function AnimatedWordmark(props: React.ComponentProps<"svg">) {
       });
 
       const animation = gsap.timeline({
-        scrollTrigger: { trigger: svg, start: "top 115%", end: "bottom bottom", scrub: 0.6 },
+        scrollTrigger: { trigger: svg, start: "top 100%", end: "bottom bottom", scrub: 0.6 },
       });
 
       animation.to(paths, { y: 0, yPercent: 0, ease: "none" });
