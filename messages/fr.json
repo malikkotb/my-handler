@@ -33,15 +33,15 @@
     "line2": "Conciergerie de Luxe"
   },
   "intro": {
-    "tagline": "My Handler est là pour accompagner ses clients dans la réussite de leurs événements de la manière la plus durable possible, avec un service de haute expertise, partout dans le monde.",
+    "tagline": "My Handler est une agence sur mesure spécialisée dans l'accompagnement stratégique, la production créative et l'exécution méticuleuse. Nous travaillons en étroite collaboration avec nos clients pour transformer leurs idées en expériences.",
     "missionEyebrow": "Notre Mission",
-    "missionBody": "Comprendre vos besoins et les satisfaire en vous apportant notre sens de l'excellence.",
+    "missionBody": "Chaque projet mérite une approche personnalisée. Nous apportons le discernement, la créativité et l'expertise nécessaires pour façonner des idées en solutions construites autour de vous.",
     "commitmentEyebrow": "Notre Engagement",
-    "commitmentBody": "Une sélection rigoureuse pour chacune de vos demandes, un service client réactif pour traiter vos demandes de dernière minute."
+    "commitmentBody": "Du développement du concept à l'exécution et au suivi post-événement, nous supervisons chaque étape avec soin et précision. Notre engagement est de construire des partenariats durables et de délivrer des expériences de qualité constante."
   },
   "services": {
     "heading": "Services",
-    "introBody": "Chez My Handler, l'expertise se définit par l'art de l'anticipation. Nous concevons des expériences sur mesure alliant réflexion stratégique, excellence opérationnelle et sensibilité créative raffinée — nous accompagnons nos clients dans des projets qui exigent discrétion, adaptabilité et souci du détail.",
+    "introBody": "Nous concevons des expériences sur mesure alliant réflexion stratégique, excellence opérationnelle et sensibilité créative. Chaque projet est géré avec discrétion, adaptabilité et une attention rigoureuse aux détails.",
     "eventManagement": "Gestion d'Événements",
     "conciergeServices": "Services de Conciergerie",
     "travelArrangements": "Organisation de Voyages",
@@ -77,8 +77,8 @@
   },
   "about": {
     "introTitle": "Notre Équipe",
-    "introBody": "My Handler réunit un collectif de professionnels issus de secteurs variés et de disciplines créatives — notamment l'hôtellerie, les services de luxe, le marketing, la musique, la production, la logistique, la communication et la gestion d'événements.",
-    "teamTagline": "Chaque membre de l'équipe apporte une perspective unique, une expertise spécialisée et une compréhension profonde de la façon de créer des expériences à la fois fluides et porteuses de sens.",
+    "introBody": "Chaque membre de l'équipe apporte une perspective unique, une expertise spécialisée et une compréhension profonde de la façon de créer des expériences à la fois fluides et porteuses de sens.",
+    "teamTagline": "My Handler réunit un collectif de professionnels issus de secteurs variés et de disciplines créatives — notamment l'hôtellerie, les services de luxe, le marketing, la musique, la production, la logistique, la communication et la gestion d'événements.",
     "philosophy": {
       "heading": "Notre Philosophie",
       "firstParagraph": "My Handler imagine une entreprise dans laquelle chaque membre peut accéder à un environnement de travail unique qui lui permet d'atteindre ses objectifs, d'améliorer ses compétences et de contribuer à faire progresser les secteurs de l'événementiel et du voyage.",
