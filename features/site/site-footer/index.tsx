@@ -54,16 +54,26 @@ export function SiteFooter() {
               <MyHandlerMonogram aria-label="My Handler logo" className="h-192 w-auto lg:h-256" />
             </div>
 
-            <nav ref={navRef} className="flex flex-col gap-20 lg:gap-12" aria-label="Footer navigation">
+            <nav ref={navRef} className="flex flex-col gap-20" aria-label="Footer navigation">
               {NAV_LINKS.map((link) => (
                 <MainLink key={link.path} to={link.path} tone="surface" size="mobileLarge">
                   {t(link.i18nKey)}
                 </MainLink>
               ))}
+
+              <div className="hidden lg:flex flex-col pt-80 gap-4">
+                          <MainLink to="/legal" tone="surface">
+                            {t("footer.legal")}
+                          </MainLink>
+                          <div className="type-eyebrow text-surface uppercase no-underline">{t("footer.copyright")}</div>
+                        </div>
+
             </nav>
 
+
+
             <div ref={rightColRef} className="flex flex-col gap-80">
-              <div className="flex flex-col items-start gap-20 lg:items-end lg:gap-12">
+              <div className="flex flex-col items-start gap-20 lg:items-end">
                 {SOCIAL_LINKS.map((link) => (
                   <MainLink
                     key={link.href}
@@ -78,17 +88,19 @@ export function SiteFooter() {
                 ))}
               </div>
             </div>
+
+            <div className="flex lg:hidden flex-col gap-4">
+                        <MainLink to="/legal" tone="surface">
+                          {t("footer.legal")}
+                        </MainLink>
+                        <div className="type-eyebrow text-surface uppercase no-underline">{t("footer.copyright")}</div>
+                      </div>
+
           </div>
         </div>
 
-        <div className="absolute right-0 bottom-0 left-0 flex flex-col gap-8 overflow-hidden px-20 pb-8 text-surface lg:px-40 lg:pb-16">
+        <div className="absolute right-0 bottom-0 left-0 flex flex-col gap-8 overflow-hidden text-surface px-20 lg:px-40 pb-20">
           <AnimatedWordmark className="h-full w-full object-cover" />
-          <div className="flex items-center justify-between gap-12">
-            <MainLink to="/legal" tone="surface">
-              {t("footer.legal")}
-            </MainLink>
-            <div className="type-eyebrow text-surface uppercase no-underline">{t("footer.copyright")}</div>
-          </div>
         </div>
       </div>
     </footer>

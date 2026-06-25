@@ -10,10 +10,21 @@ import { HEADER_NAV_LINKS, LABELS, NAV_LINKS, SOCIAL_LINKS } from "~/features/si
 import { useHeaderTheme } from "~/features/site/use-header-theme";
 import { cx } from "~/features/style/utils";
 import { getPathname, usePathname } from "~/i18n/navigation";
+import { routing, type Locale } from "~/i18n/routing";
 
 type MenuState = "closed" | "open" | "closing";
 
 const MENU_ANIMATION_MS = 350;
+
+function getLocaleSwitchHref(pathname: string, locale: Locale): string {
+  const localizedHref = getPathname({ href: pathname, locale });
+
+  if (locale !== routing.defaultLocale) {
+    return localizedHref;
+  }
+
+  return pathname === "/" ? `/${locale}` : `/${locale}${pathname}`;
+}
 
 export function SiteHeader() {
   const t = useTranslations();
@@ -22,7 +33,7 @@ export function SiteHeader() {
   const otherLocale = locale === "fr" ? "en" : "fr";
   // Locale switch changes the [locale] segment (full layout re-render), so do a plain
   // navigation rather than a View Transition — the latter would stall on the re-render.
-  const switchHref = getPathname({ href: pathname, locale: otherLocale });
+  const switchHref = getLocaleSwitchHref(pathname, otherLocale);
 
   const isInverted = useHeaderTheme();
   const [menu, setMenu] = React.useState<MenuState>("closed");
@@ -80,7 +91,7 @@ export function SiteHeader() {
           </Link>
 
           {/* Desktop center nav */}
-          <nav className="hidden gap-16 lg:flex">
+          <nav className="hidden gap-20 lg:flex">
             {HEADER_NAV_LINKS.map((link) => (
               <MainLink key={link.path} to={link.path}>
                 {t(link.i18nKey)}
@@ -89,7 +100,7 @@ export function SiteHeader() {
           </nav>
 
           {/* Desktop right nav */}
-          <nav className="hidden items-center gap-16 lg:flex">
+          <nav className="hidden items-center gap-20 lg:flex">
             <MainLink href={switchHref} aria-label="Switch language">
               {t("header.switchLang")}
             </MainLink>
@@ -110,7 +121,7 @@ export function SiteHeader() {
         </div>
       </header>
 
-      {/* Mobile fullscreen menu */}
+      {/* Mobile fullscreen */}
       {mounted &&
         menuVisible &&
         createPortal(
@@ -136,7 +147,7 @@ export function SiteHeader() {
                 }
               }}
             >
-              <nav className="col-span-3 col-start-1 mt-160 flex flex-col gap-16" aria-label="Primary navigation">
+              <nav className="col-span-3 col-start-1 mt-160 flex flex-col gap-20" aria-label="Primary navigation">
                 {NAV_LINKS.map((link) => (
                   <MainLink key={link.path} to={link.path} tone="ink" size="mobileLarge" onClick={closeMenu}>
                     {t(link.i18nKey)}
