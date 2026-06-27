@@ -33,7 +33,7 @@ function FeaturedEventImage({ event }: { event: FeaturedCard }) {
   if (typeof event.image === "string") {
     return (
       // biome-ignore lint/performance/noImgElement: local static fallback asset
-      <img src={event.image} alt={event.name} width={960} height={640} className="aspect-3/2 w-full object-cover" />
+      <img src={event.image} alt={event.name} width={960} height={640} className="h-full w-full object-cover" />
     );
   }
 
@@ -43,7 +43,7 @@ function FeaturedEventImage({ event }: { event: FeaturedCard }) {
       alt={event.name}
       width={960}
       height={640}
-      className="aspect-3/2 w-full object-cover"
+      className="h-full w-full object-cover"
       builderOptions={{ width: 960, height: 640, fit: "crop" }}
     />
   );
@@ -89,7 +89,7 @@ function FeaturedEventParallaxFrame({ children }: { children: React.ReactNode })
   }, []);
 
   return (
-    <div ref={frameRef} className="w-full overflow-hidden bg-body/10 [&_img]:block [&_img]:w-full [&_img]:scale-150 [&_img]:object-cover">
+    <div ref={frameRef} className="aspect-3/2 w-full overflow-hidden bg-body/10 [&_img]:block [&_img]:h-full [&_img]:w-full [&_img]:scale-150 [&_img]:object-cover">
       {children}
     </div>
   );

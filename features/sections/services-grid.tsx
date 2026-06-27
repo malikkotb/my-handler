@@ -84,6 +84,13 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
     [relativeTop, services]
   );
 
+  const setTransition = React.useCallback(() => {
+    const preview = previewRef.current;
+    if (!preview) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    preview.style.transition = reducedMotion ? "none" : "transform 480ms cubic-bezier(0.17,0.84,0.44,1)";
+  }, []);
+
   React.useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
     const onMqChange = (e: MediaQueryListEvent) => {
@@ -94,6 +101,7 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
     isDesktopRef.current = mq.matches;
 
     updateBaseTop();
+    setTransition();
 
     // Set initial image without triggering the src-equality guard
     const firstSrc = resolveImageSrc(services[0]?.image ?? null);
@@ -102,25 +110,24 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
     }
 
     return () => mq.removeEventListener("change", onMqChange);
-  }, [updateBaseTop, services]);
+  }, [updateBaseTop, setTransition, services]);
 
   const onEnter = (index: number) => {
-    if (isDesktopRef.current) goToService(index);
+    if (!isDesktopRef.current) return;
+    setTransition();
+    goToService(index);
   };
 
-  const onListLeave = () => {
-    if (isDesktopRef.current) goToService(0);
-  };
 
   return (
     <section className="section-padding bg-surface text-ink lg:-mt-80 lg:pt-0" aria-label="Services">
       <div className="layout-grid">
-        <h1 className="type-h1 col-span-full uppercase lg:text-right">{t("services.heading")}</h1>
+        <h1 className="type-h1 pb-20 col-span-full uppercase lg:text-right">{t("services.heading")}</h1>
       </div>
 
       <div ref={containerRef} className="layout-grid relative">
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: hover-only progressive enhancement; list links remain keyboard-reachable */}
-        <ul className="col-span-full m-0 list-none border-rule border-t p-0" onMouseLeave={onListLeave}>
+        <ul className="col-span-full m-0 list-none border-rule border-t p-0">
           {services.map((service, index) => (
             // biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover reveal only
             <li
@@ -128,7 +135,7 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
               ref={(el) => {
                 liRefs.current[index] = el;
               }}
-              className="group layout-grid-row cursor-pointer border-rule border-b py-20 lg:py-28"
+              className="group layout-grid-row cursor-text border-rule border-b py-20 lg:py-28"
               onMouseEnter={() => onEnter(index)}
             >
               <h4 className="type-h4 col-span-full uppercase motion-safe:transition-transform motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:translate-x-12">
@@ -140,7 +147,7 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
 
         <div
           ref={previewRef}
-          className="aspect-service-card h-services-preview pointer-events-none absolute right-80 hidden overflow-hidden lg:block motion-safe:transition-transform motion-safe:duration-service motion-safe:ease-service"
+          className="aspect-service-card h-services-preview pointer-events-none absolute right-80 hidden overflow-hidden lg:block"
           aria-hidden="true"
         >
           {/* src is set imperatively on mount and on hover */}
@@ -148,8 +155,8 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
         </div>
       </div>
 
-      <div className="layout-grid pt-40">
-        <CtaButton to="/services" className="col-span-full text-right">
+      <div className="flex justify-end pt-40">
+        <CtaButton to="/services" className="text-right">
           {t("cta.exploreServices")}
         </CtaButton>
       </div>

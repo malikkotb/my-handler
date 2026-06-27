@@ -90,6 +90,12 @@ export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
   );
 
   React.useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (previewRef.current) {
+      previewRef.current.style.transition = reducedMotion
+        ? "none"
+        : "transform 480ms cubic-bezier(0.17,0.84,0.44,1), opacity 480ms cubic-bezier(0.17,0.84,0.44,1)";
+    }
     updateBaseTop();
 
     let cleanup: (() => void) | undefined;
@@ -177,7 +183,7 @@ export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
 
         <div
           ref={previewRef}
-          className="client-preview-size pointer-events-none absolute right-0 overflow-hidden opacity-0 motion-safe:transition-transform-opacity motion-safe:duration-200 motion-safe:ease-out"
+          className="client-preview-size pointer-events-none absolute right-0 overflow-hidden opacity-0"
           aria-hidden="true"
         >
           <span ref={logoRef} className="block size-full bg-ink" />

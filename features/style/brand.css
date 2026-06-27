@@ -9,7 +9,7 @@
   --spacing-dvh-1: 100dvh;
   --spacing-dvh-2: 200dvh;
   /* Height of the rotated service-preview image stack on the homepage. */
-  --spacing-services-preview: 30vh;
+  --spacing-services-preview: 20vh;
 
   /*
    * Fluid type scale — clamp(min @ 375px, slope·vw + intercept, max @ 1920px).

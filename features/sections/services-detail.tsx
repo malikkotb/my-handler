@@ -17,15 +17,16 @@ type ServiceItem = {
 
 const SERVICE_IMAGES_STATIC = [
   { key: "consultancy" as const, image: "/services-page-images/9EED0276-5138-4121-9A25-0D9F5886DDCF 2.avif" },
-  { key: "events" as const, image: "/services-page-images/9EED0276-5138-4121-9A25-0D9F5886DDCF 2.avif" },
-  { key: "travel" as const, image: "/services-page-images/9EED0276-5138-4121-9A25-0D9F5886DDCF 2.avif" },
-  { key: "conciergerie" as const, image: "/services-page-images/9EED0276-5138-4121-9A25-0D9F5886DDCF 2.avif" },
+  { key: "events" as const, image: "/services-page-images/477B1A68-C302-472A-9FB8-E98984A5500A 3.avif" },
+  { key: "travel" as const, image: "/services-page-images/07771994-233A-4D3B-A1E9-DB3A83660138 2.avif" },
+  { key: "conciergerie" as const, image: "/services-page-images/E4FF1093-A55D-4F8B-8F12-B109E72F01A0 2.avif" },
 ];
 
 type StepStatus = "before" | "active" | "after";
 
 export function ServicesDetail() {
   const t = useTranslations("services.items");
+  const tCta = useTranslations("cta");
   const isDesktop = useBreakpoint("lg");
   const [activeIndex, setActiveIndex] = React.useState(0);
 
@@ -127,8 +128,8 @@ export function ServicesDetail() {
               <p className='type-body'>{service.body}</p>
             </article>
           ))}
-          <CtaButton to='/events'>Découvrez nos campagnes</CtaButton>
         </div>
+        <CtaButton to='/events'>{tCta("discoverCampaigns")}</CtaButton>
       </div>
     </section>
   );
