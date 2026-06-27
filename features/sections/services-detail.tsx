@@ -16,10 +16,10 @@ type ServiceItem = {
 };
 
 const SERVICE_IMAGES_STATIC = [
-  { key: "consultancy" as const, image: "/img1.avif" },
-  { key: "events" as const, image: "/img2.avif" },
-  { key: "travel" as const, image: "/img3.avif" },
-  { key: "conciergerie" as const, image: "/img4.avif" },
+  { key: "consultancy" as const, image: "/services-page-images/9EED0276-5138-4121-9A25-0D9F5886DDCF 2.avif" },
+  { key: "events" as const, image: "/services-page-images/9EED0276-5138-4121-9A25-0D9F5886DDCF 2.avif" },
+  { key: "travel" as const, image: "/services-page-images/9EED0276-5138-4121-9A25-0D9F5886DDCF 2.avif" },
+  { key: "conciergerie" as const, image: "/services-page-images/9EED0276-5138-4121-9A25-0D9F5886DDCF 2.avif" },
 ];
 
 type StepStatus = "before" | "active" | "after";

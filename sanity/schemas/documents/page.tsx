@@ -22,7 +22,7 @@ export const page = defineType({
   icon: () => <>📄</>,
   groups: [
     { name: "page", title: "Page", icon: () => <>📄</>, default: true },
-    { name: "content", title: "Content", icon: () => <>🍱</> },
+    // { name: "content", title: "Content", icon: () => <>🍱</> },
     { name: "homepage", title: "Homepage", icon: () => <>🏠</> },
     { name: "seo", title: "SEO", icon: () => <>🔍</> },
   ],
@@ -89,9 +89,9 @@ export const page = defineType({
       initialValue: true,
       options: { layout: "switch" },
     }),
-    createPageBuilderField({
-      group: "content",
-    }),
+    // createPageBuilderField({
+    //   group: "content",
+    // }),
     defineField({
       group: "homepage",
       name: "featuredEvents",

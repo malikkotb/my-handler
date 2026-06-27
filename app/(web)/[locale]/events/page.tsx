@@ -1,13 +1,32 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { defineQuery } from "next-sanity";
 import { DynamicTextCursor } from "~/features/dom/dynamic-text-cursor";
+import { ImageFragment } from "~/features/sanity/media/fragment";
+import { getImageSrc } from "~/features/sanity/media/image/utils";
+import { sanityFetch } from "~/features/sanity/client";
 import { EventsTable } from "~/features/sections/events-table";
 import { PageIntroSection } from "~/features/sections/page-intro-section";
 import { SiteShell } from "~/features/site/site-shell";
+import type { EventItem } from "~/features/sections/events-data";
+import type { EventsQResult } from "~/sanity/types";
 
 type EventsPageProps = {
   params: Promise<{ locale: string }>;
 };
+
+const EventsQ = defineQuery(`
+  *[_type == "event"] | order(_createdAt desc) {
+    _id,
+    client,
+    type,
+    location,
+    description,
+    "images": images[defined(asset)]{
+      ${ImageFragment}
+    }
+  }
+`);
 
 export async function generateMetadata({ params }: EventsPageProps): Promise<Metadata> {
   const { locale } = await params;
@@ -21,11 +40,29 @@ export default async function EventsPage({ params }: EventsPageProps) {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "events" });
 
+  const raw = await sanityFetch<EventsQResult>({
+    query: EventsQ,
+    options: { next: { tags: ["event"] } },
+  });
+
+  const events: EventItem[] = (raw ?? []).map((e) => ({
+    id: e._id,
+    client: e.client ?? "",
+    type: e.type ?? "",
+    location: e.location ?? "",
+    description: e.description ?? "",
+    images: (e.images ?? []).map((img) => ({
+      src: getImageSrc(img, { width: 1200 }),
+      alt: img.altText ?? "",
+      orientation: (img.dimensions?.aspectRatio ?? 1) >= 1 ? "landscape" : "portrait",
+    })),
+  }));
+
   return (
     <SiteShell>
       <div className="min-h-dvh-1">
         <PageIntroSection title={t("heading").toUpperCase()} ariaLabel="Events" />
-        <EventsTable />
+        <EventsTable events={events} />
       </div>
       <DynamicTextCursor />
     </SiteShell>

@@ -1,6 +1,7 @@
 import { article } from "./documents/article";
 import { articleCategory } from "./documents/article-category";
 import { contactFormSubmission } from "./documents/contact-form-submission";
+import { event } from "./documents/event";
 import { page } from "./documents/page";
 import { redirect } from "./documents/redirect";
 import { site } from "./documents/site";
@@ -21,6 +22,7 @@ export const schemaTypes = [
   contactFormSubmission,
   article,
   articleCategory,
+  event,
   seoMetadata,
   aspectRatio,
   videoOptions,

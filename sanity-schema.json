@@ -224,7 +224,7 @@
           "type": "objectAttribute",
           "value": {
             "type": "inline",
-            "name": "media"
+            "name": "file.media"
           },
           "optional": true
         },
@@ -525,7 +525,7 @@
           "type": "objectAttribute",
           "value": {
             "type": "inline",
-            "name": "appMedia.image.media"
+            "name": "image.media"
           },
           "optional": true
         },
@@ -761,7 +761,7 @@
           "type": "objectAttribute",
           "value": {
             "type": "inline",
-            "name": "file.media"
+            "name": "appLink.file.media"
           },
           "optional": true
         },
@@ -1048,7 +1048,7 @@
           "type": "objectAttribute",
           "value": {
             "type": "inline",
-            "name": "mediaBlock.appMedia.image.media"
+            "name": "appMedia.image.media"
           },
           "optional": true
         },
@@ -3156,6 +3156,220 @@
     }
   },
   {
+    "name": "event",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "event"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "client": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "location": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "description": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "images": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "asset": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "sanity.imageAsset.reference"
+                },
+                "optional": true
+              },
+              "media": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "unknown"
+                },
+                "optional": true
+              },
+              "hotspot": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "sanity.imageHotspot"
+                },
+                "optional": true
+              },
+              "crop": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "sanity.imageCrop"
+                },
+                "optional": true
+              },
+              "_type": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string",
+                  "value": "image"
+                }
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "name": "sanity.imageCrop",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.imageCrop"
+          }
+        },
+        "top": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "bottom": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "left": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "right": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "sanity.imageHotspot",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.imageHotspot"
+          }
+        },
+        "x": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "y": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "height": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "width": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "name": "articleCategory",
     "type": "document",
     "attributes": {
@@ -3571,51 +3785,37 @@
     }
   },
   {
-    "name": "sanity.imageCrop",
     "type": "type",
+    "name": "mux.videoAsset.reference",
     "value": {
       "type": "object",
       "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
         "_type": {
           "type": "objectAttribute",
           "value": {
             "type": "string",
-            "value": "sanity.imageCrop"
+            "value": "reference"
           }
         },
-        "top": {
+        "_weak": {
           "type": "objectAttribute",
           "value": {
-            "type": "number"
-          },
-          "optional": true
-        },
-        "bottom": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "number"
-          },
-          "optional": true
-        },
-        "left": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "number"
-          },
-          "optional": true
-        },
-        "right": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "number"
+            "type": "boolean"
           },
           "optional": true
         }
-      }
+      },
+      "dereferencesTo": "mux.videoAsset"
     }
   },
   {
-    "name": "sanity.imageHotspot",
+    "name": "mux.video",
     "type": "type",
     "value": {
       "type": "object",
@@ -3624,34 +3824,14 @@
           "type": "objectAttribute",
           "value": {
             "type": "string",
-            "value": "sanity.imageHotspot"
+            "value": "mux.video"
           }
         },
-        "x": {
+        "asset": {
           "type": "objectAttribute",
           "value": {
-            "type": "number"
-          },
-          "optional": true
-        },
-        "y": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "number"
-          },
-          "optional": true
-        },
-        "height": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "number"
-          },
-          "optional": true
-        },
-        "width": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "number"
+            "type": "inline",
+            "name": "mux.videoAsset.reference"
           },
           "optional": true
         }
@@ -5325,183 +5505,6 @@
         },
         "optional": true
       },
-      "pageBuilder": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "object",
-          "attributes": {
-            "sectionsArray": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "array",
-                "of": {
-                  "type": "union",
-                  "of": [
-                    {
-                      "type": "object",
-                      "attributes": {
-                        "sectionSettings": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "inline",
-                            "name": "sectionSettings"
-                          },
-                          "optional": true
-                        },
-                        "sectionContent": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "inline",
-                            "name": "mediaSection"
-                          },
-                          "optional": true
-                        },
-                        "_type": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "string",
-                            "value": "mediaSectionField"
-                          }
-                        }
-                      },
-                      "rest": {
-                        "type": "object",
-                        "attributes": {
-                          "_key": {
-                            "type": "objectAttribute",
-                            "value": {
-                              "type": "string"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "type": "object",
-                      "attributes": {
-                        "sectionSettings": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "inline",
-                            "name": "sectionSettings"
-                          },
-                          "optional": true
-                        },
-                        "sectionContent": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "inline",
-                            "name": "ctaSection"
-                          },
-                          "optional": true
-                        },
-                        "_type": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "string",
-                            "value": "ctaSectionField"
-                          }
-                        }
-                      },
-                      "rest": {
-                        "type": "object",
-                        "attributes": {
-                          "_key": {
-                            "type": "objectAttribute",
-                            "value": {
-                              "type": "string"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "type": "object",
-                      "attributes": {
-                        "sectionSettings": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "inline",
-                            "name": "sectionSettings"
-                          },
-                          "optional": true
-                        },
-                        "sectionContent": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "inline",
-                            "name": "textSection"
-                          },
-                          "optional": true
-                        },
-                        "_type": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "string",
-                            "value": "textSectionField"
-                          }
-                        }
-                      },
-                      "rest": {
-                        "type": "object",
-                        "attributes": {
-                          "_key": {
-                            "type": "objectAttribute",
-                            "value": {
-                              "type": "string"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "type": "object",
-                      "attributes": {
-                        "sectionSettings": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "inline",
-                            "name": "sectionSettings"
-                          },
-                          "optional": true
-                        },
-                        "sectionContent": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "inline",
-                            "name": "contactFormSection"
-                          },
-                          "optional": true
-                        },
-                        "_type": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "string",
-                            "value": "contactFormSectionField"
-                          }
-                        }
-                      },
-                      "rest": {
-                        "type": "object",
-                        "attributes": {
-                          "_key": {
-                            "type": "objectAttribute",
-                            "value": {
-                              "type": "string"
-                            }
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              },
-              "optional": true
-            }
-          }
-        },
-        "optional": true
-      },
       "featuredEvents": {
         "type": "objectAttribute",
         "value": {
@@ -5684,60 +5687,6 @@
           "name": "seoMetadata"
         },
         "optional": true
-      }
-    }
-  },
-  {
-    "type": "type",
-    "name": "mux.videoAsset.reference",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_ref": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          }
-        },
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "reference"
-          }
-        },
-        "_weak": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "boolean"
-          },
-          "optional": true
-        }
-      },
-      "dereferencesTo": "mux.videoAsset"
-    }
-  },
-  {
-    "name": "mux.video",
-    "type": "type",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "mux.video"
-          }
-        },
-        "asset": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "inline",
-            "name": "mux.videoAsset.reference"
-          },
-          "optional": true
-        }
       }
     }
   },

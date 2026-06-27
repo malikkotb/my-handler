@@ -49,6 +49,12 @@ export function buildStructure(S: StructureBuilder) {
         },
       }),
 
+      // Events
+      S.listItem()
+        .title("Events")
+        .icon(() => <>🎉</>)
+        .child(S.documentTypeList("event").title("Events")),
+
       // All other pages (excludes singletons)
       S.listItem()
         .title("Pages")

@@ -28,11 +28,28 @@ CTA's
 
 ☐ emil design engineering
 
+☐ footer parallax animation is fucked up at the moment
+
+☐ add parallax to all sections, and perhaps even alternate dark and light sections?
+but add parallax for sure, get inspo from homepage: by monolog
+
+☐ the opening and closing of rows in events list is weird at the moment, and not smooth
+
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
 ☐ add webhooks in sanity and vercel for immediate content updates
 => just like for ana project
 => deploy local sanity studio (have a tab open on this, in codex)
+Create the Revalidate webhook (needs your deployed HTTPS URL)? … yes
+
+   Sanity delivers this webhook from its cloud, so it must point at a public URL (localhost and private hosts are rejected).
+   No deployment yet? Keep the example.com placeholder to register it now, then repoint it once you deploy.
+
+✔ Public site URL (https://…, not localhost). Full webhook = base + /api/revalidate … https://example.com
+
+ℹ️  https://example.com is a placeholder, so the webhook registers but will not deliver. Repoint it at your deployed HTTPS URL in Manage → API → Webhooks (or re-run this setup after deploying).
+
+☐ SEO check!! pagespeed insights and fix
 
 ☐ french version of impressum page
 

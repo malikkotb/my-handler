@@ -47,7 +47,7 @@ export type SanityFileAssetReference = {
 
 export type LinkFieldFile = {
   asset?: SanityFileAssetReference;
-  media?: unknown; // Unable to locate the referenced type "media" in schema
+  media?: unknown; // Unable to locate the referenced type "file.media" in schema
   _type: "file";
 };
 
@@ -101,7 +101,7 @@ export type SanityImageAssetReference = {
 
 export type AppMediaImage = {
   asset?: SanityImageAssetReference;
-  media?: unknown; // Unable to locate the referenced type "appMedia.image.media" in schema
+  media?: unknown; // Unable to locate the referenced type "image.media" in schema
   hotspot?: SanityImageHotspot;
   crop?: SanityImageCrop;
   _type: "image";
@@ -145,7 +145,7 @@ export type LottieDimensions = {
 
 export type AppLinkFile = {
   asset?: SanityFileAssetReference;
-  media?: unknown; // Unable to locate the referenced type "file.media" in schema
+  media?: unknown; // Unable to locate the referenced type "appLink.file.media" in schema
   _type: "file";
 };
 
@@ -190,7 +190,7 @@ export type AppMediaVideoUrlDimensions = {
 
 export type MediaBlockAppMediaImage = {
   asset?: SanityImageAssetReference;
-  media?: unknown; // Unable to locate the referenced type "mediaBlock.appMedia.image.media" in schema
+  media?: unknown; // Unable to locate the referenced type "appMedia.image.media" in schema
   hotspot?: SanityImageHotspot;
   crop?: SanityImageCrop;
   _type: "image";
@@ -539,6 +539,42 @@ export type SeoMetadata = {
   };
 };
 
+export type Event = {
+  _id: string;
+  _type: "event";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  client?: string;
+  type?: string;
+  location?: string;
+  description?: string;
+  images?: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
 export type ArticleCategory = {
   _id: string;
   _type: "articleCategory";
@@ -611,20 +647,16 @@ export type Article = {
   seoMetadata?: SeoMetadata;
 };
 
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
+export type MuxVideoAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "mux.videoAsset";
 };
 
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
+export type MuxVideo = {
+  _type: "mux.video";
+  asset?: MuxVideoAssetReference;
 };
 
 export type Slug = {
@@ -866,34 +898,6 @@ export type Page = {
   passwordProtected?: boolean;
   showHeader?: boolean;
   showFooter?: boolean;
-  pageBuilder?: {
-    sectionsArray?: Array<
-      | {
-          sectionSettings?: SectionSettings;
-          sectionContent?: MediaSection;
-          _type: "mediaSectionField";
-          _key: string;
-        }
-      | {
-          sectionSettings?: SectionSettings;
-          sectionContent?: CtaSection;
-          _type: "ctaSectionField";
-          _key: string;
-        }
-      | {
-          sectionSettings?: SectionSettings;
-          sectionContent?: TextSection;
-          _type: "textSectionField";
-          _key: string;
-        }
-      | {
-          sectionSettings?: SectionSettings;
-          sectionContent?: ContactFormSection;
-          _type: "contactFormSectionField";
-          _key: string;
-        }
-    >;
-  };
   featuredEvents?: Array<{
     image?: {
       asset?: SanityImageAssetReference;
@@ -920,18 +924,6 @@ export type Page = {
     _key: string;
   }>;
   seoMetadata?: SeoMetadata;
-};
-
-export type MuxVideoAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "mux.videoAsset";
-};
-
-export type MuxVideo = {
-  _type: "mux.video";
-  asset?: MuxVideoAssetReference;
 };
 
 export type MuxVideoAsset = {
@@ -1184,18 +1176,19 @@ export type AllSanitySchemaTypes =
   | VideoOptions
   | AspectRatio
   | SeoMetadata
+  | Event
+  | SanityImageCrop
+  | SanityImageHotspot
   | ArticleCategory
   | ArticleCategoryReference
   | Article
-  | SanityImageCrop
-  | SanityImageHotspot
+  | MuxVideoAssetReference
+  | MuxVideo
   | Slug
   | ContactFormSubmission
   | Redirect
   | Site
   | Page
-  | MuxVideoAssetReference
-  | MuxVideo
   | MuxVideoAsset
   | MuxAssetData
   | MuxStaticRenditions
@@ -1311,6 +1304,28 @@ export type ArticlePageQResult = {
 // Query: *[_type == "article" && defined(uri.current)]{    "uri": coalesce(uri.current, "/articles")  }
 export type ArticlePageUrisQResult = Array<{
   uri: string | "/articles";
+}>;
+
+// Source: app/(web)/[locale]/events/page.tsx
+// Variable: EventsQ
+// Query: *[_type == "event"] | order(_createdAt desc) {    _id,    client,    type,    location,    description,    "images": images[defined(asset)]{        "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,    }  }
+export type EventsQResult = Array<{
+  _id: string;
+  client: string | undefined;
+  type: string | undefined;
+  location: string | undefined;
+  description: string | undefined;
+  images: Array<{
+    _id: string;
+    _rev: string;
+    altText: string | undefined;
+    description: string | undefined;
+    title: string | undefined;
+    lqip: string | undefined;
+    dimensions: SanityImageDimensions | undefined;
+    crop: SanityImageCrop | undefined;
+    hotspot: SanityImageHotspot | undefined;
+  }> | undefined;
 }>;
 
 // Source: app/sitemap.ts

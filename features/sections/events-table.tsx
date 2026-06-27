@@ -6,14 +6,14 @@ import { CURSOR_REFRESH_EVENT } from "~/features/dom/dynamic-text-cursor";
 import { useDragScroll } from "~/features/dom/use-drag-scroll";
 import { loadGsap } from "~/features/motion/gsap";
 import { cx } from "~/features/style/utils";
-import { type EventImage, EVENTS } from "./events-data";
+import { type EventImage, type EventItem } from "./events-data";
 
 type GsapBundle = Awaited<ReturnType<typeof loadGsap>>;
 
-export function EventsTable() {
-  const [activeId, setActiveId] = React.useState<number | null>(null);
-  const detailRefs = React.useRef(new Map<number, HTMLDivElement>());
-  const rowRefs = React.useRef(new Map<number, HTMLTableRowElement>());
+export function EventsTable({ events }: { events: EventItem[] }) {
+  const [activeId, setActiveId] = React.useState<string | null>(null);
+  const detailRefs = React.useRef(new Map<string, HTMLDivElement>());
+  const rowRefs = React.useRef(new Map<string, HTMLTableRowElement>());
   const gsapRef = React.useRef<GsapBundle | null>(null);
   const reduceMotionRef = React.useRef(false);
   const lenis = useLenis();
@@ -106,7 +106,7 @@ export function EventsTable() {
   }, []);
 
   const toggleEvent = React.useCallback(
-    (eventId: number) => {
+    (eventId: string) => {
       setActiveId((prev) => {
         const next = prev === eventId ? null : eventId;
 
@@ -170,7 +170,7 @@ export function EventsTable() {
           </tr>
         </thead>
         <tbody>
-          {EVENTS.map((event) => {
+          {events.map((event) => {
             const isOpen = activeId === event.id;
             return (
               <React.Fragment key={event.id}>
@@ -240,7 +240,6 @@ function EventImageStrip({ images }: { images: EventImage[] }) {
       className="scrollbar-invisible mt-20 flex cursor-grab items-end gap-8 overflow-x-auto data-[dragging]:cursor-grabbing lg:gap-12"
     >
       {images.map((image) => (
-        // biome-ignore lint/performance/noImgElement: remote Unsplash sample images, not Sanity assets
         <img
           key={image.src}
           src={image.src}
