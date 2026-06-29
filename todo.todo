@@ -5,8 +5,6 @@
 ☐ text reveal animations on scroll for headings
 ☐ text stagger animations on all texts (check osmo and Monolog and Paronyme for examples)
 
-☐ insert correct images in all sections through SANITY only!
-
 ☐ check if I should stick to using lg: as main breakpoint or use md: instead
 
 Events page
@@ -21,14 +19,10 @@ CTA's
 
 ☐ remove all inline styles from the pages and components
 
-✔ design system tailwind for the website based on breakpoints (use claude to do this) @done(26-05-14 20:09)
-    ✔ included in design system: typography (font sizes, weights, families), colors, spacing, breakpoints, etc. @done(26-05-14 20:09)
-    ✔ gaps, paddings, margin @done(26-05-29 11:48)
-    ✔ fluid typography @done(26-05-29 19:34)
-
 ☐ emil design engineering
 
 ☐ footer parallax animation is fucked up at the moment
+☐ when you navigate to a different page, its fine on reload
 
 ☐ add parallax to all sections, and perhaps even alternate dark and light sections?
 but add parallax for sure, get inspo from homepage: by monolog

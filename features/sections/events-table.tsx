@@ -152,8 +152,8 @@ export function EventsTable({ events }: { events: EventItem[] }) {
     <section className="section-padding pt-0" aria-label="Events">
       <table className="w-full table-fixed border-collapse text-ink">
         <colgroup>
-          <col className="w-3/5 lg:w-2/5" />
-          <col className="w-2/5 lg:w-1/5" />
+          <col className="w-3/5 lg:w-3/5" />
+          {/* <col className="w-2/5 lg:w-1/5" /> */}
           <col className="hidden w-2/5 lg:table-column" />
         </colgroup>
         <thead>
@@ -161,9 +161,9 @@ export function EventsTable({ events }: { events: EventItem[] }) {
             <th scope="col" className="type-eyebrow pb-8 text-left font-normal">
               Client
             </th>
-            <th scope="col" className="type-eyebrow pb-8 text-right font-normal lg:text-left">
+            {/* <th scope="col" className="type-eyebrow pb-8 text-right font-normal lg:text-left">
               Type
-            </th>
+            </th> */}
             <th scope="col" className="type-eyebrow hidden pb-8 text-right font-normal lg:table-cell">
               Location
             </th>
@@ -190,18 +190,18 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                   >
                     <button
                       type="button"
-                      className="w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8 motion-safe:transition-transform motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:translate-x-12"
+                      className="w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8 motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12"
                       aria-expanded={isOpen}
                       aria-controls={`event-details-${event.id}`}
                     >
                       {event.client}
                     </button>
                   </th>
-                  <td className="type-eyebrow-xs p-0 text-right align-middle lg:text-left">{event.type}</td>
-                  <td className="type-eyebrow-xs hidden p-0 text-right align-middle lg:table-cell">{event.location}</td>
+                  {/* <td className="type-eyebrow-xs p-0 text-right align-middle motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12 lg:text-left">{event.type}</td> */}
+                  <td className="type-eyebrow-xs hidden p-0 text-right align-middle motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12 lg:table-cell">{event.location}</td>
                 </tr>
                 <tr className="border-rule border-b">
-                  <td colSpan={3} className="p-0">
+                  <td colSpan={2} className="p-0">
                     <div
                       id={`event-details-${event.id}`}
                       ref={(el) => {
