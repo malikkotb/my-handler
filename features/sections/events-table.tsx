@@ -9,6 +9,34 @@ import { type EventImage, type EventItem } from "./events-data";
 
 type GsapBundle = Awaited<ReturnType<typeof loadGsap>>;
 
+const DIRECTIONAL_TRANSFORMS: Record<string, string> = {
+  top: "translateY(-100%)",
+  bottom: "translateY(100%)",
+};
+
+function getRowHoverDirection(event: MouseEvent, el: HTMLElement): string {
+  const { top, height } = el.getBoundingClientRect();
+  return event.clientY - top < height / 2 ? "top" : "bottom";
+}
+
+function animateTileEnter(e: React.MouseEvent<HTMLTableRowElement>) {
+  const tile = e.currentTarget.querySelector<HTMLElement>("[data-directional-hover-tile]");
+  if (!tile) return;
+  const dir = getRowHoverDirection(e.nativeEvent, e.currentTarget);
+  tile.style.transition = "none";
+  tile.style.transform = DIRECTIONAL_TRANSFORMS[dir] ?? "translateY(-100%)";
+  void tile.offsetHeight;
+  tile.style.transition = "";
+  tile.style.transform = "translateY(0)";
+}
+
+function animateTileLeave(e: React.MouseEvent<HTMLTableRowElement>) {
+  const tile = e.currentTarget.querySelector<HTMLElement>("[data-directional-hover-tile]");
+  if (!tile) return;
+  const dir = getRowHoverDirection(e.nativeEvent, e.currentTarget);
+  tile.style.transform = DIRECTIONAL_TRANSFORMS[dir] ?? "translateY(100%)";
+}
+
 export function EventsTable({ events }: { events: EventItem[] }) {
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const detailRefs = React.useRef(new Map<string, HTMLDivElement>());
@@ -144,18 +172,26 @@ export function EventsTable({ events }: { events: EventItem[] }) {
             return (
               <React.Fragment key={event.id}>
                 <tr
-                  className="group cursor-pointer"
+                  className="group relative cursor-pointer [clip-path:inset(0)]"
                   onClick={() => toggleEvent(event.id)}
+                  onMouseEnter={animateTileEnter}
+                  onMouseLeave={animateTileLeave}
                   data-cursor-hover
                   data-cursor-text={isOpen ? "Close" : "View Project"}
                 >
                   <th
                     scope="row"
-                    className="type-h3-alt whitespace-nowrap p-0 py-10 text-left align-middle font-normal uppercase lg:py-12"
+                    className="type-h5 whitespace-nowrap p-0 py-10 text-left align-middle font-normal uppercase lg:py-12"
                   >
+                    <div
+                      aria-hidden="true"
+                      data-directional-hover-tile=""
+                      className="pointer-events-none absolute -inset-px bg-ink will-change-transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                      style={{ transform: "translateY(-100%)" }}
+                    />
                     <button
                       type="button"
-                      className="w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8 motion-safe:transition-[padding-left] motion-safe:duration-[260ms] motion-safe:ease-[ease] motion-safe:group-hover:pl-8"
+                      className="relative z-10 w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8 motion-safe:transition-[padding-left] motion-safe:duration-300 motion-safe:ease-[ease] motion-safe:group-hover:pl-8 transition-colors duration-200 ease-[ease] group-hover:text-surface"
                       aria-expanded={isOpen}
                       aria-controls={`event-details-${event.id}`}
                     >
@@ -163,7 +199,7 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                     </button>
                   </th>
                   {/* <td className="type-eyebrow-xs p-0 text-right align-middle motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12 lg:text-left">{event.type}</td> */}
-                  <td className="type-eyebrow-xs p-0 text-right align-middle motion-safe:transition-[padding-right] motion-safe:duration-[260ms] motion-safe:ease-[ease] motion-safe:group-hover:pr-8">{event.location}</td>
+                  <td className="type-eyebrow-xs relative z-10 p-0 text-right align-middle motion-safe:transition-[padding-right] motion-safe:duration-300 motion-safe:ease-[ease] motion-safe:group-hover:pr-8 transition-colors duration-200 ease-[ease] group-hover:text-surface">{event.location}</td>
                 </tr>
                 <tr className="border-rule border-b">
                   <td colSpan={2} className="p-0">
@@ -202,7 +238,7 @@ function EventImageStrip({ images }: { images: EventImage[] }) {
   return (
     <div
       ref={scrollRef}
-      className="scrollbar-invisible mt-20 flex cursor-grab items-end gap-8 overflow-x-auto data-[dragging]:cursor-grabbing lg:gap-12"
+      className="scrollbar-invisible mt-20 flex cursor-grab items-end gap-8 overflow-x-auto data-dragging:cursor-grabbing lg:gap-12"
     >
       {images.map((image) => (
         <img

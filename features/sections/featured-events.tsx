@@ -166,7 +166,7 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
               </figure>
             ))}
 
-            <CtaButton to="/events" className="cta-pt pointer-events-auto flex justify-center pb-40">
+            <CtaButton to="/events" className="cta-pt w-full items-center pointer-events-auto flex justify-center pb-40">
               {t("viewAllEvents")}
             </CtaButton>
           </div>
@@ -174,9 +174,9 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
       </section>
 
       {/* Mobile: stacked cards */}
-      <section className="layout-grid featured-images-gap section-px py-40 text-ink lg:hidden" aria-label="Featured events">
+      <section className="flex flex-col items-center featured-images-gap section-px py-40 text-ink lg:hidden" aria-label="Featured events">
         {featured.map((event) => (
-          <article key={event.id} className="col-span-full grid gap-8">
+          <article key={event.id} className="flex flex-col gap-8">
             <FeaturedEventParallaxFrame>
               <FeaturedEventImage event={event} />
             </FeaturedEventParallaxFrame>
@@ -187,7 +187,7 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
           </article>
         ))}
 
-        <CtaButton to="/events" className="col-span-full flex justify-center">
+        <CtaButton to="/events">
           {t("viewAllEvents")}
         </CtaButton>
       </section>

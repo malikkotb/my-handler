@@ -20,6 +20,7 @@
   --text-h3: clamp(2rem, 1.502vw + 1.648rem, 3.451rem);
   --text-h3-alt: clamp(1.25rem, 1.849vw + 0.817rem, 2rem);
   --text-h4: clamp(1.25rem, 1.878vw + 0.81rem, 3.063rem);
+  --text-h5: clamp(1rem, 0.777vw + 0.818rem, 1.75rem);
   --text-eyebrow: 1rem;
   --text-eyebrow-alt: clamp(1rem, 0.376vw + 0.912rem, 1.375rem);
   --text-eyebrow-xs: 0.75rem;
@@ -221,6 +222,13 @@ main {
   .type-h4 {
     font-family: var(--font-pp-museum-light);
     font-size: var(--text-h4);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-normal);
+  }
+
+  .type-h5 {
+    font-family: var(--font-pp-museum-light);
+    font-size: var(--text-h5);
     line-height: var(--leading-tight);
     letter-spacing: var(--tracking-normal);
   }
