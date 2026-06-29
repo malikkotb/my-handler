@@ -1,6 +1,5 @@
 "use client";
 
-import { useLenis } from "lenis/react";
 import * as React from "react";
 import { CURSOR_REFRESH_EVENT } from "~/features/dom/dynamic-text-cursor";
 import { useDragScroll } from "~/features/dom/use-drag-scroll";
@@ -13,20 +12,8 @@ type GsapBundle = Awaited<ReturnType<typeof loadGsap>>;
 export function EventsTable({ events }: { events: EventItem[] }) {
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const detailRefs = React.useRef(new Map<string, HTMLDivElement>());
-  const rowRefs = React.useRef(new Map<string, HTMLTableRowElement>());
   const gsapRef = React.useRef<GsapBundle | null>(null);
   const reduceMotionRef = React.useRef(false);
-  const lenis = useLenis();
-  const lenisRef = React.useRef(lenis);
-  const scrollTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  React.useEffect(() => {
-    lenisRef.current = lenis;
-  }, [lenis]);
-  React.useEffect(() => {
-    return () => {
-      if (scrollTimeoutRef.current !== null) clearTimeout(scrollTimeoutRef.current);
-    };
-  }, []);
 
   React.useEffect(() => {
     reduceMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -122,24 +109,6 @@ export function EventsTable({ events }: { events: EventItem[] }) {
           if (nextEl) {
             animateDetails(nextEl, true);
           }
-
-          const rowEl = rowRefs.current.get(next);
-          if (rowEl) {
-            const rect = rowEl.getBoundingClientRect();
-            const HEADER = 80;
-            // Scroll if the row is in the bottom third of the viewport — content would expand off-screen.
-            if (rect.top > window.innerHeight * 0.65 || rect.top < HEADER) {
-              if (scrollTimeoutRef.current !== null) clearTimeout(scrollTimeoutRef.current);
-              scrollTimeoutRef.current = setTimeout(() => {
-                scrollTimeoutRef.current = null;
-                lenisRef.current?.scrollTo(rowEl, {
-                  offset: -HEADER,
-                  duration: 1.4,
-                  easing: (t) => 1 - Math.pow(1 - t, 4),
-                });
-              }, 220);
-            }
-          }
         }
 
         return next;
@@ -149,12 +118,12 @@ export function EventsTable({ events }: { events: EventItem[] }) {
   );
 
   return (
-    <section className="section-padding pt-0" aria-label="Events">
+    <section className="section-padding pt-0 overflow-clip" aria-label="Events">
       <table className="w-full table-fixed border-collapse text-ink">
         <colgroup>
           <col className="w-3/5 lg:w-3/5" />
           {/* <col className="w-2/5 lg:w-1/5" /> */}
-          <col className="hidden w-2/5 lg:table-column" />
+          <col className="w-2/5" />
         </colgroup>
         <thead>
           <tr className="border-rule border-b">
@@ -164,7 +133,7 @@ export function EventsTable({ events }: { events: EventItem[] }) {
             {/* <th scope="col" className="type-eyebrow pb-8 text-right font-normal lg:text-left">
               Type
             </th> */}
-            <th scope="col" className="type-eyebrow hidden pb-8 text-right font-normal lg:table-cell">
+            <th scope="col" className="type-eyebrow pb-8 text-right font-normal">
               Location
             </th>
           </tr>
@@ -175,10 +144,6 @@ export function EventsTable({ events }: { events: EventItem[] }) {
             return (
               <React.Fragment key={event.id}>
                 <tr
-                  ref={(el) => {
-                    if (el) rowRefs.current.set(event.id, el);
-                    else rowRefs.current.delete(event.id);
-                  }}
                   className="group cursor-pointer"
                   onClick={() => toggleEvent(event.id)}
                   data-cursor-hover
@@ -190,7 +155,7 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                   >
                     <button
                       type="button"
-                      className="w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8 motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12"
+                      className="w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8 motion-safe:transition-[padding-left] motion-safe:duration-[260ms] motion-safe:ease-[ease] motion-safe:group-hover:pl-8"
                       aria-expanded={isOpen}
                       aria-controls={`event-details-${event.id}`}
                     >
@@ -198,7 +163,7 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                     </button>
                   </th>
                   {/* <td className="type-eyebrow-xs p-0 text-right align-middle motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12 lg:text-left">{event.type}</td> */}
-                  <td className="type-eyebrow-xs hidden p-0 text-right align-middle motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12 lg:table-cell">{event.location}</td>
+                  <td className="type-eyebrow-xs p-0 text-right align-middle motion-safe:transition-[padding-right] motion-safe:duration-[260ms] motion-safe:ease-[ease] motion-safe:group-hover:pr-8">{event.location}</td>
                 </tr>
                 <tr className="border-rule border-b">
                   <td colSpan={2} className="p-0">

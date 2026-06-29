@@ -27,8 +27,6 @@ CTA's
 ☐ add parallax to all sections, and perhaps even alternate dark and light sections?
 but add parallax for sure, get inspo from homepage: by monolog
 
-☐ the opening and closing of rows in events list is weird at the moment, and not smooth
-
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
 ☐ add webhooks in sanity and vercel for immediate content updates
