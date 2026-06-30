@@ -143,7 +143,7 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
   return (
     <div>
       {/* Desktop: sticky titles over a scrolling image column */}
-      <section className="relative hidden text-ink lg:-mt-160 lg:block" aria-label="Featured events">
+      <section className="relative hidden text-ink lg:-mt-240 lg:block" aria-label="Featured events">
         <div className="layout-grid section-px pointer-events-none sticky top-0 z-10 h-dvh-1 items-center">
           <span className="type-eyebrow col-span-2 col-start-1 overflow-visible whitespace-nowrap">{active?.name}</span>
           <span className="type-eyebrow col-span-2 col-start-9 overflow-visible whitespace-nowrap text-right">

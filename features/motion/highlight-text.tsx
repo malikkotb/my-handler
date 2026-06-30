@@ -40,8 +40,7 @@ export function HighlightText({
     loadGsap().then(({ gsap, ScrollTrigger }) => {
       if (!ref.current) return;
 
-      const split = new SplitText(el);
-      split.split();
+      const split = new SplitText(el, { type: "words,chars", noBalance: true });
 
       const tl = gsap.timeline({
         scrollTrigger: {

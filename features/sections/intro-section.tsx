@@ -1,14 +1,15 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { HighlightText } from "~/features/motion/highlight-text";
 
 export function IntroSection() {
   const t = useTranslations("intro");
 
   return (
-    <section className="section-padding lg:pb-0 border-b border-accent bg-surface text-ink" aria-label="Intro">
+    <section className="section-padding lg:pb-0 bg-surface text-ink" aria-label="Intro">
       <div className="layout-grid">
-        <h3 className="type-h3 col-span-full">{t("tagline")}</h3>
+        <HighlightText as="h3" className="type-h3 col-span-full">{t("tagline")}</HighlightText>
 
        {/*  <div className="col-span-8 col-start-3 mt-40 lg:col-span-2 lg:col-start-5 lg:mt-60">
           <p className="type-eyebrow mb-10">{t("missionEyebrow")}</p>
