@@ -28,6 +28,12 @@ export const event = defineType({
       rows: 4,
     }),
     defineField({
+      name: "descriptionFrench",
+      type: "text",
+      title: "Description (French)",
+      rows: 4,
+    }),
+    defineField({
       name: "images",
       type: "array",
       title: "Images",

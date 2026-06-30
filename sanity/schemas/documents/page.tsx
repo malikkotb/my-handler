@@ -123,6 +123,11 @@ export const page = defineType({
               type: "string",
               title: "Event type",
             }),
+            defineField({
+              name: "typeFrench",
+              type: "string",
+              title: "Event type (French)",
+            }),
           ],
           preview: {
             select: {
@@ -159,6 +164,11 @@ export const page = defineType({
               name: "name",
               type: "string",
               title: "Service name",
+            }),
+            defineField({
+              name: "nameFrench",
+              type: "string",
+              title: "Service name (French)",
             }),
           ],
           preview: {

@@ -549,6 +549,7 @@ export type Event = {
   type?: string;
   location?: string;
   description?: string;
+  descriptionFrench?: string;
   images?: Array<{
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -908,6 +909,7 @@ export type Page = {
     };
     name?: string;
     type?: string;
+    typeFrench?: string;
     _type: "featuredEvent";
     _key: string;
   }>;
@@ -920,6 +922,7 @@ export type Page = {
       _type: "image";
     };
     name?: string;
+    nameFrench?: string;
     _type: "service";
     _key: string;
   }>;
