@@ -36,7 +36,7 @@ export default async function LegalPage({ params }: LegalPageProps) {
           <dl className="flex flex-col gap-16">
             {fields.map(({ label, value }) => (
               <div key={label} className="flex flex-col gap-4">
-                <dt className="type-caption">{label}</dt>
+                <dt className="type-eyebrow">{label}</dt>
                 <dd className="type-body">{value}</dd>
               </div>
             ))}
