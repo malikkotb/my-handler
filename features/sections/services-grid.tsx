@@ -39,6 +39,7 @@ function resolveImageSrc(image: Service["image"]): string | null {
 const CLIP_HIDDEN = "inset(50% 50% 50% 50%)";
 const CLIP_VISIBLE = "inset(0% 0% 0% 0%)";
 const DURATION = 0.48;
+const HIDE_DELAY = 0.24;
 
 function ServiceImage({
   service,
@@ -90,10 +91,10 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
 
   const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const collapse = React.useCallback((el: HTMLImageElement) => {
+  const collapse = React.useCallback((el: HTMLImageElement, delay = 0) => {
     const bundle = gsapRef.current;
     if (!bundle) return;
-    bundle.gsap.to(el, { clipPath: CLIP_HIDDEN, duration: reducedMotion() ? 0 : DURATION, ease: "power3.out" });
+    bundle.gsap.to(el, { clipPath: CLIP_HIDDEN, duration: reducedMotion() ? 0 : DURATION, delay: reducedMotion() ? 0 : delay, ease: "power3.out" });
   }, []);
 
   const onEnter = React.useCallback(
@@ -113,7 +114,7 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
           duration: reducedMotion() ? 0 : DURATION,
           ease: "power3.out",
           onComplete: () => {
-            if (activeIdRef.current !== id) collapse(el);
+            if (activeIdRef.current !== id) collapse(el, HIDE_DELAY);
           },
         }
       );
@@ -127,7 +128,7 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
     if (!bundle) return;
     for (const { id } of services) {
       const el = imageRefs.current[id];
-      if (el && !bundle.gsap.isTweening(el)) collapse(el);
+      if (el && !bundle.gsap.isTweening(el)) collapse(el, HIDE_DELAY);
     }
   }, [collapse, services]);
 

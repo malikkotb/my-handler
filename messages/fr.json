@@ -84,6 +84,19 @@
       }
     }
   },
+  "contact": {
+    "headline1": "Rendons votre événement",
+    "headline2": "inoubliable.",
+    "email": "hello@myhandler.com",
+    "phone": "+000 000 000",
+    "city": "PARIS"
+  },
+  "eventsTable": {
+    "clientHeader": "Client",
+    "locationHeader": "Lieu",
+    "cursorClose": "Fermer",
+    "cursorView": "Voir le projet"
+  },
   "clients": {
     "heading": "Clients"
   },

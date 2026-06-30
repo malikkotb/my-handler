@@ -84,6 +84,19 @@
       }
     }
   },
+  "contact": {
+    "headline1": "Let's make your event",
+    "headline2": "unforgettable.",
+    "email": "hello@myhandler.com",
+    "phone": "+000 000 000",
+    "city": "PARIS"
+  },
+  "eventsTable": {
+    "clientHeader": "Client",
+    "locationHeader": "Location",
+    "cursorClose": "Close",
+    "cursorView": "View Project"
+  },
   "clients": {
     "heading": "Clients"
   },

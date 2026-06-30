@@ -12,19 +12,9 @@ apply new texts from case study document
 TEXT ANIMATIONS LIKE HOUSE OF HOENY (eduardo website)
 ☐ text stagger animations on all texts (check osmo and Monolog and Paronyme for examples)
 
-☐ check if I should stick to using lg: as main breakpoint or use md: instead
-
-Events page
-☐ make the hover interaction snappier like bymonolog
-☐ the scrollable list for events: https://www.edicioneselfuerte.com/
-☐ add some type of effect either on the custom cursor or on the list items, when hovering them
-
-
 CTA's
 ☐ for CTA hover transitions: maybe we can use a blur flicker through ? where the letters translate slighly and blur from left to right ?
 ☐ MAKE SURE ALL LINKS (CTA LINKS) GO TO CORRECT PAGES AND HAVE MICRO INTERACTIONS
-
-☐ remove all inline styles from the pages and components
 
 ☐ emil design engineering
 

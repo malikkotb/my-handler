@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { CURSOR_REFRESH_EVENT } from "~/features/dom/dynamic-text-cursor";
+import { useTranslations } from "next-intl";
+// import { CURSOR_REFRESH_EVENT } from "~/features/dom/dynamic-text-cursor";
 import { useDragScroll } from "~/features/dom/use-drag-scroll";
 import { loadGsap } from "~/features/motion/gsap";
 import { cx } from "~/features/style/utils";
@@ -38,6 +39,7 @@ function animateTileLeave(e: React.MouseEvent<HTMLTableRowElement>) {
 }
 
 export function EventsTable({ events }: { events: EventItem[] }) {
+  const t = useTranslations("eventsTable");
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const detailRefs = React.useRef(new Map<string, HTMLDivElement>());
   const gsapRef = React.useRef<GsapBundle | null>(null);
@@ -80,9 +82,9 @@ export function EventsTable({ events }: { events: EventItem[] }) {
 
   // Toggling a row swaps its `data-cursor-text` ("View Project" ⇄ "Close") without the
   // pointer moving. Nudge the dynamic cursor to re-read once the new value is committed.
-  React.useEffect(() => {
-    window.dispatchEvent(new Event(CURSOR_REFRESH_EVENT));
-  }, [activeId]);
+  // React.useEffect(() => {
+  //   window.dispatchEvent(new Event(CURSOR_REFRESH_EVENT));
+  // }, [activeId]);
 
   const animateDetails = React.useCallback((element: HTMLElement, open: boolean) => {
     const bundle = gsapRef.current;
@@ -156,13 +158,13 @@ export function EventsTable({ events }: { events: EventItem[] }) {
         <thead>
           <tr className="border-rule border-b">
             <th scope="col" className="type-eyebrow pb-8 text-left font-normal">
-              Client
+              {t("clientHeader")}
             </th>
             {/* <th scope="col" className="type-eyebrow pb-8 text-right font-normal lg:text-left">
               Type
             </th> */}
             <th scope="col" className="type-eyebrow pb-8 text-right font-normal">
-              Location
+              {t("locationHeader")}
             </th>
           </tr>
         </thead>
@@ -176,8 +178,8 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                   onClick={() => toggleEvent(event.id)}
                   onMouseEnter={animateTileEnter}
                   onMouseLeave={animateTileLeave}
-                  data-cursor-hover
-                  data-cursor-text={isOpen ? "Close" : "View Project"}
+                  // data-cursor-hover
+                  // data-cursor-text={isOpen ? t("cursorClose") : t("cursorView")}
                 >
                   <th
                     scope="row"
