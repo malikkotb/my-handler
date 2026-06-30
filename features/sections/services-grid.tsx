@@ -138,7 +138,7 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
               className="group layout-grid-row cursor-text border-rule border-b py-20 lg:py-28"
               onMouseEnter={() => onEnter(index)}
             >
-              <h4 className="type-h4 col-span-full uppercase motion-safe:transition-transform motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:translate-x-12">
+              <h4 className="type-h4 col-span-full uppercase motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-[ease] motion-safe:group-hover:translate-x-12">
                 {service.name || (service.labelKey ? t(`services.${service.labelKey}`) : "")}
               </h4>
             </li>
@@ -147,7 +147,7 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
 
         <div
           ref={previewRef}
-          className="aspect-service-card h-services-preview pointer-events-none absolute right-80 hidden overflow-hidden lg:block"
+          className="aspect-service-card h-services-preview pointer-events-none absolute right-20 hidden overflow-hidden lg:block"
           aria-hidden="true"
         >
           {/* src is set imperatively on mount and on hover */}

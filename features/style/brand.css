@@ -448,5 +448,7 @@ main {
 }
 
 @utility transition-transform-color {
-  transition-property: transform, color;
+  /* Tailwind v4 maps `translate-*` to the `translate` property (not `transform`),
+     so it must be listed explicitly or translate-based moves won't animate. */
+  transition-property: transform, translate, color;
 }

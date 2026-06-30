@@ -2,6 +2,10 @@
 
 ☐ three.js jouney to make 3d; use HEYCLICKY to make it correct colour
 
+☐ TODOS throughout page
+
+☐ subtle animation on the logo (in the header)
+
 ☐ text reveal animations on scroll for headings
 TEXT ANIMATIONS LIKE HOUSE OF HOENY (eduardo website)
 ☐ text stagger animations on all texts (check osmo and Monolog and Paronyme for examples)
@@ -21,9 +25,6 @@ CTA's
 ☐ remove all inline styles from the pages and components
 
 ☐ emil design engineering
-
-☐ footer parallax animation is fucked up at the moment
-☐ when you navigate to a different page, its fine on reload
 
 ☐ add parallax to all sections, and perhaps even alternate dark and light sections?
 but add parallax for sure, get inspo from homepage: by monolog
@@ -45,8 +46,6 @@ Create the Revalidate webhook (needs your deployed HTTPS URL)? … yes
 ☐ SEO check!! pagespeed insights and fix
 
 ☐ french version of impressum page
-
-☐ TODOS throughout page
 
 pressed states on buttons
     my go-to is a simple scale(0.99) on press. tiny change, big difference. gives you that clicky ux feedback.
