@@ -13,6 +13,7 @@ export function SiteFooter() {
   const wrapRef = React.useRef<HTMLDivElement>(null);
   const innerRef = React.useRef<HTMLElement>(null);
   const darkRef = React.useRef<HTMLDivElement>(null);
+  const blurRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -38,6 +39,13 @@ export function SiteFooter() {
         // wrong rest position and the footer stays visibly broken. Explicit endpoints are immune.
         tl.fromTo(innerRef.current, { yPercent: -25 }, { yPercent: 0, ease: "none" });
         tl.fromTo(darkRef.current, { opacity: 0.5 }, { opacity: 0, ease: "none" }, "<");
+
+        tl.eventCallback("onUpdate", () => {
+          if (blurRef.current) {
+            const blur = 5 * (1 - tl.progress());
+            blurRef.current.style.backdropFilter = `blur(${blur}px)`;
+          }
+        });
       }, wrapRef);
 
       cleanup = () => ctx.revert();
@@ -106,6 +114,7 @@ export function SiteFooter() {
       </footer>
 
       <div ref={darkRef} data-footer-parallax-dark className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
+      <div ref={blurRef} data-footer-parallax-blur className="pointer-events-none absolute inset-0" />
     </div>
   );
 }
