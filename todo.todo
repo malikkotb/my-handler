@@ -4,12 +4,9 @@
 
 ☐ subtle intro animation on the images or not ? check byMonolog
 
-apply new texts from case study document
+☐ apply new texts from case study document sent by antonina
 
-APPLY slight blur to text animaton, just like in the footer reveal, so its consistent with eveyrhting
-
-☐ Boucheron, Gucci, Rabanne, Lancôme, Mugler, BNP Paribas, Comexposium
-therse are the logos to put on welcome page :))
+☐ APPLY slight blur to text animaton, just like in the footer reveal, so its consistent with eveyrhting
 
 ☐ text reveal animations on scroll for headings
 TEXT ANIMATIONS LIKE HOUSE OF HOENY (eduardo website)
@@ -21,8 +18,7 @@ CTA's
 
 ☐ emil design engineering
 
-☐ add parallax to all sections, and perhaps even alternate dark and light sections?
-but add parallax for sure, get inspo from homepage: by monolog
+☐ add parallax to some more sections; get inspo from homepage: by monolog
 
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
@@ -39,8 +35,3 @@ Create the Revalidate webhook (needs your deployed HTTPS URL)? … yes
 ℹ️  https://example.com is a placeholder, so the webhook registers but will not deliver. Repoint it at your deployed HTTPS URL in Manage → API → Webhooks (or re-run this setup after deploying).
 
 ☐ SEO check!! pagespeed insights and fix
-
-☐ french version of impressum page
-
-pressed states on buttons
-    my go-to is a simple scale(0.99) on press. tiny change, big difference. gives you that clicky ux feedback.

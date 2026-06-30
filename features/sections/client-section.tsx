@@ -12,20 +12,28 @@ type Client = {
 
 const CLIENTS: Client[] = [
   { name: "BOUCHERON", maskUrl: "/logos/clients/boucheron.svg" },
+  { name: "GUCCI", maskUrl: "/logos/clients/gucci.svg" },
+  { name: "RABANNE", maskUrl: "/logos/clients/rabanne.svg" },
+  { name: "LANCÔME", maskUrl: "/logos/clients/lancome.svg" },
+  { name: "MUGLER", maskUrl: "/logos/clients/mugler.svg" },
+  { name: "BNP PARIBAS", maskUrl: "/logos/clients/bnp-paribas.svg" },
+  { name: "COMEXPOSIUM", maskUrl: "/logos/clients/comexposium.svg" },
   { name: "RUINART", maskUrl: "/logos/Ruinart.svg" },
   { name: "AXA", maskUrl: "/logos/clients/axa.svg" },
   { name: "BANQUE DE FRANCE", maskUrl: "/logos/clients/banque-de-france.svg" },
   { name: "LINDA FARROW", maskUrl: "/logos/clients/linda-farrow.svg" },
-  { name: "BNP PARIBAS", maskUrl: "/logos/clients/bnp-paribas.svg" },
 ];
+
+const HOMEPAGE_CLIENTS = CLIENTS.slice(0, 7);
 
 const PREVIEW_H = 88;
 
 type ClientSectionProps = {
   titleAlign?: "left" | "right";
+  isHomepage?: boolean;
 };
 
-export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
+export function ClientSection({ titleAlign = "left", isHomepage = false }: ClientSectionProps) {
   const t = useTranslations("clients");
   const containerRef = React.useRef<HTMLDivElement>(null);
   const listRef = React.useRef<HTMLUListElement>(null);
@@ -64,7 +72,7 @@ export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
       const li = liRefs.current[positionIndex];
       const preview = previewRef.current;
       const logo = logoRef.current;
-      const client = CLIENTS[index];
+      const client = (isHomepage ? HOMEPAGE_CLIENTS : CLIENTS)[index];
       if (!li || !preview || !logo || !client) {
         return;
       }
@@ -155,6 +163,8 @@ export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
     }
   };
 
+  const clients = isHomepage ? HOMEPAGE_CLIENTS : CLIENTS;
+
   return (
     <section className="section-padding" aria-label="Clients">
       <div ref={containerRef} className="layout-grid relative">
@@ -166,7 +176,7 @@ export function ClientSection({ titleAlign = "left" }: ClientSectionProps) {
           className="group col-start-3 col-span-6 row-start-2 flex flex-col gap-16 lg:col-span-6 lg:col-start-5"
           onMouseLeave={onListLeave}
         >
-          {CLIENTS.map((client, index) => (
+          {clients.map((client, index) => (
             // biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover preview only
             <li
               key={client.name}

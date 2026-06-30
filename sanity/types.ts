@@ -1210,7 +1210,7 @@ export type AllSanitySchemaTypes =
 
 // Source: app/(web)/[locale]/[[...uri]]/page.tsx
 // Variable: PageQ
-// Query: *[_type == "page" && defined(uri.current) && uri.current == $uri][0]{    _id,    _type,    title,    "uri": coalesce(uri.current, "/"),    "showHeader": coalesce(showHeader, true),    "showFooter": coalesce(showFooter, true),    featuredEvents[]{      "id": _key,      name,      type,      image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},    },    services[]{      "id": _key,      name,      image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},    },    seoMetadata{  title,  description,  image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},  "robots": select(noIndex => "noindex,nofollow", true => undefined),},  }
+// Query: *[_type == "page" && defined(uri.current) && uri.current == $uri][0]{    _id,    _type,    title,    "uri": coalesce(uri.current, "/"),    "showHeader": coalesce(showHeader, true),    "showFooter": coalesce(showFooter, true),    featuredEvents[]{      "id": _key,      name,      type,      image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},    },    services[]{      "id": _key,      name,      nameFrench,      image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},    },    seoMetadata{  title,  description,  image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},  "robots": select(noIndex => "noindex,nofollow", true => undefined),},  }
 export type PageQResult = {
   _id: string;
   _type: "page";
@@ -1237,6 +1237,7 @@ export type PageQResult = {
   services: Array<{
     id: string;
     name: string | undefined;
+    nameFrench: string | undefined;
     image: {
       _id: string | undefined;
       _rev: string | undefined;

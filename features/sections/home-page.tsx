@@ -16,7 +16,7 @@ export function HomePage({ page }: { page?: PageQResult }) {
         <IntroSection />
         <FeaturedEvents events={page?.featuredEvents} />
         <ServicesGrid services={page?.services} />
-        <ClientSection />
+        <ClientSection isHomepage />
       </div>
     </SiteShell>
   );

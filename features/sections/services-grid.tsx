@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { CtaButton } from "~/components/cta-button";
 import { loadGsap } from "~/features/motion/gsap";
@@ -19,6 +19,7 @@ type Service = {
 type ServiceInput = {
   id?: string | null;
   name?: string | null;
+  nameFrench?: string | null;
   image?: ImageFragmentResult | null;
 };
 
@@ -65,10 +66,11 @@ function ServiceImage({
 
 export function ServicesGrid({ services: servicesInput }: { services?: ServiceInput[] | null }) {
   const t = useTranslations();
+  const locale = useLocale();
   const services: Service[] = servicesInput?.length
     ? servicesInput.map((service, index) => ({
         id: service.id ?? String(index),
-        name: service.name ?? "",
+        name: (locale === "fr" ? service.nameFrench : null) ?? service.name ?? "",
         image: service.image ?? null,
       }))
     : SERVICES;

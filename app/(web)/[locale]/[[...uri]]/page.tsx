@@ -30,6 +30,7 @@ const PageQ = defineQuery(`
     services[]{
       "id": _key,
       name,
+      nameFrench,
       image{${ImageFragment}},
     },
     seoMetadata{${SeoMetadataFragment}},
