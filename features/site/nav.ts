@@ -31,11 +31,9 @@ export type SocialLink = {
   href: string;
 };
 
-// TODO: replace with real social URLs.
 export const SOCIAL_LINKS: SocialLink[] = [
-  { label: "Instagram", href: "https://instagram.com" },
-  { label: "Facebook", href: "https://facebook.com" },
-  { label: "LinkedIn", href: "https://linkedin.com" },
+  { label: "Instagram", href: "https://www.instagram.com/myhandleragency/" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/my-handler/" },
 ];
 
 export const LABELS = {

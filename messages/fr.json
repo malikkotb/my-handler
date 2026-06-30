@@ -17,7 +17,21 @@
   },
   "legal": {
     "title": "Mentions légales",
-    "body": "Les informations légales seront ajoutées ici."
+    "publisherLabel": "Éditeur",
+    "publisher": "HENDLER",
+    "legalFormLabel": "Forme juridique",
+    "legalForm": "SAS",
+    "addressLabel": "Adresse",
+    "address": "88 rue de Sevrès, 75007 Paris, France",
+    "siretLabel": "SIRET",
+    "siret": "812 973 444 00019",
+    "vatLabel": "TVA",
+    "vat": "FR68812973444",
+    "emailLabel": "Email",
+    "email": "edouard@my-handler.com",
+    "directorLabel": "Directeur de la publication",
+    "director": "Edouard NEU-JANICKI — PRÉSIDENT DE SAS",
+    "copyright": "L'ensemble du contenu de ce site est la propriété exclusive de HENDLER, sauf mention contraire. Toute reproduction ou utilisation, totale ou partielle, est strictement interdite sans autorisation préalable."
   },
   "notFound": {
     "title": "404",
@@ -80,6 +94,8 @@
     "introTitle": "Notre Équipe",
     "introBody": "Chaque membre de l'équipe apporte une perspective unique, une expertise spécialisée et une compréhension profonde de la façon de créer des expériences à la fois fluides et porteuses de sens.",
     "teamTagline": "My Handler réunit un collectif de professionnels issus de secteurs variés et de disciplines créatives — notamment l'hôtellerie, les services de luxe, le marketing, la musique, la production, la logistique, la communication et la gestion d'événements.",
+    "teamBody1": "Ce qui définit notre équipe, ce n'est pas seulement la complémentarité de nos parcours, mais notre façon de collaborer. Nous allions créativité et précision, intuition et organisation, pensée stratégique et connexion humaine authentique. Cette approche multidisciplinaire nous permet de nous adapter à chaque projet avec flexibilité, sensibilité et souci du détail.",
+    "teamBody2": "Avant tout, nous croyons que les expériences exceptionnelles commencent par la compréhension des personnes. Nous écoutons, anticipons et construisons des relations fondées sur la confiance, le soin et la discrétion. En réunissant notre expertise, nous transformons les idées en réalités soigneusement façonnées, conçues pour dépasser les attentes.",
     "philosophy": {
       "heading": "Notre Philosophie",
       "firstParagraph": "My Handler imagine une entreprise dans laquelle chaque membre peut accéder à un environnement de travail unique qui lui permet d'atteindre ses objectifs, d'améliorer ses compétences et de contribuer à faire progresser les secteurs de l'événementiel et du voyage.",

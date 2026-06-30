@@ -16,8 +16,22 @@
     "copyright": "© 2026 MY HANDLER"
   },
   "legal": {
-    "title": "Legal",
-    "body": "Legal information will be added here."
+    "title": "Legal Notice",
+    "publisherLabel": "Publisher",
+    "publisher": "HENDLER",
+    "legalFormLabel": "Legal form",
+    "legalForm": "SAS",
+    "addressLabel": "Address",
+    "address": "88 rue de Sevrès, 75007 Paris, France",
+    "siretLabel": "SIRET",
+    "siret": "812 973 444 00019",
+    "vatLabel": "VAT",
+    "vat": "FR68812973444",
+    "emailLabel": "Email",
+    "email": "edouard@my-handler.com",
+    "directorLabel": "Publication director",
+    "director": "Edouard NEU-JANICKI — PRESIDENT DE SAS",
+    "copyright": "All content on this site is the exclusive property of HENDLER, unless otherwise stated. Any reproduction or use, in whole or in part, is strictly prohibited without prior authorisation."
   },
   "notFound": {
     "title": "404",
@@ -80,6 +94,8 @@
     "introTitle": "Our Team",
     "introBody": "Each team member contributes a unique perspective, specialized expertise, and a deep understanding of how to create experiences that feel both seamless and meaningful.",
     "teamTagline": "My Handler brings together a collective of professionals from diverse industries and creative disciplines — including hospitality, luxury services, marketing, music, production, logistics, communication, and event management.",
+    "teamBody1": "What defines our team is not only our complementary backgrounds, but the way we collaborate. We combine creativity with precision, intuition with organization, and strategic thinking with genuine human connection. This multidisciplinary approach allows us to adapt to every project with flexibility, sensitivity, and attention to detail.",
+    "teamBody2": "Above all, we believe exceptional experiences begin with understanding people. We listen, anticipate, and build relationships grounded in trust, care, and discretion. By bringing together our expertise, we transform ideas into carefully crafted realities designed to exceed expectations.",
     "philosophy": {
       "heading": "Our Philosophy",
       "firstParagraph": "My Handler envisions a company in which each member can access and enjoy a unique workplace that enables them to achieve their goals, improve their skills and contribute to improving the events and travel industry.",

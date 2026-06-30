@@ -89,7 +89,7 @@ function FeaturedEventParallaxFrame({ children }: { children: React.ReactNode })
   }, []);
 
   return (
-    <div ref={frameRef} className="aspect-3/2 w-full overflow-hidden bg-body/10 [&_img]:block [&_img]:h-full [&_img]:w-full [&_img]:scale-150 [&_img]:object-cover">
+    <div ref={frameRef} className="-mx-[5%] aspect-3/2 w-[110%] overflow-hidden bg-body/10 [&_img]:block [&_img]:h-full [&_img]:w-full [&_img]:scale-120 [&_img]:object-cover">
       {children}
     </div>
   );
