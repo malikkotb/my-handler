@@ -30,9 +30,14 @@ export function SiteFooter() {
         const scrollTrigger = { trigger: wrapRef.current, start: "top bottom", end: "top top", scrub: true };
 
         const tl = gsap.timeline({ scrollTrigger });
-        // Parallax amount: tweak yPercent to change how far the inner block travels.
-        tl.from(innerRef.current, { yPercent: -25, ease: "none" });
-        tl.from(darkRef.current, { opacity: 0.5, ease: "none" }, "<");
+        // Parallax amount: tweak the start yPercent to change how far the inner block travels.
+        // Use fromTo (explicit endpoints) rather than from: a scrubbed `.from()` re-captures the
+        // element's *current* transform as its rest state on every ScrollTrigger refresh. After a
+        // client-side (view-transition) navigation the trigger is created/refreshed while the
+        // element is mid-transform and scroll is still resetting, so `.from()` would lock in a
+        // wrong rest position and the footer stays visibly broken. Explicit endpoints are immune.
+        tl.fromTo(innerRef.current, { yPercent: -25 }, { yPercent: 0, ease: "none" });
+        tl.fromTo(darkRef.current, { opacity: 0.5 }, { opacity: 0, ease: "none" }, "<");
       }, wrapRef);
 
       cleanup = () => ctx.revert();
