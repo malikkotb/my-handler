@@ -4,13 +4,11 @@
 
 ☐ subtle intro animation on the images or not ? check byMonolog
 
-☐ apply new texts from case study document sent by antonina
+☐ apply new texts from case study document sent by antonina (and in french)
 
 ☐ APPLY slight blur to text animaton, just like in the footer reveal, so its consistent with eveyrhting
 
-☐ text reveal animations on scroll for headings
-TEXT ANIMATIONS LIKE HOUSE OF HOENY (eduardo website)
-☐ text stagger animations on all texts (check osmo and Monolog and Paronyme for examples)
+☐ text (reveal/stagger) animations on scroll for headings (monolog, osmo, paronyme, house of honey)
 
 CTA's
 ☐ for CTA hover transitions: maybe we can use a blur flicker through ? where the letters translate slighly and blur from left to right ?
@@ -22,16 +20,6 @@ CTA's
 
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
-☐ add webhooks in sanity and vercel for immediate content updates
-=> just like for ana project
-=> deploy local sanity studio (have a tab open on this, in codex)
-Create the Revalidate webhook (needs your deployed HTTPS URL)? … yes
-
-   Sanity delivers this webhook from its cloud, so it must point at a public URL (localhost and private hosts are rejected).
-   No deployment yet? Keep the example.com placeholder to register it now, then repoint it once you deploy.
-
-✔ Public site URL (https://…, not localhost). Full webhook = base + /api/revalidate … https://example.com
-
-ℹ️  https://example.com is a placeholder, so the webhook registers but will not deliver. Repoint it at your deployed HTTPS URL in Manage → API → Webhooks (or re-run this setup after deploying).
+☐ point my-handler.com DNS at this Vercel project once I have access in SANITY WEBHOOK
 
 ☐ SEO check!! pagespeed insights and fix
