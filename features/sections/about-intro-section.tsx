@@ -52,7 +52,7 @@ export function AboutIntroSection() {
           alt="My Handler team at work"
           width={768}
           height={432}
-          className="block h-full w-full scale-150 object-cover md:hidden"
+          className="block h-full w-full scale-120 object-cover md:hidden"
           loading="eager"
         />
         {/* biome-ignore lint/performance/noImgElement: local static asset */}
@@ -61,7 +61,7 @@ export function AboutIntroSection() {
           alt="My Handler team at work"
           width={1920}
           height={800}
-          className="hidden h-full w-full scale-150 object-cover md:block"
+          className="hidden h-full w-full scale-120 object-cover md:block"
           loading="eager"
         />
       </div>
