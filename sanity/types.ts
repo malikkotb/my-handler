@@ -546,8 +546,10 @@ export type Event = {
   _updatedAt: string;
   _rev: string;
   client?: string;
+  clientFrench?: string;
   type?: string;
   location?: string;
+  locationFrench?: string;
   description?: string;
   descriptionFrench?: string;
   images?: Array<{
@@ -1312,7 +1314,7 @@ export type ArticlePageUrisQResult = Array<{
 
 // Source: app/(web)/[locale]/events/page.tsx
 // Variable: EventsQ
-// Query: *[_type == "event"] | order(_createdAt desc) {    _id,    client,    type,    location,    description,    "images": images[defined(asset)]{        "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,    }  }
+// Query: *[_type == "event"] | order(_createdAt desc) {    _id,    "client": select($locale == "fr" => coalesce(clientFrench, client), client),    type,    "location": select($locale == "fr" => coalesce(locationFrench, location), location),    "description": select($locale == "fr" => coalesce(descriptionFrench, description), description),    "images": images[defined(asset)]{        "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,    }  }
 export type EventsQResult = Array<{
   _id: string;
   client: string | undefined;

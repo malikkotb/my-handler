@@ -12,6 +12,11 @@ export const event = defineType({
       title: "Client",
     }),
     defineField({
+      name: "clientFrench",
+      type: "string",
+      title: "Client (French)",
+    }),
+    defineField({
       name: "type",
       type: "string",
       title: "Type",
@@ -20,6 +25,11 @@ export const event = defineType({
       name: "location",
       type: "string",
       title: "Location",
+    }),
+    defineField({
+      name: "locationFrench",
+      type: "string",
+      title: "Location (French)",
     }),
     defineField({
       name: "description",

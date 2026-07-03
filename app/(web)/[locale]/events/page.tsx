@@ -18,10 +18,10 @@ type EventsPageProps = {
 const EventsQ = defineQuery(`
   *[_type == "event"] | order(_createdAt desc) {
     _id,
-    client,
+    "client": select($locale == "fr" => coalesce(clientFrench, client), client),
     type,
-    location,
-    description,
+    "location": select($locale == "fr" => coalesce(locationFrench, location), location),
+    "description": select($locale == "fr" => coalesce(descriptionFrench, description), description),
     "images": images[defined(asset)]{
       ${ImageFragment}
     }
@@ -42,6 +42,7 @@ export default async function EventsPage({ params }: EventsPageProps) {
 
   const raw = await sanityFetch<EventsQResult>({
     query: EventsQ,
+    params: { locale },
     options: { next: { tags: ["event"] } },
   });
 

@@ -3197,6 +3197,13 @@
         },
         "optional": true
       },
+      "clientFrench": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "type": {
         "type": "objectAttribute",
         "value": {
@@ -3205,6 +3212,13 @@
         "optional": true
       },
       "location": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "locationFrench": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
