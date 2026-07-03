@@ -237,6 +237,10 @@ export function EventsTable({ events }: { events: EventItem[] }) {
 function EventImageStrip({ images }: { images: EventImage[] }) {
   const scrollRef = useDragScroll<HTMLDivElement>();
 
+  if (images.length === 0) {
+    return null;
+  }
+
   return (
     <div
       ref={scrollRef}
