@@ -177,6 +177,7 @@ export function createRichTextField({
   whitelist,
   blacklist,
   variant = "simple",
+  lists = false,
   name = "appRichText",
   title = "Rich Text",
 }: {
@@ -188,6 +189,8 @@ export function createRichTextField({
   whitelist?: BlockName[];
   blacklist?: BlockName[];
   variant?: "simple" | "full";
+  /** Enable bullet/number lists in the "simple" variant without pulling in the rest of "full" (headings, media blocks, sup mark). */
+  lists?: boolean;
 }) {
   if (whitelist?.length && blacklist?.length) {
     throw new Error("createRichTextField: Cannot provide both whitelist and blacklist parameters.");
@@ -244,7 +247,7 @@ export function createRichTextField({
             ? [{ title: "Normal", value: "normal" }, captionStyle]
             : [{ title: "Normal", value: "normal" }, heading2Style, heading3Style, heading4Style, captionStyle],
         lists:
-          variant === "simple"
+          variant === "simple" && !lists
             ? []
             : [
                 { title: "Bullet", value: "bullet" },

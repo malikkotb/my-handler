@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 // import { CURSOR_REFRESH_EVENT } from "~/features/dom/dynamic-text-cursor";
 import { useDragScroll } from "~/features/dom/use-drag-scroll";
 import { loadGsap } from "~/features/motion/gsap";
+import { SanityRichText } from "~/features/rich-text";
 import { cx } from "~/features/style/utils";
 import { type EventImage, type EventItem } from "./events-data";
 
@@ -218,7 +219,11 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                       aria-hidden={!isOpen}
                     >
                       <div className="pt-12 pb-20 opacity-0 lg:pb-28">
-                        <p className="type-body max-w-xl">{event.description}</p>
+                        {event.descriptionRichText ? (
+                          <SanityRichText value={event.descriptionRichText} className="type-body max-w-xl" />
+                        ) : (
+                          <p className="type-body max-w-xl">{event.description}</p>
+                        )}
                         <EventImageStrip images={event.images} />
                       </div>
                     </div>

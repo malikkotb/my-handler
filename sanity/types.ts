@@ -552,6 +552,104 @@ export type Event = {
   locationFrench?: string;
   description?: string;
   descriptionFrench?: string;
+  descriptionRichText?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "caption";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<
+      | {
+          type?:
+            | "internal"
+            | "external"
+            | "email"
+            | "phone"
+            | "file"
+            | "params";
+          external?: string;
+          email?: string;
+          phone?: string;
+          file?: LinkFieldFile;
+          canDownload?: boolean;
+          paramsHref?: string;
+          internal?: Internal;
+          openInNewTab?: boolean;
+          _type: "linkField";
+          _key: string;
+        }
+      | {
+          color?: AppColor;
+          _type: "textColorField";
+          _key: string;
+        }
+      | {
+          color?: AppColor;
+          _type: "highlightColorField";
+          _key: string;
+        }
+      | {
+          widthPercent?: number;
+          _type: "indentField";
+          _key: string;
+        }
+    >;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  descriptionFrenchRichText?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "caption";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<
+      | {
+          type?:
+            | "internal"
+            | "external"
+            | "email"
+            | "phone"
+            | "file"
+            | "params";
+          external?: string;
+          email?: string;
+          phone?: string;
+          file?: LinkFieldFile;
+          canDownload?: boolean;
+          paramsHref?: string;
+          internal?: Internal;
+          openInNewTab?: boolean;
+          _type: "linkField";
+          _key: string;
+        }
+      | {
+          color?: AppColor;
+          _type: "textColorField";
+          _key: string;
+        }
+      | {
+          color?: AppColor;
+          _type: "highlightColorField";
+          _key: string;
+        }
+      | {
+          widthPercent?: number;
+          _type: "indentField";
+          _key: string;
+        }
+    >;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
   images?: Array<{
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -1314,13 +1412,65 @@ export type ArticlePageUrisQResult = Array<{
 
 // Source: app/(web)/[locale]/events/page.tsx
 // Variable: EventsQ
-// Query: *[_type == "event"] | order(_createdAt desc) {    _id,    "client": select($locale == "fr" => coalesce(clientFrench, client), client),    type,    "location": select($locale == "fr" => coalesce(locationFrench, location), location),    "description": select($locale == "fr" => coalesce(descriptionFrench, description), description),    "images": images[defined(asset)]{        "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,    }  }
+// Query: *[_type == "event"] | order(_createdAt desc) {    _id,    "client": select($locale == "fr" => coalesce(clientFrench, client), client),    type,    "location": select($locale == "fr" => coalesce(locationFrench, location), location),    "description": select($locale == "fr" => coalesce(descriptionFrench, description), description),    "descriptionRichText": select($locale == "fr" => descriptionFrenchRichText, descriptionRichText)[]{  ...,  _type == "mediaBlock" => {  caption,  useParallax,  "media": appMedia{videoOptions{  loop,  muted,  autoPlay,  "noControls": !controls,},lottieOptions{  loop,  autoPlay,},riveOptions{  loop,  autoPlay,},...select(  type == "image" && defined(image) => {    type,    image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},    "video": null,    "rive": null,    "lottie": null,    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      true => image.asset->metadata.dimensions.aspectRatio,    ),  },  type == "videoMux" && defined(video) => {    type,    "image": null,    "rive": null,    "lottie": null,    video{  "_id": asset->_id,  "_rev": asset->_rev,  "playbackId": asset->playbackId,  "thumbTime": coalesce(asset->thumbTime, 1),  "duration": asset->data.duration,  "dimensions": {    "width": asset->data.tracks[0].max_width,    "height": asset->data.tracks[0].max_height,    "aspectRatio": asset->data.tracks[0].max_width / asset->data.tracks[0].max_height,  }},    videoCover{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},    animatedThumbnail{enabled, start, end},    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      true => video.asset->data.tracks[0].max_width / video.asset->data.tracks[0].max_height,    ),  },  type == "lottie" && defined(lottieFile.asset) => {    type,    "image": null,    "video": null,    "rive": null,    "lottie": {      "_id": lottieFile.asset->_id,      "url": lottieFile.asset->url,      "dimensions": select(        defined(lottieDimensions.width) && defined(lottieDimensions.height) && lottieDimensions.width > 0 => {          "width": lottieDimensions.width,          "height": lottieDimensions.height,          "aspectRatio": lottieDimensions.width / lottieDimensions.height,        },        true => null      )    },    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      defined(lottieDimensions.width) && defined(lottieDimensions.height) && lottieDimensions.width > 0 => lottieDimensions.width / lottieDimensions.height,      true => null    ),  },  type == "rive" && defined(riveFile.asset) => {    type,    "image": null,    "video": null,    "lottie": null,    "rive": {      "_id": riveFile.asset->_id,      "url": riveFile.asset->url,      "dimensions": select(        defined(riveDimensions.width) && defined(riveDimensions.height) && riveDimensions.width > 0 => {          "width": riveDimensions.width,          "height": riveDimensions.height,          "aspectRatio": riveDimensions.width / riveDimensions.height,        },        true => null      )    },    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      defined(riveDimensions.width) && defined(riveDimensions.height) && riveDimensions.width > 0 => riveDimensions.width / riveDimensions.height,      true => null    ),  },  type == "videoFile" && defined(videoFile.asset) => {    type,    "image": null,    "video": null,    "rive": null,    "lottie": null,    "videoFile": {      "_id": videoFile.asset->_id,      "url": videoFile.asset->url,      "mimeType": videoFile.asset->mimeType,      "dimensions": select(        defined(videoFileDimensions.width) && defined(videoFileDimensions.height) && videoFileDimensions.width > 0 => {          "width": videoFileDimensions.width,          "height": videoFileDimensions.height,          "aspectRatio": videoFileDimensions.width / videoFileDimensions.height,        },        true => null      )    },    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      defined(videoFileDimensions.width) && defined(videoFileDimensions.height) && videoFileDimensions.width > 0 => videoFileDimensions.width / videoFileDimensions.height,      true => null    ),  },  type == "videoUrl" && defined(videoUrl) => {    type,    "image": null,    "video": null,    "rive": null,    "lottie": null,    "videoFile": null,    "videoUrl": {      "url": videoUrl,      "dimensions": select(        defined(videoUrlDimensions.width) && defined(videoUrlDimensions.height) && videoUrlDimensions.width > 0 => {          "width": videoUrlDimensions.width,          "height": videoUrlDimensions.height,          "aspectRatio": videoUrlDimensions.width / videoUrlDimensions.height,        },        true => null      )    },    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      defined(videoUrlDimensions.width) && defined(videoUrlDimensions.height) && videoUrlDimensions.width > 0 => videoUrlDimensions.width / videoUrlDimensions.height,      true => null    ),  },  true => {    "type": null,    "image": null,    "video": null,    "rive": null,    "lottie": null,    "videoFile": null,    "videoUrl": null,    "aspectRatio": null,  })},},  // PLOP: Add Export  markDefs[] {    ...,    _type == "linkField" => {  type,  "openInNewTab": coalesce(openInNewTab, false),  "canDownload": select(    type == "file" => coalesce(canDownload, false),    true => false  ),  "href": select(    type == "internal" => coalesce(      select(        defined(internal.sectionTarget) && defined(internal.link->pageBuilder.sectionsArray) => internal.link->uri.current + '#' + coalesce(          internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0].sectionSettings.sectionHash.current,          internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0]._key,        ),        true => internal.link->uri.current,      ),      ""    ),    type == "external" => coalesce(external, ""),    type == "email" => "mailto:" + coalesce(email, ""),    type == "phone" => "tel:" + coalesce(phone, ""),    type == "file" => coalesce(file.asset->url, ""),    type == "params" => coalesce(paramsHref, ""),    true => ""  ),  "text": coalesce(    customText,    select(      type == "internal" => coalesce(        select(          defined(internal.sectionTarget) && defined(internal.link->pageBuilder.sectionsArray) => coalesce(            internal.link->pageBuilder.sectionsArray[_key == ^.internal.sectionTarget][0].sectionSettings.sectionTitle,            internal.link->title,          ),          true => internal.link->title,        ),        internal.link->uri.current,        ""      ),      type == "external" => coalesce(external, ""),      type == "email" => coalesce(email, ""),      type == "phone" => coalesce(phone, ""),      type == "file" => coalesce(file.asset->originalFilename, ""),      type == "params" => coalesce(paramsHref, ""),      true => ""    ),    "",  )},  },  children[] {    ...,    _type == "inlineMediaField" => {      media{videoOptions{  loop,  muted,  autoPlay,  "noControls": !controls,},lottieOptions{  loop,  autoPlay,},riveOptions{  loop,  autoPlay,},...select(  type == "image" && defined(image) => {    type,    image{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},    "video": null,    "rive": null,    "lottie": null,    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      true => image.asset->metadata.dimensions.aspectRatio,    ),  },  type == "videoMux" && defined(video) => {    type,    "image": null,    "rive": null,    "lottie": null,    video{  "_id": asset->_id,  "_rev": asset->_rev,  "playbackId": asset->playbackId,  "thumbTime": coalesce(asset->thumbTime, 1),  "duration": asset->data.duration,  "dimensions": {    "width": asset->data.tracks[0].max_width,    "height": asset->data.tracks[0].max_height,    "aspectRatio": asset->data.tracks[0].max_width / asset->data.tracks[0].max_height,  }},    videoCover{  "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,},    animatedThumbnail{enabled, start, end},    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      true => video.asset->data.tracks[0].max_width / video.asset->data.tracks[0].max_height,    ),  },  type == "lottie" && defined(lottieFile.asset) => {    type,    "image": null,    "video": null,    "rive": null,    "lottie": {      "_id": lottieFile.asset->_id,      "url": lottieFile.asset->url,      "dimensions": select(        defined(lottieDimensions.width) && defined(lottieDimensions.height) && lottieDimensions.width > 0 => {          "width": lottieDimensions.width,          "height": lottieDimensions.height,          "aspectRatio": lottieDimensions.width / lottieDimensions.height,        },        true => null      )    },    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      defined(lottieDimensions.width) && defined(lottieDimensions.height) && lottieDimensions.width > 0 => lottieDimensions.width / lottieDimensions.height,      true => null    ),  },  type == "rive" && defined(riveFile.asset) => {    type,    "image": null,    "video": null,    "lottie": null,    "rive": {      "_id": riveFile.asset->_id,      "url": riveFile.asset->url,      "dimensions": select(        defined(riveDimensions.width) && defined(riveDimensions.height) && riveDimensions.width > 0 => {          "width": riveDimensions.width,          "height": riveDimensions.height,          "aspectRatio": riveDimensions.width / riveDimensions.height,        },        true => null      )    },    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      defined(riveDimensions.width) && defined(riveDimensions.height) && riveDimensions.width > 0 => riveDimensions.width / riveDimensions.height,      true => null    ),  },  type == "videoFile" && defined(videoFile.asset) => {    type,    "image": null,    "video": null,    "rive": null,    "lottie": null,    "videoFile": {      "_id": videoFile.asset->_id,      "url": videoFile.asset->url,      "mimeType": videoFile.asset->mimeType,      "dimensions": select(        defined(videoFileDimensions.width) && defined(videoFileDimensions.height) && videoFileDimensions.width > 0 => {          "width": videoFileDimensions.width,          "height": videoFileDimensions.height,          "aspectRatio": videoFileDimensions.width / videoFileDimensions.height,        },        true => null      )    },    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      defined(videoFileDimensions.width) && defined(videoFileDimensions.height) && videoFileDimensions.width > 0 => videoFileDimensions.width / videoFileDimensions.height,      true => null    ),  },  type == "videoUrl" && defined(videoUrl) => {    type,    "image": null,    "video": null,    "rive": null,    "lottie": null,    "videoFile": null,    "videoUrl": {      "url": videoUrl,      "dimensions": select(        defined(videoUrlDimensions.width) && defined(videoUrlDimensions.height) && videoUrlDimensions.width > 0 => {          "width": videoUrlDimensions.width,          "height": videoUrlDimensions.height,          "aspectRatio": videoUrlDimensions.width / videoUrlDimensions.height,        },        true => null      )    },    "aspectRatio": select(      defined(aspectRatio) && aspectRatio != 0 => aspectRatio,      defined(videoUrlDimensions.width) && defined(videoUrlDimensions.height) && videoUrlDimensions.width > 0 => videoUrlDimensions.width / videoUrlDimensions.height,      true => null    ),  },  true => {    "type": null,    "image": null,    "video": null,    "rive": null,    "lottie": null,    "videoFile": null,    "videoUrl": null,    "aspectRatio": null,  })},    },  }},    "images": images[defined(asset)]{        "_id": asset->._id,  "_rev": asset->._rev,  "altText": asset->.altText,  "description": asset->.description,  "title": asset->.title,  "lqip": asset->.metadata.lqip,  "dimensions": asset->.metadata.dimensions,  crop,  hotspot,    }  }
 export type EventsQResult = Array<{
   _id: string;
   client: string | undefined;
   type: string | undefined;
   location: string | undefined;
   description: string | undefined;
+  descriptionRichText: Array<{
+    children: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }> | undefined;
+    style?: "caption" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs: Array<
+      | {
+          color?: AppColor;
+          _type: "highlightColorField";
+          _key: string;
+        }
+      | {
+          widthPercent?: number;
+          _type: "indentField";
+          _key: string;
+        }
+      | {
+          type:
+            | "email"
+            | "external"
+            | "file"
+            | "internal"
+            | "params"
+            | "phone"
+            | undefined;
+          external?: string;
+          email?: string;
+          phone?: string;
+          file?: LinkFieldFile;
+          canDownload: boolean | false;
+          paramsHref?: string;
+          internal?: Internal;
+          openInNewTab: boolean | false;
+          _type: "linkField";
+          _key: string;
+          href: string | "" | "mailto:" | "tel:";
+          text: string | "";
+        }
+      | {
+          color?: AppColor;
+          _type: "textColorField";
+          _key: string;
+        }
+    > | undefined;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }> | undefined;
   images: Array<{
     _id: string;
     _rev: string;

@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { createRichTextField } from "../fields/create-rich-text";
 
 export const event = defineType({
   name: "event",
@@ -43,6 +44,24 @@ export const event = defineType({
       title: "Description (French)",
       rows: 4,
     }),
+    {
+      ...createRichTextField({
+        name: "descriptionRichText",
+        title: "Description - Rich Text",
+        description: "Optional. When set, this replaces the plain-text Description above.",
+        lists: true,
+      }),
+      options: { collapsible: true, collapsed: true },
+    },
+    {
+      ...createRichTextField({
+        name: "descriptionFrenchRichText",
+        title: "Description French - Rich Text",
+        description: "Optional. When set, this replaces the plain-text Description (French) above.",
+        lists: true,
+      }),
+      options: { collapsible: true, collapsed: true },
+    },
     defineField({
       name: "images",
       type: "array",

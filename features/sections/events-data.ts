@@ -1,3 +1,5 @@
+import type { RichTextFragmentResult } from "~/features/rich-text/fragment";
+
 export type EventImage = {
   src: string;
   alt: string;
@@ -10,5 +12,6 @@ export type EventItem = {
   type: string;
   location: string;
   description: string;
+  descriptionRichText: RichTextFragmentResult | null;
   images: EventImage[];
 };

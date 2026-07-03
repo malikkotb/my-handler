@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { defineQuery } from "next-sanity";
 import { DynamicTextCursor } from "~/features/dom/dynamic-text-cursor";
+import { RichTextFragment } from "~/features/rich-text/fragment";
 import { ImageFragment } from "~/features/sanity/media/fragment";
 import { getImageSrc } from "~/features/sanity/media/image/utils";
 import { sanityFetch } from "~/features/sanity/client";
@@ -22,6 +23,7 @@ const EventsQ = defineQuery(`
     type,
     "location": select($locale == "fr" => coalesce(locationFrench, location), location),
     "description": select($locale == "fr" => coalesce(descriptionFrench, description), description),
+    "descriptionRichText": select($locale == "fr" => descriptionFrenchRichText, descriptionRichText)[]{${RichTextFragment}},
     "images": images[defined(asset)]{
       ${ImageFragment}
     }
@@ -52,6 +54,7 @@ export default async function EventsPage({ params }: EventsPageProps) {
     type: e.type ?? "",
     location: e.location ?? "",
     description: e.description ?? "",
+    descriptionRichText: e.descriptionRichText?.length ? e.descriptionRichText : null,
     images: (e.images ?? []).map((img) => ({
       src: getImageSrc(img, { width: 1200 }),
       alt: img.altText ?? "",
