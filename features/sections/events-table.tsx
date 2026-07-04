@@ -233,7 +233,7 @@ export function EventsTable({ events, hoverEffect = "slide" }: EventsTableProps)
                     >
                       <div className="pt-12 pb-20 opacity-0 lg:pb-28">
                         {event.descriptionRichText ? (
-                          <SanityRichText value={event.descriptionRichText} className="type-body max-w-xl" />
+                          <SanityRichText value={event.descriptionRichText} className="type-body max-w-xl" tone="light" />
                         ) : (
                           <p className="type-body max-w-xl">{event.description}</p>
                         )}
