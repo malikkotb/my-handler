@@ -202,7 +202,7 @@ export function EventsTable({ events, hoverEffect = "slide" }: EventsTableProps)
                     ) : (
                       <div
                         aria-hidden="true"
-                        className="pointer-events-none absolute -inset-px bg-ink opacity-0 transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100"
+                        className="pointer-events-none absolute -inset-px bg-ink opacity-0 transition-opacity duration-[650ms] ease-custom-easing group-hover:opacity-100"
                       />
                     )}
                     <button

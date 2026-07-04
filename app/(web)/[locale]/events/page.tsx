@@ -66,7 +66,9 @@ export default async function EventsPage({ params }: EventsPageProps) {
     <SiteShell>
       <div className="min-h-dvh-1">
         <PageIntroSection title={t("heading").toUpperCase()} ariaLabel="Events" />
+       {/*
         <EventsTable events={events} />
+        */}
         <EventsTable events={events} hoverEffect="fade" />
       </div>
       <DynamicTextCursor />

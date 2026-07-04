@@ -36,33 +36,14 @@ function resolveImageSrc(image: Service["image"]): string | null {
   return null;
 }
 
-// — clipPath reveal (old approach) —
-const CLIP_HIDDEN = "inset(50% 50% 50% 50%)";
-const CLIP_VISIBLE = "inset(0% 0% 0% 0%)";
-const DURATION = 0.48;
-const HIDE_DELAY = 0.24;
-
-function ServiceImage({
-  service,
-  ref,
-}: {
-  service: Service;
-  ref: React.RefCallback<HTMLImageElement>;
-}) {
-  const src = resolveImageSrc(service.image);
-  if (!src) return null;
-  return (
-    <img
-      ref={ref}
-      src={src}
-      alt=""
-      width={480}
-      height={600}
-      className="clip-hidden absolute inset-0 h-full w-full object-cover"
-      loading="eager"
-    />
-  );
-}
+// Single-image cursor pop-up: one floating preview swaps `src` per hovered row,
+// pops in centered on the pointer, tracks mousemove, and eases out on leave.
+// `IMG_W`/`IMG_H` must match the rendered box (`w-60` + `aspect-service-card`)
+// so the centering math lines up.
+const IMG_W = 240;
+const IMG_H = 300;
+const ENTER_DURATION = 0.2;
+const LEAVE_DURATION = 0.8;
 
 export function ServicesGrid({ services: servicesInput }: { services?: ServiceInput[] | null }) {
   const t = useTranslations();
@@ -75,13 +56,16 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
       }))
     : SERVICES;
 
-  // — clipPath reveal state —
-  const imageRefs = React.useRef<Record<string, HTMLImageElement | null>>({});
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const imageRef = React.useRef<HTMLImageElement>(null);
   const gsapRef = React.useRef<GsapBundle | null>(null);
+  const enabledRef = React.useRef(false);
+  const reducedMotionRef = React.useRef(false);
   const activeIdRef = React.useRef<string | null>(null);
-  const zCounter = React.useRef(1);
 
   React.useEffect(() => {
+    enabledRef.current = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    reducedMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let active = true;
     loadGsap().then((bundle) => {
       if (active) gsapRef.current = bundle;
@@ -91,129 +75,74 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
     };
   }, []);
 
-  const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const collapse = React.useCallback((el: HTMLImageElement, delay = 0) => {
+  const onEnter = React.useCallback((service: Service, event: React.MouseEvent<HTMLLIElement>) => {
     const bundle = gsapRef.current;
-    if (!bundle) return;
-    bundle.gsap.to(el, { clipPath: CLIP_HIDDEN, duration: reducedMotion() ? 0 : DURATION, delay: reducedMotion() ? 0 : delay, ease: "power3.out" });
+    const img = imageRef.current;
+    const container = containerRef.current;
+    if (!bundle || !img || !container || !enabledRef.current) return;
+
+    const src = resolveImageSrc(service.image);
+    if (!src) return;
+
+    activeIdRef.current = service.id;
+    if (img.getAttribute("src") !== src) img.src = src;
+
+    const rect = container.getBoundingClientRect();
+    bundle.gsap.set(img, {
+      x: event.clientX - rect.left - IMG_W / 2,
+      y: event.clientY - rect.top - IMG_H / 2,
+    });
+    bundle.gsap.fromTo(
+      img,
+      { autoAlpha: 0, scale: 0.8 },
+      { scale: 1, autoAlpha: 1, duration: reducedMotionRef.current ? 0 : ENTER_DURATION, overwrite: true }
+    );
   }, []);
 
-  const onEnter = React.useCallback(
-    (id: string) => {
-      activeIdRef.current = id;
-      const bundle = gsapRef.current;
-      const el = imageRefs.current[id];
-      if (!bundle || !el) return;
+  const onMove = React.useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    const bundle = gsapRef.current;
+    const img = imageRef.current;
+    const container = containerRef.current;
+    if (!bundle || !img || !container || !enabledRef.current || !activeIdRef.current || reducedMotionRef.current) {
+      return;
+    }
 
-      zCounter.current += 1;
-      bundle.gsap.set(el, { zIndex: zCounter.current });
-      bundle.gsap.fromTo(
-        el,
-        { clipPath: CLIP_HIDDEN },
-        {
-          clipPath: CLIP_VISIBLE,
-          duration: reducedMotion() ? 0 : DURATION,
-          ease: "power3.out",
-          onComplete: () => {
-            if (activeIdRef.current !== id) collapse(el, HIDE_DELAY);
-          },
-        }
-      );
-    },
-    [collapse]
-  );
+    const rect = container.getBoundingClientRect();
+    bundle.gsap.set(img, {
+      x: event.clientX - rect.left - IMG_W / 2,
+      y: event.clientY - rect.top - IMG_H / 2,
+    });
+  }, []);
 
-  const onListLeave = React.useCallback(() => {
+  const onLeave = React.useCallback(() => {
     activeIdRef.current = null;
     const bundle = gsapRef.current;
-    if (!bundle) return;
-    for (const { id } of services) {
-      const el = imageRefs.current[id];
-      if (el && !bundle.gsap.isTweening(el)) collapse(el, HIDE_DELAY);
-    }
-  }, [collapse, services]);
-
-  // — translating preview (commented out) —
-  // const containerRef = React.useRef<HTMLDivElement>(null);
-  // const previewRef = React.useRef<HTMLDivElement>(null);
-  // const imgRef = React.useRef<HTMLImageElement>(null);
-  // const liRefs = React.useRef<(HTMLLIElement | null)[]>([]);
-  // const baseTopRef = React.useRef(0);
-  // const isDesktopRef = React.useRef(false);
-  //
-  // const relativeTop = React.useCallback((el: HTMLElement) => {
-  //   const container = containerRef.current;
-  //   if (!container) return 0;
-  //   return el.getBoundingClientRect().top - container.getBoundingClientRect().top;
-  // }, []);
-  //
-  // const updateBaseTop = React.useCallback(() => {
-  //   const firstLi = liRefs.current[0];
-  //   if (!firstLi) return;
-  //   baseTopRef.current = relativeTop(firstLi);
-  //   if (previewRef.current) previewRef.current.style.top = `${baseTopRef.current}px`;
-  // }, [relativeTop]);
-  //
-  // const goToService = React.useCallback(
-  //   (index: number) => {
-  //     const li = liRefs.current[index];
-  //     const preview = previewRef.current;
-  //     const img = imgRef.current;
-  //     const service = services[index];
-  //     if (!li || !preview || !img || !service) return;
-  //     const centerOffset = (li.offsetHeight - preview.offsetHeight) / 2;
-  //     const translateY = relativeTop(li) - baseTopRef.current + centerOffset;
-  //     preview.style.transform = `translateY(${translateY}px)`;
-  //     const src = resolveImageSrc(service.image);
-  //     if (src && img.getAttribute("src") !== src) img.src = src;
-  //   },
-  //   [relativeTop, services]
-  // );
-  //
-  // const setTransition = React.useCallback(() => {
-  //   const preview = previewRef.current;
-  //   if (!preview) return;
-  //   const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  //   preview.style.transition = rm ? "none" : "transform 480ms cubic-bezier(0.17,0.84,0.44,1)";
-  // }, []);
-  //
-  // React.useEffect(() => {
-  //   const mq = window.matchMedia("(min-width: 1024px)");
-  //   const onMqChange = (e: MediaQueryListEvent) => {
-  //     isDesktopRef.current = e.matches;
-  //     if (e.matches) updateBaseTop();
-  //   };
-  //   mq.addEventListener("change", onMqChange);
-  //   isDesktopRef.current = mq.matches;
-  //   updateBaseTop();
-  //   setTransition();
-  //   const firstSrc = resolveImageSrc(services[0]?.image ?? null);
-  //   if (imgRef.current && firstSrc) imgRef.current.src = firstSrc;
-  //   return () => mq.removeEventListener("change", onMqChange);
-  // }, [updateBaseTop, setTransition, services]);
-  //
-  // const onEnterTranslate = (index: number) => {
-  //   if (!isDesktopRef.current) return;
-  //   setTransition();
-  //   goToService(index);
-  // };
+    const img = imageRef.current;
+    if (!bundle || !img) return;
+    bundle.gsap.to(img, {
+      autoAlpha: 0,
+      scale: 0.2,
+      duration: reducedMotionRef.current ? 0 : LEAVE_DURATION,
+      ease: "expo.out",
+      overwrite: true,
+    });
+  }, []);
 
   return (
     <section className="section-padding bg-surface text-ink lg:-mt-80 lg:pt-0" aria-label="Services">
       <div className="layout-grid">
-        <h1 className="type-h1 pb-20 col-span-full uppercase lg:text-right">{t("services.heading")}</h1>
+        <h1 className="type-h1 col-span-full pb-20 uppercase lg:text-right">{t("services.heading")}</h1>
       </div>
 
-      <div className="layout-grid relative">
-        {/* biome-ignore lint/a11y/useKeyWithMouseEvents: hover-only progressive enhancement; list links remain keyboard-reachable */}
-        <ul className="col-span-full m-0 list-none border-rule border-t p-0" onMouseLeave={onListLeave}>
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: hover-only progressive enhancement; list links remain keyboard-reachable */}
+      <div ref={containerRef} className="layout-grid relative" onMouseMove={onMove} onMouseLeave={onLeave}>
+        <ul className="col-span-full m-0 list-none border-rule border-t p-0">
           {services.map((service) => (
             // biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover reveal only
             <li
               key={service.id}
               className="group layout-grid-row cursor-pointer border-rule border-b py-20 lg:py-28"
-              onMouseEnter={() => onEnter(service.id)}
+              onMouseEnter={(event) => onEnter(service, event)}
             >
               <h4 className="type-h4 col-span-full uppercase motion-safe:transition-transform motion-safe:duration-[650ms] motion-safe:ease-custom-easing motion-safe:group-hover:translate-x-12">
                 {service.name || (service.labelKey ? t(`services.${service.labelKey}`) : "")}
@@ -222,30 +151,17 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
           ))}
         </ul>
 
-        {/* — clipPath reveal preview (rotated, fixed stack) — */}
-        <div className="pointer-events-none absolute inset-0 hidden items-center justify-end pr-80 lg:flex" aria-hidden="true">
-          <div className="relative aspect-service-card h-[30vh] rotate-10">
-            {services.map((service) => (
-              <ServiceImage
-                key={service.id}
-                service={service}
-                ref={(el) => {
-                  imageRefs.current[service.id] = el;
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* — translating preview (commented out) —
-        <div
-          ref={previewRef}
-          className="aspect-service-card h-services-preview pointer-events-none absolute right-20 hidden overflow-hidden lg:block"
+        {/* Single floating preview: swaps src per hovered row, pops in on the cursor. */}
+        <img
+          ref={imageRef}
+          alt=""
+          width={IMG_W}
+          height={IMG_H}
+          className="pointer-events-none invisible absolute top-0 left-0 z-10 hidden aspect-service-card w-60 object-cover opacity-0 lg:block"
+          style={{ willChange: "transform, opacity" }}
+          loading="eager"
           aria-hidden="true"
-        >
-          <img ref={imgRef} alt="" width={480} height={600} className="h-full w-full object-cover" loading="eager" />
-        </div>
-        */}
+        />
       </div>
 
       <div className="flex justify-end pt-40">
