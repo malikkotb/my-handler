@@ -38,10 +38,8 @@ function resolveImageSrc(image: Service["image"]): string | null {
 
 // Single-image cursor pop-up: one floating preview swaps `src` per hovered row,
 // pops in centered on the pointer, tracks mousemove, and eases out on leave.
-// `IMG_W`/`IMG_H` must match the rendered box (`w-60` + `aspect-service-card`)
-// so the centering math lines up.
-const IMG_W = 240;
-const IMG_H = 300;
+// Offsets are measured from the image's own rendered box (not hardcoded) so the
+// centering math always matches its actual size (h-[30vh], same as before).
 const ENTER_DURATION = 0.2;
 const LEAVE_DURATION = 0.8;
 
@@ -57,6 +55,7 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
     : SERVICES;
 
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const previewRef = React.useRef<HTMLDivElement>(null);
   const imageRef = React.useRef<HTMLImageElement>(null);
   const gsapRef = React.useRef<GsapBundle | null>(null);
   const enabledRef = React.useRef(false);
@@ -77,9 +76,10 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
 
   const onEnter = React.useCallback((service: Service, event: React.MouseEvent<HTMLLIElement>) => {
     const bundle = gsapRef.current;
+    const preview = previewRef.current;
     const img = imageRef.current;
     const container = containerRef.current;
-    if (!bundle || !img || !container || !enabledRef.current) return;
+    if (!bundle || !preview || !img || !container || !enabledRef.current) return;
 
     const src = resolveImageSrc(service.image);
     if (!src) return;
@@ -88,12 +88,12 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
     if (img.getAttribute("src") !== src) img.src = src;
 
     const rect = container.getBoundingClientRect();
-    bundle.gsap.set(img, {
-      x: event.clientX - rect.left - IMG_W / 2,
-      y: event.clientY - rect.top - IMG_H / 2,
+    bundle.gsap.set(preview, {
+      x: event.clientX - rect.left - preview.offsetWidth / 2,
+      y: event.clientY - rect.top - preview.offsetHeight / 2,
     });
     bundle.gsap.fromTo(
-      img,
+      preview,
       { autoAlpha: 0, scale: 0.8 },
       { scale: 1, autoAlpha: 1, duration: reducedMotionRef.current ? 0 : ENTER_DURATION, overwrite: true }
     );
@@ -101,25 +101,25 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
 
   const onMove = React.useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     const bundle = gsapRef.current;
-    const img = imageRef.current;
+    const preview = previewRef.current;
     const container = containerRef.current;
-    if (!bundle || !img || !container || !enabledRef.current || !activeIdRef.current || reducedMotionRef.current) {
+    if (!bundle || !preview || !container || !enabledRef.current || !activeIdRef.current || reducedMotionRef.current) {
       return;
     }
 
     const rect = container.getBoundingClientRect();
-    bundle.gsap.set(img, {
-      x: event.clientX - rect.left - IMG_W / 2,
-      y: event.clientY - rect.top - IMG_H / 2,
+    bundle.gsap.set(preview, {
+      x: event.clientX - rect.left - preview.offsetWidth / 2,
+      y: event.clientY - rect.top - preview.offsetHeight / 2,
     });
   }, []);
 
   const onLeave = React.useCallback(() => {
     activeIdRef.current = null;
     const bundle = gsapRef.current;
-    const img = imageRef.current;
-    if (!bundle || !img) return;
-    bundle.gsap.to(img, {
+    const preview = previewRef.current;
+    if (!bundle || !preview) return;
+    bundle.gsap.to(preview, {
       autoAlpha: 0,
       scale: 0.2,
       duration: reducedMotionRef.current ? 0 : LEAVE_DURATION,
@@ -152,16 +152,14 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
         </ul>
 
         {/* Single floating preview: swaps src per hovered row, pops in on the cursor. */}
-        <img
-          ref={imageRef}
-          alt=""
-          width={IMG_W}
-          height={IMG_H}
-          className="pointer-events-none invisible absolute top-0 left-0 z-10 hidden aspect-service-card w-60 object-cover opacity-0 lg:block"
+        <div
+          ref={previewRef}
+          className="pointer-events-none invisible absolute top-0 left-0 z-10 hidden aspect-service-card h-[30vh] opacity-0 lg:block"
           style={{ willChange: "transform, opacity" }}
-          loading="eager"
           aria-hidden="true"
-        />
+        >
+          <img ref={imageRef} alt="" width={480} height={600} className="h-full w-full object-cover" loading="eager" />
+        </div>
       </div>
 
       <div className="flex justify-end pt-40">

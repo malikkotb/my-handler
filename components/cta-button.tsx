@@ -49,8 +49,8 @@ export function CtaButton({ to, children, className }: CtaButtonProps) {
 
         gsap.killTweensOf(glyphs);
 
-        const stagger = 0.1;
-        const hold = 0.1;
+        const stagger = 0.03;
+        const hold = 0.03;
         const tl = gsap.timeline();
         glyphs.forEach((glyph, index) => {
           const start = index * stagger;
