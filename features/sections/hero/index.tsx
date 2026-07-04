@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { loadGsap } from "~/features/motion/gsap";
+import { SiteHeader } from "~/features/site/site-header";
 import { HeroModel } from "./hero-model";
 
 export function Hero() {
@@ -57,6 +58,11 @@ export function Hero() {
         aria-label="Hero"
         data-inverted
       >
+        {/* TEMP: header rendered here (absolutely positioned, not fixed) instead of in SiteShell,
+            so it's a child of this transformed section and parallaxes with the rest of the hero
+            content on scroll. SiteShell's <SiteHeader /> is disabled for the homepage while
+            testing this (see features/sections/home-page.tsx). */}
+        <SiteHeader />
         <HeroModel src="/model.glb" ariaLabel="My Handler hero model" />
         <h1 className="type-h2 absolute bottom-16 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
           <span className="block">{t("line1")}</span>

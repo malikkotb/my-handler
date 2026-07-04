@@ -1,7 +1,7 @@
 "use client";
 
-import { useReducedMotion } from "@mantine/hooks";
-import { useLenis } from "lenis/react";
+// import { useReducedMotion } from "@mantine/hooks";
+// import { useLenis } from "lenis/react";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { createPortal } from "react-dom";
@@ -19,9 +19,9 @@ type MenuState = "closed" | "open" | "closing";
 const MENU_ANIMATION_MS = 350;
 
 // Scrolled past roughly the header's own height before it may hide; below this it stays pinned.
-const HEADER_HIDE_AFTER = 80;
+// const HEADER_HIDE_AFTER = 80;
 // Ignore sub-pixel scroll jitter so the direction flip doesn't make the header flicker.
-const HEADER_SCROLL_DELTA = 4;
+// const HEADER_SCROLL_DELTA = 4;
 
 function getLocaleSwitchHref(pathname: string, locale: Locale): string {
   const localizedHref = getPathname({ href: pathname, locale });
@@ -51,30 +51,33 @@ export function SiteHeader() {
 
   React.useEffect(() => setMounted(true), []);
 
-  // Hide on scroll down, reveal on scroll up. Lenis owns the scroll surface (the `.lenis`
-  // wrapper, not the window), so subscribe to its scroll loop rather than a window listener.
-  const reducedMotion = useReducedMotion();
-  const prevScrollRef = React.useRef(0);
-
-  useLenis(
-    ({ scroll }) => {
-      const delta = scroll - prevScrollRef.current;
-
-      if (Math.abs(delta) < HEADER_SCROLL_DELTA) {
-        return;
-      }
-
-      prevScrollRef.current = scroll;
-
-      if (reducedMotion || scroll < HEADER_HIDE_AFTER) {
-        setHidden(false);
-        return;
-      }
-
-      setHidden(delta > 0);
-    },
-    [reducedMotion]
-  );
+  // TEMP: hide/reveal-on-scroll disabled while testing the header pinned at all times inside the
+  // hero. `hidden` stays false for the whole session since `setHidden` is never called below.
+  // Uncomment to restore hide-on-scroll-down/reveal-on-scroll-up (and the `useReducedMotion` /
+  // `useLenis` imports + `HEADER_HIDE_AFTER` / `HEADER_SCROLL_DELTA` consts above):
+  //
+  // const reducedMotion = useReducedMotion();
+  // const prevScrollRef = React.useRef(0);
+  //
+  // useLenis(
+  //   ({ scroll }) => {
+  //     const delta = scroll - prevScrollRef.current;
+  //
+  //     if (Math.abs(delta) < HEADER_SCROLL_DELTA) {
+  //       return;
+  //     }
+  //
+  //     prevScrollRef.current = scroll;
+  //
+  //     if (reducedMotion || scroll < HEADER_HIDE_AFTER) {
+  //       setHidden(false);
+  //       return;
+  //     }
+  //
+  //     setHidden(delta > 0);
+  //   },
+  //   [reducedMotion]
+  // );
 
   const closeMenu = React.useCallback(() => {
     setMenu((s) => (s === "open" ? "closing" : "closed"));
@@ -108,7 +111,10 @@ export function SiteHeader() {
     <>
       <header
         className={cx(
-          "fixed inset-x-0 top-0 z-50 transition-transform-color duration-500 ease-out",
+          // TEMP: was "fixed" (viewport-pinned). Now "absolute" so it's positioned within, and
+          // scrolls/parallaxes along with, its nearest positioned ancestor (the hero section)
+          // instead of staying fixed to the viewport.
+          "absolute inset-x-0 top-0 z-50 transition-transform-color duration-500 ease-out",
           "motion-reduce:transition-none",
           hidden && !menuVisible ? "-translate-y-full" : "translate-y-0",
           isInverted && menu === "closed" ? "text-surface" : "text-ink"
