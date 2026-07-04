@@ -33,7 +33,7 @@ export function Hero() {
         // explicit endpoints (not .to/.from): a scrubbed tween that captures a live value can lock
         // in a stale transform when the trigger is re-created during a view-transition navigation.
         // `yPercent` is the parallax amount — tune it to change how far the hero drifts.
-        tl.fromTo(pinRef.current, { yPercent: 0 }, { yPercent: -30, ease: "none" });
+        tl.fromTo(pinRef.current, { yPercent: 0 }, { yPercent: -90, ease: "none" });
         tl.fromTo(darkRef.current, { opacity: 0 }, { opacity: 0.5, ease: "none" }, "<");
 
         tl.eventCallback("onUpdate", () => {

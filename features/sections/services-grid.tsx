@@ -215,7 +215,7 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
               className="group layout-grid-row cursor-pointer border-rule border-b py-20 lg:py-28"
               onMouseEnter={() => onEnter(service.id)}
             >
-              <h4 className="type-h4 col-span-full uppercase motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-[ease] motion-safe:group-hover:translate-x-12">
+              <h4 className="type-h4 col-span-full uppercase motion-safe:transition-transform motion-safe:duration-[650ms] motion-safe:ease-custom-easing motion-safe:group-hover:translate-x-12">
                 {service.name || (service.labelKey ? t(`services.${service.labelKey}`) : "")}
               </h4>
             </li>

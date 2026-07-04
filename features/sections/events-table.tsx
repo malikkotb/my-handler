@@ -39,7 +39,13 @@ function animateTileLeave(e: React.MouseEvent<HTMLTableRowElement>) {
   tile.style.transform = DIRECTIONAL_TRANSFORMS[dir] ?? "translateY(100%)";
 }
 
-export function EventsTable({ events }: { events: EventItem[] }) {
+type EventsTableProps = {
+  events: EventItem[];
+  /** "slide": directional background tile slide-in (default). "fade": opacity fade in/out on hover instead. */
+  hoverEffect?: "slide" | "fade";
+};
+
+export function EventsTable({ events, hoverEffect = "slide" }: EventsTableProps) {
   const t = useTranslations("eventsTable");
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const detailRefs = React.useRef(new Map<string, HTMLDivElement>());
@@ -177,8 +183,8 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                 <tr
                   className="group relative cursor-pointer [clip-path:inset(0)]"
                   onClick={() => toggleEvent(event.id)}
-                  onMouseEnter={animateTileEnter}
-                  onMouseLeave={animateTileLeave}
+                  onMouseEnter={hoverEffect === "slide" ? animateTileEnter : undefined}
+                  onMouseLeave={hoverEffect === "slide" ? animateTileLeave : undefined}
                   // data-cursor-hover
                   // data-cursor-text={isOpen ? t("cursorClose") : t("cursorView")}
                 >
@@ -186,28 +192,35 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                     scope="row"
                     className="type-h5 whitespace-nowrap p-0 py-10 text-left align-middle font-normal uppercase lg:py-12"
                   >
-                    <div
-                      aria-hidden="true"
-                      data-directional-hover-tile=""
-                      className="pointer-events-none absolute -inset-px bg-ink will-change-transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                      style={{ transform: "translateY(-100%)" }}
-                    />
+                    {hoverEffect === "slide" ? (
+                      <div
+                        aria-hidden="true"
+                        data-directional-hover-tile=""
+                        className="pointer-events-none absolute -inset-px bg-ink will-change-transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                        style={{ transform: "translateY(-100%)" }}
+                      />
+                    ) : (
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute -inset-px bg-ink opacity-0 transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100"
+                      />
+                    )}
                     <button
                       type="button"
-                      className="relative z-10 w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8 motion-safe:transition-[padding-left] motion-safe:duration-300 motion-safe:ease-[ease] motion-safe:group-hover:pl-8 transition-colors duration-200 ease-[ease] group-hover:text-surface"
+                      className="relative z-10 w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8 motion-safe:transition-[padding-left] motion-safe:duration-[650ms] motion-safe:ease-custom-easing motion-safe:group-hover:pl-8 transition-colors duration-[450ms] ease-[cubic-bezier(0.83,0,0.17,1)] group-hover:text-surface"
                       aria-expanded={isOpen}
-                      aria-controls={`event-details-${event.id}`}
+                      aria-controls={`event-details-${hoverEffect}-${event.id}`}
                     >
                       {event.client}
                     </button>
                   </th>
                   {/* <td className="type-eyebrow-xs p-0 text-right align-middle motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12 lg:text-left">{event.type}</td> */}
-                  <td className="type-eyebrow-xs relative z-10 p-0 text-right align-middle motion-safe:transition-[padding-right] motion-safe:duration-300 motion-safe:ease-[ease] motion-safe:group-hover:pr-8 transition-colors duration-200 ease-[ease] group-hover:text-surface">{event.location}</td>
+                  <td className="type-eyebrow-xs relative z-10 p-0 text-right align-middle motion-safe:transition-[padding-right] motion-safe:duration-[650ms] motion-safe:ease-custom-easing motion-safe:group-hover:pr-8 transition-colors duration-[450ms] ease-[cubic-bezier(0.83,0,0.17,1)] group-hover:text-surface">{event.location}</td>
                 </tr>
                 <tr className="border-rule border-b">
                   <td colSpan={2} className="p-0">
                     <div
-                      id={`event-details-${event.id}`}
+                      id={`event-details-${hoverEffect}-${event.id}`}
                       ref={(el) => {
                         if (el) {
                           detailRefs.current.set(event.id, el);
