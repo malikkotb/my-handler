@@ -3,13 +3,13 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { defineQuery } from "next-sanity";
 import { DynamicTextCursor } from "~/features/dom/dynamic-text-cursor";
 import { RichTextFragment } from "~/features/rich-text/fragment";
+import { sanityFetch } from "~/features/sanity/client";
 import { ImageFragment } from "~/features/sanity/media/fragment";
 import { getImageSrc } from "~/features/sanity/media/image/utils";
-import { sanityFetch } from "~/features/sanity/client";
+import type { EventItem } from "~/features/sections/events-data";
 import { EventsTable } from "~/features/sections/events-table";
 import { PageIntroSection } from "~/features/sections/page-intro-section";
 import { SiteShell } from "~/features/site/site-shell";
-import type { EventItem } from "~/features/sections/events-data";
 import type { EventsQResult } from "~/sanity/types";
 
 type EventsPageProps = {
@@ -66,10 +66,7 @@ export default async function EventsPage({ params }: EventsPageProps) {
     <SiteShell>
       <div className="min-h-dvh-1">
         <PageIntroSection title={t("heading").toUpperCase()} ariaLabel="Events" />
-       {/*
         <EventsTable events={events} />
-        */}
-        <EventsTable events={events} hoverEffect="fade" />
       </div>
       <DynamicTextCursor />
     </SiteShell>

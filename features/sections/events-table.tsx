@@ -1,51 +1,17 @@
 "use client";
 
-import * as React from "react";
 import { useTranslations } from "next-intl";
+import * as React from "react";
 // import { CURSOR_REFRESH_EVENT } from "~/features/dom/dynamic-text-cursor";
 import { useDragScroll } from "~/features/dom/use-drag-scroll";
 import { loadGsap } from "~/features/motion/gsap";
 import { SanityRichText } from "~/features/rich-text";
 import { cx } from "~/features/style/utils";
-import { type EventImage, type EventItem } from "./events-data";
+import type { EventImage, EventItem } from "./events-data";
 
 type GsapBundle = Awaited<ReturnType<typeof loadGsap>>;
 
-const DIRECTIONAL_TRANSFORMS: Record<string, string> = {
-  top: "translateY(-100%)",
-  bottom: "translateY(100%)",
-};
-
-function getRowHoverDirection(event: MouseEvent, el: HTMLElement): string {
-  const { top, height } = el.getBoundingClientRect();
-  return event.clientY - top < height / 2 ? "top" : "bottom";
-}
-
-function animateTileEnter(e: React.MouseEvent<HTMLTableRowElement>) {
-  const tile = e.currentTarget.querySelector<HTMLElement>("[data-directional-hover-tile]");
-  if (!tile) return;
-  const dir = getRowHoverDirection(e.nativeEvent, e.currentTarget);
-  tile.style.transition = "none";
-  tile.style.transform = DIRECTIONAL_TRANSFORMS[dir] ?? "translateY(-100%)";
-  void tile.offsetHeight;
-  tile.style.transition = "";
-  tile.style.transform = "translateY(0)";
-}
-
-function animateTileLeave(e: React.MouseEvent<HTMLTableRowElement>) {
-  const tile = e.currentTarget.querySelector<HTMLElement>("[data-directional-hover-tile]");
-  if (!tile) return;
-  const dir = getRowHoverDirection(e.nativeEvent, e.currentTarget);
-  tile.style.transform = DIRECTIONAL_TRANSFORMS[dir] ?? "translateY(100%)";
-}
-
-type EventsTableProps = {
-  events: EventItem[];
-  /** "slide": directional background tile slide-in (default). "fade": opacity fade in/out on hover instead. */
-  hoverEffect?: "slide" | "fade";
-};
-
-export function EventsTable({ events, hoverEffect = "slide" }: EventsTableProps) {
+export function EventsTable({ events }: { events: EventItem[] }) {
   const t = useTranslations("eventsTable");
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const detailRefs = React.useRef(new Map<string, HTMLDivElement>());
@@ -155,7 +121,7 @@ export function EventsTable({ events, hoverEffect = "slide" }: EventsTableProps)
   );
 
   return (
-    <section className="section-padding pt-0 overflow-clip" aria-label="Events">
+    <section className="section-padding overflow-clip pt-0" aria-label="Events">
       <table className="w-full table-fixed border-collapse text-ink">
         <colgroup>
           <col className="w-3/5 lg:w-3/5" />
@@ -183,8 +149,6 @@ export function EventsTable({ events, hoverEffect = "slide" }: EventsTableProps)
                 <tr
                   className="group relative cursor-pointer [clip-path:inset(0)]"
                   onClick={() => toggleEvent(event.id)}
-                  onMouseEnter={hoverEffect === "slide" ? animateTileEnter : undefined}
-                  onMouseLeave={hoverEffect === "slide" ? animateTileLeave : undefined}
                   // data-cursor-hover
                   // data-cursor-text={isOpen ? t("cursorClose") : t("cursorView")}
                 >
@@ -192,35 +156,28 @@ export function EventsTable({ events, hoverEffect = "slide" }: EventsTableProps)
                     scope="row"
                     className="type-h5 whitespace-nowrap p-0 py-10 text-left align-middle font-normal uppercase lg:py-12"
                   >
-                    {hoverEffect === "slide" ? (
-                      <div
-                        aria-hidden="true"
-                        data-directional-hover-tile=""
-                        className="pointer-events-none absolute -inset-px bg-ink will-change-transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                        style={{ transform: "translateY(-100%)" }}
-                      />
-                    ) : (
-                      <div
-                        aria-hidden="true"
-                        className="pointer-events-none absolute -inset-px bg-ink opacity-0 transition-opacity duration-[650ms] ease-custom-easing group-hover:opacity-100"
-                      />
-                    )}
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute -inset-px bg-ink opacity-0 transition-opacity duration-[850ms] ease-custom-easing group-hover:opacity-100 group-hover:duration-[650ms]"
+                    />
                     <button
                       type="button"
-                      className="relative z-10 w-full cursor-pointer whitespace-nowrap text-left uppercase focus-visible:outline focus-visible:outline-offset-8 motion-safe:transition-[padding-left] motion-safe:duration-[650ms] motion-safe:ease-custom-easing motion-safe:group-hover:pl-8 transition-colors duration-[450ms] ease-[cubic-bezier(0.83,0,0.17,1)] group-hover:text-surface"
+                      className="relative z-10 w-full cursor-pointer whitespace-nowrap text-left uppercase transition-colors duration-[450ms] ease-[cubic-bezier(0.83,0,0.17,1)] focus-visible:outline focus-visible:outline-offset-8 group-hover:text-surface motion-safe:transition-[padding-left] motion-safe:duration-[850ms] motion-safe:ease-custom-easing motion-safe:group-hover:pl-10 motion-safe:group-hover:duration-[650ms]"
                       aria-expanded={isOpen}
-                      aria-controls={`event-details-${hoverEffect}-${event.id}`}
+                      aria-controls={`event-details-${event.id}`}
                     >
                       {event.client}
                     </button>
                   </th>
                   {/* <td className="type-eyebrow-xs p-0 text-right align-middle motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12 lg:text-left">{event.type}</td> */}
-                  <td className="type-eyebrow-xs relative z-10 p-0 text-right align-middle motion-safe:transition-[padding-right] motion-safe:duration-[650ms] motion-safe:ease-custom-easing motion-safe:group-hover:pr-8 transition-colors duration-[450ms] ease-[cubic-bezier(0.83,0,0.17,1)] group-hover:text-surface">{event.location}</td>
+                  <td className="type-eyebrow-xs relative z-10 p-0 text-right align-middle transition-colors duration-[450ms] ease-[cubic-bezier(0.83,0,0.17,1)] group-hover:text-surface motion-safe:transition-[padding-right] motion-safe:duration-[850ms] motion-safe:ease-custom-easing motion-safe:group-hover:pr-10 motion-safe:group-hover:duration-[650ms]">
+                    {event.location}
+                  </td>
                 </tr>
                 <tr className="border-rule border-b">
                   <td colSpan={2} className="p-0">
                     <div
-                      id={`event-details-${hoverEffect}-${event.id}`}
+                      id={`event-details-${event.id}`}
                       ref={(el) => {
                         if (el) {
                           detailRefs.current.set(event.id, el);
