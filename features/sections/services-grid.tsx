@@ -124,7 +124,9 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
       scale: 0.2,
       duration: reducedMotionRef.current ? 0 : LEAVE_DURATION,
       ease: "expo.out",
-      overwrite: true,
+      onComplete: () => {
+        bundle.gsap.set(preview, { autoAlpha: 0 });
+      },
     });
   }, []);
 

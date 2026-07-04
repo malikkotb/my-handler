@@ -32,13 +32,22 @@ export function HighlightText({
   const prefersReducedMotion = usePrefersReducedMotion();
 
   React.useEffect(() => {
-    if (prefersReducedMotion || !ref.current) return;
+    if (prefersReducedMotion || !ref.current) {
+      return;
+    }
 
     const el = ref.current;
+    let cancelled = false;
     let cleanup: (() => void) | undefined;
 
     loadGsap().then(({ gsap, ScrollTrigger }) => {
-      if (!ref.current) return;
+      // `loadGsap()` is async, so React Strict Mode's dev-only mount→cleanup→mount cycle can run
+      // this effect's cleanup *before* this callback fires (`cleanup` is still unset then, so that
+      // cleanup is a no-op). Without this guard, both the throwaway and the real mount's callbacks
+      // would go on to split the same element, layering two conflicting timelines on nested spans.
+      if (cancelled || !ref.current) {
+        return;
+      }
 
       const split = new SplitText(el, { type: "words,chars", noBalance: true });
 
@@ -65,7 +74,10 @@ export function HighlightText({
       };
     });
 
-    return () => cleanup?.();
+    return () => {
+      cancelled = true;
+      cleanup?.();
+    };
   }, [prefersReducedMotion, scrollStart, scrollEnd, fade, stagger]);
 
   return (

@@ -48,13 +48,16 @@ export function CtaButton({ to, children, className }: CtaButtonProps) {
         }
 
         gsap.killTweensOf(glyphs);
+        gsap.set(glyphs, { x: 0 });
 
         const stagger = 0.03;
         const hold = 0.03;
         const tl = gsap.timeline();
         glyphs.forEach((glyph, index) => {
           const start = index * stagger;
-          tl.set(glyph, { filter: "blur(5px)" }, start).to(glyph, { filter: "blur(0px)", ease: "ctaBlur" }, start + hold);
+          tl.set(glyph, { filter: "blur(5px)" }, start)
+            .to(glyph, { filter: "blur(0px)", ease: "ctaBlur" }, start + hold)
+            .to(glyph, { x: 2, ease: "ctaBounce" }, start + hold);
         });
       };
 
