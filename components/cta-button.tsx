@@ -1,16 +1,10 @@
-"use client";
-
 import { useLocale } from "next-intl";
-import * as React from "react";
 import { Link } from "~/components/link";
-import { screens } from "~/features/dom/constants";
-import { loadGsap } from "~/features/motion/gsap";
 import { cx } from "~/features/style/utils";
 import { getPathname } from "~/i18n/navigation";
 
 type CtaButtonProps = {
   to: string;
-  /** Plain-text label — required for the hover char-blur animation. */
   children: string;
   className?: string;
 };
@@ -18,77 +12,23 @@ type CtaButtonProps = {
 export function CtaButton({ to, children, className }: CtaButtonProps) {
   const locale = useLocale();
   const href = getPathname({ href: to, locale });
-  const hostRef = React.useRef<HTMLSpanElement>(null);
-  const chars = Array.from(children);
-
-  React.useEffect(() => {
-    const host = hostRef.current;
-    if (!host || chars.length === 0) {
-      return;
-    }
-
-    const root = host.closest("a") ?? host;
-    const glyphs = Array.from(host.querySelectorAll<HTMLElement>(".cta-char-glyph"));
-
-    let isCancelled = false;
-    let detach: (() => void) | undefined;
-
-    loadGsap().then(({ gsap }) => {
-      if (isCancelled) {
-        return;
-      }
-
-      const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const largeScreenQuery = window.matchMedia(`(min-width: ${screens.lg})`);
-      const hoverCapableQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
-
-      const onEnter = () => {
-        if (reducedMotionQuery.matches || !largeScreenQuery.matches || !hoverCapableQuery.matches) {
-          return;
-        }
-
-        gsap.killTweensOf(glyphs);
-        gsap.set(glyphs, { x: 0 });
-
-        const stagger = 0.03;
-        const hold = 0.03;
-        const tl = gsap.timeline();
-        glyphs.forEach((glyph, index) => {
-          const start = index * stagger;
-          tl.set(glyph, { filter: "blur(5px)" }, start)
-            .to(glyph, { filter: "blur(0px)", ease: "ctaBlur" }, start + hold)
-            .to(glyph, { x: 2, ease: "ctaBounce" }, start + hold);
-        });
-      };
-
-      root.addEventListener("mouseenter", onEnter);
-
-      detach = () => {
-        root.removeEventListener("mouseenter", onEnter);
-        gsap.killTweensOf(glyphs);
-      };
-    });
-
-    return () => {
-      isCancelled = true;
-      detach?.();
-    };
-  }, [chars.length]);
 
   return (
     <Link
       href={href}
-      className={cx(
-        "type-cta border border-accent justify-center items-end w-fit gap-8 text-ink uppercase no-underline",
-        className
-      )}
+      className={cx("group type-cta w-fit items-end justify-center gap-8 border border-accent text-ink uppercase", className)}
     >
-      <span ref={hostRef} className="inline-flex">
-        {chars.map((char, index) => (
-          <span key={`${char}-${index}`} className="cta-char-glyph">
-            {char === " " ? " " : char}
-          </span>
-        ))}
+      <span
+        className={cx(
+          "relative inline-block",
+          "before:absolute before:inset-x-0 before:-bottom-[0.0625em] before:h-[0.0625em] before:origin-left before:scale-x-100 before:bg-current before:transition-transform before:delay-300 before:duration-[735ms] before:ease-[cubic-bezier(0.625,0.05,0,1)] before:content-['']",
+          "after:absolute after:inset-x-0 after:-bottom-[0.0625em] after:h-[0.0625em] after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:delay-0 after:duration-[735ms] after:ease-[cubic-bezier(0.625,0.05,0,1)] after:content-['']",
+          "group-hover:before:origin-right group-hover:before:scale-x-0 group-hover:before:delay-0",
+          "group-hover:after:origin-left group-hover:after:scale-x-100 group-hover:after:delay-300",
+          "motion-reduce:after:transition-none motion-reduce:before:transition-none"
+        )}
+      >
+        {children}
       </span>
       <span aria-hidden="true" className="translate-y-arrow pl-8">
         ↗
