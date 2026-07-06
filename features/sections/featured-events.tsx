@@ -106,7 +106,26 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
       }))
     : FALLBACK_FEATURED;
   const [activeIndex, setActiveIndex] = React.useState(0);
+  const [isStuck, setIsStuck] = React.useState(false);
   const figureRefs = React.useRef<(HTMLElement | null)[]>([]);
+  const stickySentinelRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const sentinel = stickySentinelRef.current;
+    if (!sentinel) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry) {
+        return;
+      }
+      setIsStuck(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+    });
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
 
   const updateActiveCard = React.useCallback(() => {
     const vpCenter = window.innerHeight / 2;
@@ -144,9 +163,16 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
     <div>
       {/* Desktop: sticky titles over a scrolling image column */}
       <section className="relative hidden text-ink lg:-mt-240 lg:block" aria-label="Featured events">
-        <div className="layout-grid section-px pointer-events-none sticky top-0 z-10 h-dvh-1 items-center">
-          <span className="type-eyebrow col-span-2 col-start-1 overflow-visible whitespace-nowrap">{active?.name}</span>
-          <span className="type-eyebrow col-span-2 col-start-9 overflow-visible whitespace-nowrap text-right">
+        <div ref={stickySentinelRef} aria-hidden="true" className="h-px" />
+        <div id="sticky-titles-wrap" className="layout-grid section-px pointer-events-none border border-accent sticky top-0 z-10 h-dvh-1 items-center">
+          <span
+            className={`type-eyebrow col-span-2 col-start-1 overflow-visible whitespace-nowrap transition-opacity duration-500 ease-out ${isStuck ? "opacity-100" : "opacity-0"}`}
+          >
+            {active?.name}
+          </span>
+          <span
+            className={`type-eyebrow col-span-2 col-start-9 overflow-visible whitespace-nowrap text-right transition-opacity duration-500 ease-out ${isStuck ? "opacity-100" : "opacity-0"}`}
+          >
             {active?.type}
           </span>
         </div>

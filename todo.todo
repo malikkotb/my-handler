@@ -4,13 +4,7 @@
 
 ☐ subtle intro animation on the images or not ? check byMonolog
 
-☐ APPLY slight blur to text animaton, just like in the footer reveal, so its consistent with eveyrhting
-
 ☐ text (reveal/stagger) animations on scroll for headings (monolog, osmo, paronyme, house of honey)
-
-CTA's
-☐ for CTA hover transitions: maybe we can use a blur flicker through ? where the letters translate slighly and blur from left to right ?
-☐ MAKE SURE ALL LINKS (CTA LINKS) GO TO CORRECT PAGES AND HAVE MICRO INTERACTIONS
 
 ☐ emil design engineering
 
@@ -19,7 +13,7 @@ CTA's
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
 
-SEO / DNS / 
+SEO / DNS /
 
 ☐ point my-handler.com DNS at this Vercel project once I have access in SANITY WEBHOOK
 

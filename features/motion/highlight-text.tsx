@@ -57,7 +57,6 @@ export function HighlightText({
           trigger: el,
           start: scrollStart,
           end: scrollEnd,
-          markers: true,
         },
       });
 
