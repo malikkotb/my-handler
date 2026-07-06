@@ -158,19 +158,22 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                   >
                     <div
                       aria-hidden="true"
-                      className="pointer-events-none absolute -inset-px bg-ink opacity-0 transition-opacity duration-[850ms] ease-custom-easing group-hover:opacity-100 group-hover:duration-[650ms]"
+                      className="pointer-events-none absolute -inset-px bg-ink opacity-0 transition-opacity duration-850ms ease-custom-easing group-hover:opacity-100 group-hover:duration-650ms"
                     />
                     <button
                       type="button"
-                      className="relative z-10 w-full cursor-pointer whitespace-nowrap text-left uppercase transition-colors duration-[450ms] ease-[cubic-bezier(0.83,0,0.17,1)] focus-visible:outline focus-visible:outline-offset-8 group-hover:text-surface motion-safe:transition-[padding-left] motion-safe:duration-[850ms] motion-safe:ease-custom-easing motion-safe:group-hover:pl-10 motion-safe:group-hover:duration-[650ms]"
+                      className="relative z-10 w-full cursor-pointer whitespace-nowrap text-left uppercase transition-colors duration-450ms ease-[cubic-bezier(0.83,0,0.17,1)] focus-visible:outline focus-visible:outline-offset-8 group-hover:text-surface motion-safe:transition-[padding-left] motion-safe:duration-850ms motion-safe:ease-custom-easing motion-safe:group-hover:pl-10 motion-safe:group-hover:duration-650ms"
                       aria-expanded={isOpen}
                       aria-controls={`event-details-${event.id}`}
                     >
-                      {event.client}
+                      <span className="lg:hidden">
+                        {event.client.length > 30 ? `${event.client.slice(0, 30)}…` : event.client}
+                      </span>
+                      <span className="hidden lg:inline">{event.client}</span>
                     </button>
                   </th>
                   {/* <td className="type-eyebrow-xs p-0 text-right align-middle motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12 lg:text-left">{event.type}</td> */}
-                  <td className="type-eyebrow-xs relative z-10 p-0 text-right align-middle transition-colors duration-[450ms] ease-[cubic-bezier(0.83,0,0.17,1)] group-hover:text-surface motion-safe:transition-[padding-right] motion-safe:duration-[850ms] motion-safe:ease-custom-easing motion-safe:group-hover:pr-10 motion-safe:group-hover:duration-[650ms]">
+                  <td className="type-eyebrow-xs relative z-10 p-0 text-right align-middle transition-colors duration-450ms ease-[cubic-bezier(0.83,0,0.17,1)] group-hover:text-surface motion-safe:transition-[padding-right] motion-safe:duration-850ms motion-safe:ease-custom-easing motion-safe:group-hover:pr-10 motion-safe:group-hover:duration-650ms">
                     {event.location}
                   </td>
                 </tr>
@@ -228,7 +231,7 @@ function EventImageStrip({ images }: { images: EventImage[] }) {
           alt={image.alt}
           className={cx(
             "h-192 max-h-288 w-auto shrink-0 select-none object-cover lg:h-288",
-            image.orientation === "landscape" ? "aspect-3/2" : "aspect-4/5"
+            image.orientation === "landscape" ? "aspect-3/2" : "aspect-service-card"
           )}
           width={image.orientation === "landscape" ? 1200 : 960}
           height={image.orientation === "landscape" ? 800 : 1200}

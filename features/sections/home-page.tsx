@@ -12,9 +12,9 @@ export function HomePage({ page }: { page?: PageQResult }) {
     // testing the header living inside (and parallaxing with) the hero section.
     <SiteShell showHeader={false}>
       <Hero />
-      {/* Slides up over the hero at lg+ (the -100dvh pulls it onto the hero's lower half, z-10
-          paints it above). Below lg there is no margin/z, so these sections stack normally. */}
-      <div className="relative bg-surface lg:z-10 lg:-mt-dvh-1">
+      {/* Slides up over the hero (the -100dvh pulls it onto the hero's lower half, z-10 paints it
+          above), so the pinned hero in <Hero /> parallaxes as this section covers it on scroll. */}
+      <div className="relative z-10 -mt-dvh-1 bg-surface">
         <IntroSection />
         <FeaturedEvents events={page?.featuredEvents} />
         <ServicesGrid services={page?.services} />

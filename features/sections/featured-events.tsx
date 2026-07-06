@@ -164,7 +164,7 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
       {/* Desktop: sticky titles over a scrolling image column */}
       <section className="relative hidden text-ink lg:-mt-240 lg:block" aria-label="Featured events">
         <div ref={stickySentinelRef} aria-hidden="true" className="h-px" />
-        <div id="sticky-titles-wrap" className="layout-grid section-px pointer-events-none border border-accent sticky top-0 z-10 h-dvh-1 items-center">
+        <div id="sticky-titles-wrap" className="layout-grid section-px pointer-events-none sticky top-0 z-10 h-dvh-1 items-center">
           <span
             className={`type-eyebrow col-span-2 col-start-1 overflow-visible whitespace-nowrap transition-opacity duration-500 ease-out ${isStuck ? "opacity-100" : "opacity-0"}`}
           >
