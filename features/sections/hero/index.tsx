@@ -51,10 +51,10 @@ export function Hero() {
   }, []);
 
   return (
-    <div ref={wrapRef} className="relative z-[2] h-[200dvh]">
+    <div ref={wrapRef} className="relative z-2 h-dvh-2">
       <section
         ref={pinRef}
-        className="relative sticky top-0 h-dvh w-full overflow-hidden bg-ink will-change-transform"
+        className="sticky top-0 h-dvh w-full overflow-hidden bg-ink will-change-transform"
         aria-label="Hero"
         data-inverted
       >
@@ -64,10 +64,13 @@ export function Hero() {
             testing this (see features/sections/home-page.tsx). */}
         <SiteHeader />
         <HeroModel src="/model.glb" ariaLabel="My Handler hero model" />
-        <h1 className="type-h2 absolute bottom-16 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
+        <h1 className="type-h2 absolute bottom-48 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
           <span className="block">{t("line1")}</span>
           <span className="block">{t("line2")}</span>
         </h1>
+        <p className="type-eyebrow absolute bottom-20 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
+          {t("scroll")}
+        </p>
 
         <div ref={darkRef} data-hero-parallax-dark className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
         <div ref={blurRef} data-hero-parallax-blur className="pointer-events-none absolute inset-0" />

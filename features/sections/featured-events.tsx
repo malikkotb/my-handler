@@ -152,13 +152,14 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
         </div>
 
         <div className="layout-grid section-px -mt-dvh-1">
-          <div className="featured-images-gap col-span-4 col-start-4 mt-400 mb-240 grid">
+          <div className="featured-images-gap col-span-4 col-start-4 mt-320 mb-240 grid">
             {featured.map((event, i) => (
               <figure
                 key={event.id}
                 ref={(el) => {
                   figureRefs.current[i] = el;
                 }}
+                className={`transition-opacity duration-300 ${i === activeIndex ? "opacity-100" : "opacity-50"}`}
               >
                 <FeaturedEventParallaxFrame>
                   <FeaturedEventImage event={event} />

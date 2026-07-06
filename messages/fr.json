@@ -45,7 +45,8 @@
   },
   "hero": {
     "line1": "Agence Événementielle &",
-    "line2": "Conciergerie de Luxe"
+    "line2": "Conciergerie de Luxe",
+    "scroll": "Scroll"
   },
   "intro": {
     "tagline": "My Handler est une agence sur mesure spécialisée dans l'accompagnement stratégique, la production créative et l'exécution méticuleuse. Nous travaillons en étroite collaboration avec nos clients pour transformer leurs idées en expériences.",

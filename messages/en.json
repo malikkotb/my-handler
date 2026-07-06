@@ -45,7 +45,8 @@
   },
   "hero": {
     "line1": "Event Agency &",
-    "line2": "Luxury Concierge"
+    "line2": "Luxury Concierge",
+    "scroll": "Scroll"
   },
   "intro": {
     "tagline": "My Handler is a bespoke agency specialising in strategic guidance, creative production, and meticulous execution. We partner closely with our clients to turn their ideas into experiences.",
