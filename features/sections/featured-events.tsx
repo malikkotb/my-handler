@@ -167,9 +167,9 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
               </figure>
             ))}
 
-            <CtaButton to="/events" className="cta-pt w-full items-center pointer-events-auto flex justify-center pb-40">
-              {t("viewAllEvents")}
-            </CtaButton>
+            <div className="cta-pt pointer-events-auto flex w-full items-center justify-center pb-40">
+              <CtaButton to="/events">{t("viewAllEvents")}</CtaButton>
+            </div>
           </div>
         </div>
       </section>
