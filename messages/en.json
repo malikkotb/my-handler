@@ -34,9 +34,10 @@
     "copyright": "All content on this site is the exclusive property of HENDLER, unless otherwise stated. Any reproduction or use, in whole or in part, is strictly prohibited without prior authorisation."
   },
   "notFound": {
-    "title": "404",
-    "body": "The page you are looking for could not be found.",
-    "home": "Back home"
+    "title": "Page not found",
+    "body": "The page you are looking for has either been removed or doesn't exist.",
+    "bodySecondary": "Thanks to its unique network of partners, My Handler draws on its expertise and travel experience to deliver the best solutions for your events.",
+    "home": "Take me back"
   },
   "cta": {
     "viewAllEvents": "View all events",

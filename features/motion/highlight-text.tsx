@@ -9,7 +9,7 @@ type Props = {
   as?: React.ElementType;
   children: React.ReactNode;
   className?: string;
-  /** ScrollTrigger start position. Default: "top 90%" */
+  /** ScrollTrigger start position. Default: "top 97.5%" */
   scrollStart?: string;
   /** ScrollTrigger end position. Default: "center 40%" */
   scrollEnd?: string;
@@ -23,7 +23,7 @@ export function HighlightText({
   as: Tag = "h2",
   children,
   className,
-  scrollStart = "top 90%",
+  scrollStart = "top 97.5%",
   scrollEnd = "center 40%",
   fade = 0.2,
   stagger = 0.1,

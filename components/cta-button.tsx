@@ -16,7 +16,7 @@ export function CtaButton({ to, children, className }: CtaButtonProps) {
   return (
     <Link
       href={href}
-      className={cx("type-cta group items-end justify-center gap-8 p-16 text-ink uppercase", className)}
+      className={cx("type-cta group items-end justify-center gap-8 text-ink uppercase", className)}
     >
       <span
         className={cx(

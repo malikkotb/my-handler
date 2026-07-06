@@ -34,9 +34,10 @@
     "copyright": "L'ensemble du contenu de ce site est la propriété exclusive de HENDLER, sauf mention contraire. Toute reproduction ou utilisation, totale ou partielle, est strictement interdite sans autorisation préalable."
   },
   "notFound": {
-    "title": "404",
-    "body": "La page que vous recherchez est introuvable.",
-    "home": "Retour à l’accueil"
+    "title": "Page introuvable",
+    "body": "La page que vous recherchez a été supprimée ou n'existe pas.",
+    "bodySecondary": "Grâce à son réseau unique de partenaires, My Handler met à profit son expertise et son expérience du voyage pour vous fournir les meilleures solutions pour vos événements.",
+    "home": "Retour"
   },
   "cta": {
     "viewAllEvents": "Voir tous les événements",
