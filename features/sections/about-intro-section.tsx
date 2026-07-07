@@ -45,14 +45,14 @@ export function AboutIntroSection() {
 
   return (
     <>
-      <div id="about-parallax" ref={parallaxRef} className="overflow-hidden">
+      <div id="about-parallax" ref={parallaxRef} className="max-h-[calc(100dvh-40px)] overflow-hidden">
         {/* biome-ignore lint/performance/noImgElement: local static asset */}
         <img
           src="/about/about_main_mobile.avif"
           alt="My Handler team at work"
           width={768}
           height={432}
-          className="block h-full w-full scale-120 object-cover md:hidden"
+          className="block h-full w-full scale-120 object-cover lg:hidden"
           loading="eager"
         />
         {/* biome-ignore lint/performance/noImgElement: local static asset */}
@@ -61,7 +61,7 @@ export function AboutIntroSection() {
           alt="My Handler team at work"
           width={1920}
           height={800}
-          className="hidden h-full w-full scale-120 object-cover md:block"
+          className="hidden h-full w-full scale-120 object-cover lg:block"
           loading="eager"
         />
       </div>

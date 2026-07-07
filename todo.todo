@@ -10,10 +10,11 @@
 
 ☐ animate all clients in one after another in client-section
 
+☐ animate body text in services and about page
+
 ☐ animate each line and client name in evnets table, just like olivier larose on scroll
 
-only animate headings in services and about page, not body text
-
+only animate sub-headings in services and about page, not body text
 
 SEO / DNS Management
 
