@@ -8,6 +8,9 @@ type HeroModelProps = {
   ariaLabel?: string;
   maxRotationDegX?: number;
   maxRotationDegY?: number;
+  /** Ancestor to track hover on instead of the model's own container — lets overlays
+   *  stacked on top of the model (header, headline) keep driving the rotation. */
+  hoverRef?: React.RefObject<HTMLElement | null>;
 };
 
 /**
@@ -20,6 +23,7 @@ export function HeroModel({
   ariaLabel = "3D model viewer",
   maxRotationDegX = 45,
   maxRotationDegY = 90,
+  hoverRef,
 }: HeroModelProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const reduceMotion = usePrefersReducedMotion();
@@ -90,11 +94,12 @@ export function HeroModel({
         targetY = 0;
       };
 
-      container.addEventListener("mousemove", onMouseMove);
-      container.addEventListener("mouseleave", onMouseLeave);
+      const hoverEl = hoverRef?.current ?? container;
+      hoverEl.addEventListener("mousemove", onMouseMove);
+      hoverEl.addEventListener("mouseleave", onMouseLeave);
       detachPointer = () => {
-        container.removeEventListener("mousemove", onMouseMove);
-        container.removeEventListener("mouseleave", onMouseLeave);
+        hoverEl.removeEventListener("mousemove", onMouseMove);
+        hoverEl.removeEventListener("mouseleave", onMouseLeave);
       };
 
       const loader = new GLTFLoader();

@@ -64,15 +64,15 @@ export function Hero() {
             content on scroll. SiteShell's <SiteHeader /> is disabled for the homepage while
             testing this (see features/sections/home-page.tsx). */}
         <SiteHeader />
-        <HeroModel src="/model.glb" ariaLabel="My Handler hero model" />
+        <HeroModel src="/model.glb" ariaLabel="My Handler hero model" hoverRef={pinRef} />
         <MaskTextReveal splitType="words" immediate duration={0.8}>
-          <h2 className="type-h2 absolute bottom-48 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
+          <h2 className="type-h2 pointer-events-none absolute bottom-48 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
             <span className="block">{t("line1")}</span>
             <span className="block">{t("line2")}</span>
           </h2>
         </MaskTextReveal>
         <MaskTextReveal splitType="words" immediate fade delay={0.6}>
-          <p className="type-eyebrow absolute bottom-20 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
+          <p className="type-eyebrow pointer-events-none absolute bottom-20 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
             {t("scroll")}
           </p>
         </MaskTextReveal>
