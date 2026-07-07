@@ -2,21 +2,47 @@
 
 // import { useReducedMotion } from "@mantine/hooks";
 // import { useLenis } from "lenis/react";
+import { motion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { MyHandlerWordmark } from "~/components/brand/wordmark";
 import { Link } from "~/components/link";
 import { MainLink } from "~/components/main-link";
+import { usePrefersReducedMotion } from "~/features/motion/use-prefers-reduced-motion";
 import { HEADER_NAV_LINKS, LABELS, NAV_LINKS, SOCIAL_LINKS } from "~/features/site/nav";
 import { useHeaderTheme } from "~/features/site/use-header-theme";
 import { cx } from "~/features/style/utils";
 import { getPathname, usePathname } from "~/i18n/navigation";
-import { routing, type Locale } from "~/i18n/routing";
+import { type Locale, routing } from "~/i18n/routing";
 
 type MenuState = "closed" | "open" | "closing";
 
 const MENU_ANIMATION_MS = 350;
+
+// Entrance: each nav element rises from behind an overflow-hidden mask, left to right.
+const REVEAL_EASE = [0.23, 1, 0.32, 1] as const;
+
+const revealContainerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.09 } },
+};
+
+const revealItemVariants = {
+  hidden: { y: "100%" },
+  visible: { y: "0%", transition: { duration: 0.7, ease: REVEAL_EASE } },
+};
+
+/** Masks `children` with `overflow-hidden` and rises them into place as part of the header's entrance stagger. */
+function HeaderRevealItem({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <span className={cx("block overflow-hidden", className)}>
+      <motion.span className="block" variants={revealItemVariants}>
+        {children}
+      </motion.span>
+    </span>
+  );
+}
 
 // Scrolled past roughly the header's own height before it may hide; below this it stays pinned.
 // const HEADER_HIDE_AFTER = 80;
@@ -43,6 +69,7 @@ export function SiteHeader() {
   const switchHref = getLocaleSwitchHref(pathname, otherLocale);
 
   const isInverted = useHeaderTheme();
+  const reduceMotion = usePrefersReducedMotion();
   const [menu, setMenu] = React.useState<MenuState>("closed");
   const [mounted, setMounted] = React.useState(false);
   const [hidden, setHidden] = React.useState(false);
@@ -120,45 +147,58 @@ export function SiteHeader() {
           isInverted && menu === "closed" ? "text-surface" : "text-ink"
         )}
       >
-        <div className="flex h-80 items-center justify-between px-20 lg:px-40">
-          <Link
-            href={getPathname({ href: "/", locale })}
-            className="cursor-pointer"
-            aria-label={LABELS.homeAria}
-            onClick={closeMenu}
-          >
-            <MyHandlerWordmark aria-hidden className="h-16 w-auto" />
-          </Link>
+        <motion.div
+          className="flex h-80 items-center justify-between px-20 lg:px-40"
+          variants={revealContainerVariants}
+          initial={reduceMotion ? false : "hidden"}
+          animate="visible"
+        >
+          <HeaderRevealItem>
+            <Link
+              href={getPathname({ href: "/", locale })}
+              className="cursor-pointer"
+              aria-label={LABELS.homeAria}
+              onClick={closeMenu}
+            >
+              <MyHandlerWordmark aria-hidden className="h-16 w-auto" />
+            </Link>
+          </HeaderRevealItem>
 
           {/* Desktop center nav */}
           <nav className="hidden gap-20 lg:flex">
             {HEADER_NAV_LINKS.map((link) => (
-              <MainLink key={link.path} to={link.path}>
-                {t(link.i18nKey)}
-              </MainLink>
+              <HeaderRevealItem key={link.path}>
+                <MainLink to={link.path}>{t(link.i18nKey)}</MainLink>
+              </HeaderRevealItem>
             ))}
           </nav>
 
           {/* Desktop right nav */}
           <nav className="hidden items-center gap-20 lg:flex">
-            <MainLink href={switchHref} aria-label="Switch language">
-              {t("header.switchLang")}
-            </MainLink>
-            <MainLink to="/contact">{t("nav.contact")}</MainLink>
+            <HeaderRevealItem>
+              <MainLink href={switchHref} aria-label="Switch language">
+                {t("header.switchLang")}
+              </MainLink>
+            </HeaderRevealItem>
+            <HeaderRevealItem>
+              <MainLink to="/contact">{t("nav.contact")}</MainLink>
+            </HeaderRevealItem>
           </nav>
 
           {/* Mobile menu toggle */}
-          <MainLink
-            type="button"
-            className="cursor-pointer lg:hidden"
-            aria-expanded={menuVisible}
-            aria-controls="mobile-menu"
-            aria-label={menuVisible ? "Close navigation menu" : "Open navigation menu"}
-            onClick={() => setMenu((s) => (s === "closed" ? "open" : "closing"))}
-          >
-            {menuVisible ? t("header.close") : t("header.menu")}
-          </MainLink>
-        </div>
+          <HeaderRevealItem className="lg:hidden">
+            <MainLink
+              type="button"
+              className="cursor-pointer"
+              aria-expanded={menuVisible}
+              aria-controls="mobile-menu"
+              aria-label={menuVisible ? "Close navigation menu" : "Open navigation menu"}
+              onClick={() => setMenu((s) => (s === "closed" ? "open" : "closing"))}
+            >
+              {menuVisible ? t("header.close") : t("header.menu")}
+            </MainLink>
+          </HeaderRevealItem>
+        </motion.div>
       </header>
 
       {/* Mobile fullscreen */}

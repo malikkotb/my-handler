@@ -10,6 +10,7 @@ type GsapBundle = {
   gsap: typeof import("gsap").gsap;
   ScrollTrigger: typeof import("gsap/ScrollTrigger").ScrollTrigger;
   CustomEase: typeof import("gsap/CustomEase").CustomEase;
+  SplitText: typeof import("gsap/SplitText").SplitText;
 };
 
 let bundlePromise: Promise<GsapBundle> | null = null;
@@ -17,13 +18,14 @@ let bundlePromise: Promise<GsapBundle> | null = null;
 export function loadGsap(): Promise<GsapBundle> {
   if (!bundlePromise) {
     bundlePromise = (async () => {
-      const [{ gsap }, { ScrollTrigger }, { CustomEase }] = await Promise.all([
+      const [{ gsap }, { ScrollTrigger }, { CustomEase }, { SplitText }] = await Promise.all([
         import("gsap"),
         import("gsap/ScrollTrigger"),
         import("gsap/CustomEase"),
+        import("gsap/SplitText"),
       ]);
 
-      gsap.registerPlugin(ScrollTrigger, CustomEase);
+      gsap.registerPlugin(ScrollTrigger, CustomEase, SplitText);
 
       if (!CustomEase.get("mainLink")) {
         CustomEase.create("mainLink", "0.625, 0.05, 0, 1");
@@ -37,7 +39,7 @@ export function loadGsap(): Promise<GsapBundle> {
         ScrollTrigger.defaults({ scroller });
       }
 
-      return { gsap, ScrollTrigger, CustomEase };
+      return { gsap, ScrollTrigger, CustomEase, SplitText };
     })();
   }
 
