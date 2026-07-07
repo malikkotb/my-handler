@@ -164,6 +164,24 @@ export function SiteHeader() {
             </Link>
           </HeaderRevealItem>
 
+          {/* Mobile menu toggle. Placed right after the logo (not after the desktop nav below) so its
+              stagger slot is second, not last — on mobile it's the only other visible element, and the
+              desktop nav's `hidden` items would otherwise eat stagger slots nobody sees. Both this and
+              the desktop nav below are hidden (not unmounted) at the other breakpoint via CSS, so this
+              reorder doesn't change layout at either size. */}
+          <HeaderRevealItem className="lg:hidden">
+            <MainLink
+              type="button"
+              className="cursor-pointer"
+              aria-expanded={menuVisible}
+              aria-controls="mobile-menu"
+              aria-label={menuVisible ? "Close navigation menu" : "Open navigation menu"}
+              onClick={() => setMenu((s) => (s === "closed" ? "open" : "closing"))}
+            >
+              {menuVisible ? t("header.close") : t("header.menu")}
+            </MainLink>
+          </HeaderRevealItem>
+
           {/* Desktop center nav */}
           <nav className="hidden gap-20 lg:flex">
             {HEADER_NAV_LINKS.map((link) => (
@@ -184,20 +202,6 @@ export function SiteHeader() {
               <MainLink to="/contact">{t("nav.contact")}</MainLink>
             </HeaderRevealItem>
           </nav>
-
-          {/* Mobile menu toggle */}
-          <HeaderRevealItem className="lg:hidden">
-            <MainLink
-              type="button"
-              className="cursor-pointer"
-              aria-expanded={menuVisible}
-              aria-controls="mobile-menu"
-              aria-label={menuVisible ? "Close navigation menu" : "Open navigation menu"}
-              onClick={() => setMenu((s) => (s === "closed" ? "open" : "closing"))}
-            >
-              {menuVisible ? t("header.close") : t("header.menu")}
-            </MainLink>
-          </HeaderRevealItem>
         </motion.div>
       </header>
 

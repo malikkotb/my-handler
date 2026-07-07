@@ -47,7 +47,7 @@ export function OurTeam() {
   return (
     <section className="section-padding">
       <div className="layout-grid">
-        <div className="col-span-full w-full lg:col-span-4">
+        <div className="col-span-full w-full sm:col-span-6 lg:col-span-4">
           <div className="aspect-service-card max-h-[calc(100dvh-40px)] w-full overflow-hidden" ref={parallaxRef}>
             <img src="/about/Edouard.avif" alt="" className="h-full w-full object-cover" loading="eager" />
           </div>
@@ -57,7 +57,7 @@ export function OurTeam() {
           </div>
         </div>
 
-        <div className="type-body col-span-full flex flex-col gap-40 py-20 lg:col-span-3 lg:py-0">
+        <div className="type-body col-span-full flex flex-col gap-40 py-20 sm:col-span-6 lg:col-span-3 lg:py-0">
           <AnimatedText as="div">{t("teamBody1")}</AnimatedText>
           <AnimatedText as="div" animationDelay={0.1}>
             {t("teamBody2")}
