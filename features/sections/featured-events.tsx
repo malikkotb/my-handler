@@ -118,12 +118,20 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
       return;
     }
 
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry) {
-        return;
-      }
-      setIsStuck(!entry.isIntersecting && entry.boundingClientRect.top < 0);
-    });
+    // Fires isStuck a bit before the titles actually reach top:0, so the fade-in feels ahead of
+    // the stick rather than exactly on it. rootMargin shrinks the root by STUCK_LEAD_PX from the
+    // top, so the sentinel is considered "exited" that much earlier; the boundingClientRect check
+    // is shifted to match, otherwise it'd only ever match the old (later) crossing point.
+    const STUCK_LEAD_PX = 150;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) {
+          return;
+        }
+        setIsStuck(!entry.isIntersecting && entry.boundingClientRect.top < STUCK_LEAD_PX);
+      },
+      { rootMargin: `-${STUCK_LEAD_PX}px 0px 0px 0px` }
+    );
 
     observer.observe(sentinel);
     return () => observer.disconnect();

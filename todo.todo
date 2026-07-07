@@ -1,20 +1,19 @@
 ☐ three.js jouney to make 3d; use HEYCLICKY to make it correct colour
 
-☐ subtle animation on the logo (in the header)
-
-☐ subtle intro animation on the images or not ? check byMonolog
-
-☐ text (reveal/stagger) animations on scroll for headings (monolog, osmo, paronyme, house of honey)
-
-☐ emil design engineering
+☐ Text animations
+    ☐ subtle animation on the logo (in the header)
+    ☐ subtle intro animation on the images or not ? check byMonolog
+    ☐ text (reveal/stagger) animations on scroll for headings (monolog, osmo, paronyme, house of honeym double play)
 
 ☐ add parallax to some more sections; get inspo from homepage: by monolog
 
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
 
-SEO / DNS /
+SEO / DNS Management
 
 ☐ point my-handler.com DNS at this Vercel project once I have access in SANITY WEBHOOK
 
 ☐ SEO check!! pagespeed insights and fix
+
+☐ emil design engineering
