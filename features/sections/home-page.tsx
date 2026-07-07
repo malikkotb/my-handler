@@ -16,7 +16,9 @@ export function HomePage({ page }: { page?: PageQResult }) {
       {/* Slides up over the hero (the -100dvh pulls it onto the hero's lower half, z-10 paints it
           above), so the pinned hero in <Hero /> parallaxes as this section covers it on scroll. */}
       <div className="relative z-10 -mt-dvh-1 bg-surface">
-        <TypographyTest />
+       {/*
+          <TypographyTest />
+          */}
         <IntroSection />
         <FeaturedEvents events={page?.featuredEvents} />
         <ServicesGrid services={page?.services} />

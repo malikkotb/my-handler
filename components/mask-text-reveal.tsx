@@ -46,6 +46,8 @@ export type MaskTextRevealProps = {
   immediate?: boolean;
   /** Outlines each mask element in red so you can verify the overflow-hidden masking is applied. Default: false */
   debug?: boolean;
+  /** Also fades the revealed units in from opacity 0, alongside the mask reveal. Default: false */
+  fade?: boolean;
 };
 
 export function MaskTextReveal({
@@ -59,6 +61,7 @@ export function MaskTextReveal({
   once = true,
   immediate = false,
   debug = false,
+  fade = false,
 }: MaskTextRevealProps) {
   const ref = React.useRef<HTMLElement | null>(null);
   const reduceMotion = usePrefersReducedMotion();
@@ -80,6 +83,7 @@ export function MaskTextReveal({
     let split: { revert: () => void } | undefined;
     let scrollTrigger: { kill: () => void } | undefined;
     let tween: { kill: () => void } | undefined;
+    let fadeTween: { kill: () => void } | undefined;
 
     void document.fonts.ready.then(() =>
       loadGsap().then(({ gsap, SplitText }) => {
@@ -106,6 +110,15 @@ export function MaskTextReveal({
             }
 
             setIsVisible(true);
+
+            if (fade) {
+              fadeTween = gsap.from(host, {
+                opacity: 0,
+                duration: config.duration,
+                delay,
+                ease,
+              });
+            }
 
             const revealTween = gsap.from(targets, {
               yPercent: 110,
@@ -137,9 +150,10 @@ export function MaskTextReveal({
       cancelled = true;
       scrollTrigger?.kill();
       tween?.kill();
+      fadeTween?.kill();
       split?.revert();
     };
-  }, [reduceMotion, splitType, duration, stagger, delay, ease, start, once, immediate, debug]);
+  }, [reduceMotion, splitType, duration, stagger, delay, ease, start, once, immediate, debug, fade]);
 
   return React.cloneElement(children, {
     ref,

@@ -71,9 +71,11 @@ export function Hero() {
             <span className="block">{t("line2")}</span>
           </h2>
         </MaskTextReveal>
-        <p className="type-eyebrow absolute bottom-20 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
-          {t("scroll")}
-        </p>
+        <MaskTextReveal splitType="words" immediate fade delay={0.6}>
+          <p className="type-eyebrow absolute bottom-20 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
+            {t("scroll")}
+          </p>
+        </MaskTextReveal>
 
         <div ref={darkRef} data-hero-parallax-dark className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
         <div ref={blurRef} data-hero-parallax-blur className="pointer-events-none absolute inset-0" />

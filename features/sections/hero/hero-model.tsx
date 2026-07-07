@@ -6,7 +6,8 @@ import { usePrefersReducedMotion } from "~/features/motion/use-prefers-reduced-m
 type HeroModelProps = {
   src: string;
   ariaLabel?: string;
-  maxRotationDeg?: number;
+  maxRotationDegX?: number;
+  maxRotationDegY?: number;
 };
 
 /**
@@ -14,7 +15,12 @@ type HeroModelProps = {
  * (rotation only) and recenters on leave. `three` is imported dynamically so it
  * stays out of the server bundle.
  */
-export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDeg = 25 }: HeroModelProps) {
+export function HeroModel({
+  src,
+  ariaLabel = "3D model viewer",
+  maxRotationDegX = 45,
+  maxRotationDegY = 90,
+}: HeroModelProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const reduceMotion = usePrefersReducedMotion();
   const [loaded, setLoaded] = React.useState(false);
@@ -68,14 +74,15 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDeg =
 
       let targetX = 0;
       let targetY = 0;
-      const maxRad = THREE.MathUtils.degToRad(maxRotationDeg);
+      const maxRadX = THREE.MathUtils.degToRad(maxRotationDegX);
+      const maxRadY = THREE.MathUtils.degToRad(maxRotationDegY);
 
       const onMouseMove = (e: MouseEvent) => {
         const rect = container.getBoundingClientRect();
         const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
         const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-        targetY = nx * maxRad;
-        targetX = -ny * maxRad;
+        targetY = nx * maxRadY;
+        targetX = -ny * maxRadX;
       };
 
       const onMouseLeave = () => {
@@ -154,7 +161,7 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDeg =
         renderer.dispose();
       }
     };
-  }, [src, maxRotationDeg]);
+  }, [src, maxRotationDegX, maxRotationDegY]);
 
   return (
     <div
