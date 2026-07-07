@@ -6,13 +6,13 @@ export function TypographyTest() {
   return (
     <section className="section-padding bg-surface text-ink" aria-label="Typography test">
       <div className="layout-grid gap-y-20">
-        <MaskTextReveal splitType="lines">
+        <MaskTextReveal splitType="letters">
           <h1 className="type-h1 col-span-full uppercase">Heading</h1>
         </MaskTextReveal>
-        <MaskTextReveal splitType="words">
+        <MaskTextReveal splitType="words" debug>
           <h2 className="type-h2 col-span-full">Heading two words reveal test</h2>
         </MaskTextReveal>
-        <MaskTextReveal splitType="letters">
+        <MaskTextReveal splitType="letters" debug>
           <h3 className="type-h3 col-span-full">Heading three letters</h3>
         </MaskTextReveal>
         <h4 className="type-h4 col-span-full">Heading four</h4>

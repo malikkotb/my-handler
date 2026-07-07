@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { CtaButton } from "~/components/cta-button";
+import { MaskTextReveal } from "~/components/mask-text-reveal";
 import { loadGsap } from "~/features/motion/gsap";
 import type { ImageFragmentResult } from "~/features/sanity/media/fragment";
 import { getImageSrc } from "~/features/sanity/media/image/utils";
@@ -133,7 +134,9 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
   return (
     <section className="section-padding bg-surface text-ink lg:-mt-80 lg:pt-0" aria-label="Services">
       <div className="layout-grid">
-        <h1 className="type-h1 col-span-full pb-20 uppercase lg:text-right">{t("services.heading")}</h1>
+        <MaskTextReveal splitType="letters">
+          <h1 className="type-h1 col-span-full pb-20 uppercase lg:text-right">{t("services.heading")}</h1>
+        </MaskTextReveal>
       </div>
 
       {/* biome-ignore lint/a11y/noStaticElementInteractions: hover-only progressive enhancement; list links remain keyboard-reachable */}

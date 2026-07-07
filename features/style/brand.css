@@ -196,7 +196,10 @@ main {
   .type-h1 {
     font-family: var(--font-pp-museum-light);
     font-size: var(--text-h1);
+    /*
     line-height: var(--leading-tight);
+     */
+    line-height: var(--leading-even-tighter);
     letter-spacing: var(--tracking-tight);
   }
 

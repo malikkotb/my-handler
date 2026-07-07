@@ -15,7 +15,7 @@ type MaskTextRevealSplitTypeConfig = {
 const SPLIT_TYPE_CONFIG: Record<MaskTextRevealSplitType, MaskTextRevealSplitTypeConfig> = {
   lines: { duration: 0.8, stagger: 0.08 },
   words: { duration: 0.6, stagger: 0.06 },
-  letters: { duration: 0.4, stagger: 0.01 },
+  letters: { duration: 0.8, stagger: 0.02 },
 };
 
 /** SplitText only needs to split as deep as the target unit — lines for "lines", lines+words for "words", etc. */
@@ -36,12 +36,14 @@ export type MaskTextRevealProps = {
   stagger?: number;
   /** Delay before the reveal starts, in seconds. Default: 0 */
   delay?: number;
-  /** GSAP ease. Default: "expo.out" */
+  /** GSAP ease. Default: "ease-custom-easing" */
   ease?: string;
   /** ScrollTrigger start position. Default: "clamp(top 80%)" */
   start?: string;
   /** Whether the ScrollTrigger only fires once. Default: true */
   once?: boolean;
+  /** Outlines each mask element in red so you can verify the overflow-hidden masking is applied. Default: false */
+  debug?: boolean;
 };
 
 export function MaskTextReveal({
@@ -50,9 +52,10 @@ export function MaskTextReveal({
   duration,
   stagger,
   delay = 0,
-  ease = "expo.out",
+  ease = "ease-custom-easing",
   start = "clamp(top 80%)",
   once = true,
+  debug = false,
 }: MaskTextRevealProps) {
   const ref = React.useRef<HTMLElement | null>(null);
   const reduceMotion = usePrefersReducedMotion();
@@ -93,6 +96,12 @@ export function MaskTextReveal({
           onSplit(instance) {
             const targets = splitType === "lines" ? instance.lines : splitType === "words" ? instance.words : instance.chars;
 
+            if (debug) {
+              for (const mask of instance.masks) {
+                (mask as HTMLElement).style.border = "1px solid red";
+              }
+            }
+
             setIsVisible(true);
 
             const revealTween = gsap.from(targets, {
@@ -123,7 +132,7 @@ export function MaskTextReveal({
       tween?.kill();
       split?.revert();
     };
-  }, [reduceMotion, splitType, duration, stagger, delay, ease, start, once]);
+  }, [reduceMotion, splitType, duration, stagger, delay, ease, start, once, debug]);
 
   return React.cloneElement(children, {
     ref,

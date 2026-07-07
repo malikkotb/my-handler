@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import * as React from "react";
+import { MaskTextReveal } from "~/components/mask-text-reveal";
 import { loadGsap } from "~/features/motion/gsap";
 import { cx } from "~/features/style/utils";
 
@@ -168,7 +169,9 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
   return (
     <section className="section-padding" aria-label="Clients">
       <div ref={containerRef} className="layout-grid relative">
-        <h1 className={cx("type-h1 pb-20 col-span-6 uppercase", titleAlign === "right" && "lg:col-start-5")}>{t("heading")}</h1>
+        <MaskTextReveal splitType="letters">
+          <h1 className={cx("type-h1 pb-20 col-span-6 uppercase", titleAlign === "right" && "lg:col-start-5")}>{t("heading")}</h1>
+        </MaskTextReveal>
 
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover preview only */}
         <ul

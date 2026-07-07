@@ -31,6 +31,11 @@ export function loadGsap(): Promise<GsapBundle> {
         CustomEase.create("mainLink", "0.625, 0.05, 0, 1");
       }
 
+      // Mirrors the `--ease-custom-easing` Tailwind token in `features/style/brand.css`.
+      if (!CustomEase.get("ease-custom-easing")) {
+        CustomEase.create("ease-custom-easing", "0.16, 1, 0.35, 1");
+      }
+
       // Lenis scrolls its own wrapper element (`.lenis`), not the window. Point every
       // ScrollTrigger at that scroller by default so scroll-driven animations fire.
       // Set before any component creates a trigger (all of them await loadGsap first).
