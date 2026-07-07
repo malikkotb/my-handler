@@ -170,7 +170,7 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
     <section className="section-padding" aria-label="Clients">
       <div ref={containerRef} className="layout-grid relative">
         <MaskTextReveal splitType="letters">
-          <h1 className={cx("type-h1 pb-20 col-span-6 uppercase", titleAlign === "right" && "lg:col-start-5")}>{t("heading")}</h1>
+          <h1 className={cx("type-h1 pb-20 col-span-8 uppercase", titleAlign === "right" && "lg:col-start-5")}>{t("heading")}</h1>
         </MaskTextReveal>
 
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover preview only */}

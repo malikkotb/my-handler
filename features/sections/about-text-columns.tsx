@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { AnimatedText } from "~/components/animated-text";
 
 const VALUE_KEYS = ["loyalty", "goodwill", "boldness", "beauty"] as const;
 
@@ -15,8 +16,12 @@ export function AboutTextColumns() {
             {t("philosophy.heading")}
           </h2>
           <div className="flex flex-col gap-32">
-            <p className="type-body">{t("philosophy.firstParagraph")}</p>
-            <p className="type-body">{t("philosophy.secondParagraph")}</p>
+            <p className="type-body">
+              <AnimatedText as="span">{t("philosophy.firstParagraph")}</AnimatedText>
+            </p>
+            <p className="type-body">
+              <AnimatedText as="span">{t("philosophy.secondParagraph")}</AnimatedText>
+            </p>
           </div>
         </div>
 
@@ -26,7 +31,9 @@ export function AboutTextColumns() {
             {VALUE_KEYS.map((key) => (
               <div key={key} className="flex flex-col gap-12">
                 <dt className="type-eyebrow-lowercase">{t(`values.${key}.title`)}</dt>
-                <dd className="type-body">{t(`values.${key}.body`)}</dd>
+                <dd className="type-body">
+                  <AnimatedText as="span">{t(`values.${key}.body`)}</AnimatedText>
+                </dd>
               </div>
             ))}
           </dl>

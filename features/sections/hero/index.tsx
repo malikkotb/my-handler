@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import * as React from "react";
+import { MaskTextReveal } from "~/components/mask-text-reveal";
 import { loadGsap } from "~/features/motion/gsap";
 import { SiteHeader } from "~/features/site/site-header";
 import { HeroModel } from "./hero-model";
@@ -64,10 +65,12 @@ export function Hero() {
             testing this (see features/sections/home-page.tsx). */}
         <SiteHeader />
         <HeroModel src="/model.glb" ariaLabel="My Handler hero model" />
-        <h1 className="type-h2 absolute bottom-48 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
-          <span className="block">{t("line1")}</span>
-          <span className="block">{t("line2")}</span>
-        </h1>
+        <MaskTextReveal splitType="words" immediate duration={0.8}>
+          <h2 className="type-h2 absolute bottom-48 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
+            <span className="block">{t("line1")}</span>
+            <span className="block">{t("line2")}</span>
+          </h2>
+        </MaskTextReveal>
         <p className="type-eyebrow absolute bottom-20 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
           {t("scroll")}
         </p>

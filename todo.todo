@@ -9,6 +9,10 @@
 
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
+animate all clients in one after another in client-section
+
+only animate headings in services and about page, not body text
+
 
 SEO / DNS Management
 

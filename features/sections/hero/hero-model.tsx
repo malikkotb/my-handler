@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { usePrefersReducedMotion } from "~/features/motion/use-prefers-reduced-motion";
 
 type HeroModelProps = {
   src: string;
@@ -15,6 +16,8 @@ type HeroModelProps = {
  */
 export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDeg = 25 }: HeroModelProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const reduceMotion = usePrefersReducedMotion();
+  const [loaded, setLoaded] = React.useState(false);
 
   React.useEffect(() => {
     const container = containerRef.current;
@@ -109,6 +112,7 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDeg =
           camera.updateProjectionMatrix();
 
           pivot.add(model);
+          setLoaded(true);
         },
         undefined,
         (err) => console.error("[HeroModel] GLTF load error", err)
@@ -152,5 +156,13 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDeg =
     };
   }, [src, maxRotationDeg]);
 
-  return <div ref={containerRef} className="h-full w-full" role="img" aria-label={ariaLabel} />;
+  return (
+    <div
+      ref={containerRef}
+      className="h-full w-full transition-opacity duration-[1300ms] ease-out"
+      style={{ opacity: reduceMotion || loaded ? 1 : 0 }}
+      role="img"
+      aria-label={ariaLabel}
+    />
+  );
 }

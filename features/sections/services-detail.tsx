@@ -4,6 +4,7 @@ import { useWindowEvent } from "@mantine/hooks";
 import { useLenis } from "lenis/react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
+import { AnimatedText } from "~/components/animated-text";
 import { CtaButton } from "~/components/cta-button";
 import { useBreakpoint } from "~/features/dom/use-breakpoint";
 import { cx } from "~/features/style/utils";
@@ -125,7 +126,9 @@ export function ServicesDetail() {
               className='relative flex flex-col gap-20'
             >
               <h2 className='type-h4 uppercase'>{service.title}</h2>
-              <p className='type-body'>{service.body}</p>
+              <p className='type-body'>
+                <AnimatedText as="span">{service.body}</AnimatedText>
+              </p>
             </article>
           ))}
         </div>

@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { FadeUpReveal } from "~/features/motion/fade-up-reveal";
+import { AnimatedText } from "~/components/animated-text";
 
 export function OurTeam() {
   const t = useTranslations("about");
@@ -16,12 +16,10 @@ export function OurTeam() {
         </div>
 
         <div className="type-body col-span-full flex flex-col gap-40 py-20 md:col-span-3 md:py-0">
-          <FadeUpReveal>
-            <div>{t("teamBody1")}</div>
-          </FadeUpReveal>
-          <FadeUpReveal delay={0.1}>
-            <div>{t("teamBody2")}</div>
-          </FadeUpReveal>
+          <AnimatedText as="div">{t("teamBody1")}</AnimatedText>
+          <AnimatedText as="div" animationDelay={0.1}>
+            {t("teamBody2")}
+          </AnimatedText>
         </div>
       </div>
     </section>

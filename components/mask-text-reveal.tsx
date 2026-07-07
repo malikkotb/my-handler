@@ -42,6 +42,8 @@ export type MaskTextRevealProps = {
   start?: string;
   /** Whether the ScrollTrigger only fires once. Default: true */
   once?: boolean;
+  /** Plays on mount instead of on scroll — for reveals that run as part of a page-load sequence (e.g. alongside the header). Default: false */
+  immediate?: boolean;
   /** Outlines each mask element in red so you can verify the overflow-hidden masking is applied. Default: false */
   debug?: boolean;
 };
@@ -55,6 +57,7 @@ export function MaskTextReveal({
   ease = "ease-custom-easing",
   start = "clamp(top 80%)",
   once = true,
+  immediate = false,
   debug = false,
 }: MaskTextRevealProps) {
   const ref = React.useRef<HTMLElement | null>(null);
@@ -110,11 +113,15 @@ export function MaskTextReveal({
               stagger: config.stagger,
               delay,
               ease,
-              scrollTrigger: {
-                trigger: host,
-                start,
-                once,
-              },
+              ...(immediate
+                ? {}
+                : {
+                    scrollTrigger: {
+                      trigger: host,
+                      start,
+                      once,
+                    },
+                  }),
             });
 
             tween = revealTween;
@@ -132,7 +139,7 @@ export function MaskTextReveal({
       tween?.kill();
       split?.revert();
     };
-  }, [reduceMotion, splitType, duration, stagger, delay, ease, start, once, debug]);
+  }, [reduceMotion, splitType, duration, stagger, delay, ease, start, once, immediate, debug]);
 
   return React.cloneElement(children, {
     ref,
