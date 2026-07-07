@@ -71,7 +71,7 @@ export function ServicesDetail() {
   }, [updateActiveService]);
 
   return (
-    <section className='layout-grid section-padding gap-y-40 overflow-clip'>
+    <section className='layout-grid pt-0 section-padding gap-y-40 overflow-clip'>
       <div className='col-span-full lg:sticky lg:top-80 lg:col-span-3 lg:self-start'>
         <div className='relative aspect-3/2'>
           {serviceImages.map((service, index) => {
@@ -111,7 +111,7 @@ export function ServicesDetail() {
         </div>
       </div>
 
-      <div className='col-span-full flex flex-col lg:col-span-5 lg:col-start-5'>
+      <div className='col-span-full flex flex-col lg:col-span-4 lg:col-start-5'>
         {/* <h3 className="type-h3-alt pb-120">
           Whether shaping a brand experience, producing a private event, curating a journey, or managing day-to-day requests, our
           approach remains the same: thoughtful, fluid, and entirely bespoke.
@@ -127,12 +127,12 @@ export function ServicesDetail() {
             >
               <h2 className='type-h4 uppercase'>{service.title}</h2>
               <p className='type-body'>
-                <AnimatedText as="span">{service.body}</AnimatedText>
+                {service.body}
               </p>
             </article>
           ))}
         </div>
-        <CtaButton to='/events'>{tCta("discoverCampaigns")}</CtaButton>
+        <CtaButton className="pt-60" to='/events'>{tCta("discoverCampaigns")}</CtaButton>
       </div>
     </section>
   );

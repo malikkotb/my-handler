@@ -8,7 +8,9 @@
 
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
-animate all clients in one after another in client-section
+☐ animate all clients in one after another in client-section
+
+☐ animate each line and client name in evnets table, just like olivier larose on scroll
 
 only animate headings in services and about page, not body text
 
