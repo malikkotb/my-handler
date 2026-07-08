@@ -52,11 +52,15 @@ export function Hero() {
 
   return (
     <div ref={wrapRef} className="relative z-2 h-dvh-2">
+      {/* Marks where the header should stay inverted. Sized/positioned to match the hero's actual
+          visible span (it's covered by the IntroSection's -mt-dvh-1 overlap at the halfway point of
+          this 200dvh track), not the sticky+parallaxed section below, whose transformed rect keeps
+          "intersecting" the header long after the surface section has visually covered it. */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-dvh-1" data-inverted />
       <section
         ref={pinRef}
         className="sticky top-0 h-dvh w-full overflow-hidden bg-ink will-change-transform"
         aria-label="Hero"
-        data-inverted
         data-hero-model-boundary
       >
         <HeroModel src="/model.glb" ariaLabel="My Handler hero model" />
