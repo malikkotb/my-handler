@@ -28,7 +28,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
             {t("headline2")}
           </h3>
           <a
-            className="type-h2 max-w-full wrap-break-word text-center uppercase"
+            className="type-h4 sm:type-h2 max-w-full wrap-break-word text-center uppercase"
             href={`mailto:${t("email")}`}
           >
             {t("email")}

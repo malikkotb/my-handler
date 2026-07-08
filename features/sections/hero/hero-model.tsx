@@ -20,7 +20,10 @@ type HeroModelProps = {
  * Pointer tracking is bound to the window rather than the model's own container:
  * the site header renders as a `position: fixed` sibling outside this component's
  * DOM subtree, so an element-scoped listener would stop receiving events (and the
- * model would appear to freeze) whenever the cursor moved over the header.
+ * model would appear to freeze) whenever the cursor moved over the header. Since
+ * this component is mounted multiple times on a page (hero, footer, 404), each
+ * instance checks the pointer position against its own container bounds so it
+ * only reacts while the cursor is actually over it.
  */
 export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX = 120, maxRotationDegY = 120 }: HeroModelProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -107,8 +110,30 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
       let targetY = 0;
       let isHovering = false;
 
+      const onMouseLeave = () => {
+        targetX = 0;
+        targetY = 0;
+        isHovering = false;
+      };
+
       const onMouseMove = (e: MouseEvent) => {
         const rect = container.getBoundingClientRect();
+        const isInsideRect =
+          e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
+
+        // A geometric rect check isn't enough: sections like the intro block are pulled up with a
+        // negative margin and a higher z-index to visually slide over the pinned hero on scroll, so
+        // the hero's own container still geometrically contains the pointer while it's covered.
+        // Hit-test the actual topmost element so covered pointer positions don't count as hovering.
+        const isTopmost = isInsideRect && container.contains(document.elementFromPoint(e.clientX, e.clientY));
+
+        if (!isTopmost) {
+          if (isHovering) {
+            onMouseLeave();
+          }
+          return;
+        }
+
         const nx = THREE.MathUtils.clamp(((e.clientX - rect.left) / rect.width) * 2 - 1, -1, 1);
         const ny = THREE.MathUtils.clamp(((e.clientY - rect.top) / rect.height) * 2 - 1, -1, 1);
         const maxRadX = THREE.MathUtils.degToRad(settings.maxRotationDegX);
@@ -116,12 +141,6 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
         targetY = nx * maxRadY;
         targetX = -ny * maxRadX;
         isHovering = true;
-      };
-
-      const onMouseLeave = () => {
-        targetX = 0;
-        targetY = 0;
-        isHovering = false;
       };
 
       window.addEventListener("mousemove", onMouseMove);

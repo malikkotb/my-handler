@@ -224,7 +224,7 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
           </article>
         ))}
 
-        <CtaButton to="/events">
+        <CtaButton to="/events" className="self-start">
           {t("viewAllEvents")}
         </CtaButton>
       </section>
