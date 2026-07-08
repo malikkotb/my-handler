@@ -154,6 +154,12 @@ export function MaskTextReveal({
     };
   }, [reduceMotion, splitType, duration, stagger, delay, ease, start, once, immediate, debug, fade]);
 
+  // `children` can arrive as something other than a single element for a transient render (e.g.
+  // mid-navigation) — guard like `components/slot/slot.tsx` does before touching `.props`.
+  if (!React.isValidElement<{ style?: React.CSSProperties }>(children)) {
+    return null;
+  }
+
   return React.cloneElement(children, {
     ref,
     style: {
