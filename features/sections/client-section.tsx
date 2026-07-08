@@ -170,15 +170,11 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
     <section className="section-padding" aria-label="Clients">
       <div ref={containerRef} className="layout-grid relative">
         <MaskTextReveal splitType="letters">
-          <h1 className={cx("type-h1 pb-20 col-span-8 uppercase", titleAlign === "right" && "lg:col-start-5")}>{t("heading")}</h1>
+          <h1 className={cx("type-h1 col-span-8 pb-20 uppercase", titleAlign === "right" && "lg:col-start-5")}>{t("heading")}</h1>
         </MaskTextReveal>
 
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover preview only */}
-        <ul
-          ref={listRef}
-          className="group col-start-3 col-span-6 row-start-2 flex flex-col gap-16 lg:col-span-6 lg:col-start-5"
-          onMouseLeave={onListLeave}
-        >
+        <ul ref={listRef} className="group col-span-full row-start-2 flex flex-col gap-16" onMouseLeave={onListLeave}>
           {clients.map((client, index) => (
             // biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover preview only
             <li
@@ -186,10 +182,10 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
               ref={(el) => {
                 liRefs.current[index] = el;
               }}
-              className="motion-safe:transition-opacity motion-safe:duration-200 motion-safe:ease-out lg:cursor-pointer lg:group-hover:opacity-50 lg:hover:opacity-100!"
+              className="layout-grid motion-safe:transition-opacity motion-safe:duration-200 motion-safe:ease-out lg:cursor-pointer lg:group-hover:opacity-50 lg:hover:opacity-100!"
               onMouseEnter={() => onClientEnter(index)}
             >
-              <h4 className="type-h4">{client.name}</h4>
+              <h4 className="type-h4 col-span-6 col-start-3 lg:col-span-6 lg:col-start-5">{client.name}</h4>
             </li>
           ))}
         </ul>
