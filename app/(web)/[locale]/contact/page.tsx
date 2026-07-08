@@ -21,14 +21,14 @@ export default async function ContactPage({ params }: ContactPageProps) {
   return (
     <SiteShell>
       <div className="flex min-h-screen w-full flex-col items-center justify-center">
-        <div className="flex w-full max-w-full flex-col items-center gap-32 px-40">
+        <div className="flex w-full max-w-full flex-col items-center gap-32 px-20 lg:px-40">
           <h3 className="type-h4 text-center">
             {t("headline1")}
             <br />
             {t("headline2")}
           </h3>
           <a
-            className="type-h2 max-w-full break-words text-center uppercase"
+            className="type-h2 max-w-full wrap-break-word text-center uppercase"
             href={`mailto:${t("email")}`}
           >
             {t("email")}

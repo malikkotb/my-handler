@@ -9,9 +9,7 @@ import type { PageQResult } from "~/sanity/types";
 
 export function HomePage({ page }: { page?: PageQResult }) {
   return (
-    // TEMP: showHeader disabled here — <Hero /> renders its own <SiteHeader /> internally while
-    // testing the header living inside (and parallaxing with) the hero section.
-    <SiteShell showHeader={false}>
+    <SiteShell>
       <Hero />
       {/* Slides up over the hero (the -100dvh pulls it onto the hero's lower half, z-10 paints it
           above), so the pinned hero in <Hero /> parallaxes as this section covers it on scroll. */}

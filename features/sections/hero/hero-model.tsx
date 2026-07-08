@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { usePrefersReducedMotion } from "~/features/motion/use-prefers-reduced-motion";
+import { IS_DEV } from "~/features/utils/constants";
+import { createHeroDebugGui, HERO_DEBUG_DEFAULTS } from "./hero-debug-panel";
 
 type HeroModelProps = {
   src: string;
@@ -40,6 +42,13 @@ export function HeroModel({
     let frameId: number | null = null;
     let resizeObserver: ResizeObserver | null = null;
     let detachPointer: (() => void) | undefined;
+    let gui: import("lil-gui").default | null = null;
+
+    const settings = {
+      ...HERO_DEBUG_DEFAULTS,
+      maxRotationDegX,
+      maxRotationDegY,
+    };
 
     Promise.all([import("three"), import("three/addons/loaders/GLTFLoader.js")]).then(([THREE, { GLTFLoader }]) => {
       if (disposed || !containerRef.current) {
@@ -59,32 +68,54 @@ export function HeroModel({
       renderer.setSize(Math.max(width, 1), Math.max(height, 1));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1;
+      renderer.toneMappingExposure = settings.exposure;
       container.appendChild(renderer.domElement);
 
-      const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+      const ambient = new THREE.AmbientLight(settings.ambient.color, settings.ambient.intensity);
       scene.add(ambient);
-      const dir = new THREE.DirectionalLight(0xffffff, 1.5);
+
+      const dir = new THREE.DirectionalLight(settings.key.color, settings.key.intensity);
       dir.position.set(3, 5, 4);
       scene.add(dir);
-      const fill = new THREE.DirectionalLight(0xffffff, 0.6);
+
+      const fill = new THREE.DirectionalLight(settings.fill.color, settings.fill.intensity);
       fill.position.set(-3, 2, -2);
       scene.add(fill);
 
       // Pivot so hover rotation is always around the model's center.
       const pivot = new THREE.Group();
-      pivot.scale.setScalar(0.7);
+      pivot.scale.setScalar(settings.pivotScale);
       scene.add(pivot);
+
+      if (IS_DEV) {
+        import("lil-gui").then(({ default: GUI }) => {
+          if (disposed) {
+            return;
+          }
+          gui = createHeroDebugGui(GUI, settings, () => {
+            ambient.intensity = settings.ambient.intensity;
+            ambient.color.set(settings.ambient.color);
+            dir.intensity = settings.key.intensity;
+            dir.color.set(settings.key.color);
+            fill.intensity = settings.fill.intensity;
+            fill.color.set(settings.fill.color);
+            if (renderer) {
+              renderer.toneMappingExposure = settings.exposure;
+            }
+            pivot.scale.setScalar(settings.pivotScale);
+          });
+        });
+      }
 
       let targetX = 0;
       let targetY = 0;
-      const maxRadX = THREE.MathUtils.degToRad(maxRotationDegX);
-      const maxRadY = THREE.MathUtils.degToRad(maxRotationDegY);
 
       const onMouseMove = (e: MouseEvent) => {
         const rect = container.getBoundingClientRect();
         const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
         const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+        const maxRadX = THREE.MathUtils.degToRad(settings.maxRotationDegX);
+        const maxRadY = THREE.MathUtils.degToRad(settings.maxRotationDegY);
         targetY = nx * maxRadY;
         targetX = -ny * maxRadX;
       };
@@ -132,8 +163,8 @@ export function HeroModel({
 
       const animate = () => {
         frameId = requestAnimationFrame(animate);
-        pivot.rotation.x = THREE.MathUtils.lerp(pivot.rotation.x, targetX, 0.06);
-        pivot.rotation.y = THREE.MathUtils.lerp(pivot.rotation.y, targetY, 0.06);
+        pivot.rotation.x = THREE.MathUtils.lerp(pivot.rotation.x, targetX, settings.lerpFactor);
+        pivot.rotation.y = THREE.MathUtils.lerp(pivot.rotation.y, targetY, settings.lerpFactor);
         renderer?.render(scene, camera);
       };
       animate();
@@ -165,6 +196,7 @@ export function HeroModel({
         renderer.domElement.remove();
         renderer.dispose();
       }
+      gui?.destroy();
     };
   }, [src, maxRotationDegX, maxRotationDegY]);
 
