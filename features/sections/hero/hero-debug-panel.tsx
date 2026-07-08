@@ -18,10 +18,10 @@ export const HERO_DEBUG_DEFAULTS: HeroDebugSettings = {
   fill: { intensity: 5, color: "#fffdf8" },
   exposure: 3,
   pivotScale: 0.7,
-  maxRotationDegX: 120,
-  maxRotationDegY: 120,
+  maxRotationDegX: 90,
+  maxRotationDegY: 90,
   lerpFactor: 0.06,
-  returnLerpFactor: 0.025,
+  returnLerpFactor: 0.015,
 };
 
 /**

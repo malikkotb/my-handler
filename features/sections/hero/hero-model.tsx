@@ -26,7 +26,7 @@ type HeroModelProps = {
  * so it only reacts while the cursor is over its own section, not another one
  * rendered on top of or below it.
  */
-export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX = 120, maxRotationDegY = 90 }: HeroModelProps) {
+export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX = 90, maxRotationDegY = 90 }: HeroModelProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const reduceMotion = usePrefersReducedMotion();
   const [loaded, setLoaded] = React.useState(false);
