@@ -133,9 +133,13 @@ export function SiteHeader() {
     <>
       <header
         className={cx(
-          "fixed inset-x-0 top-0 z-50 transition-transform-color duration-500 ease-out",
+          "fixed inset-x-0 top-0 z-50 transition-transform-color",
           "motion-reduce:transition-none",
-          hidden && !menuVisible ? "-translate-y-full" : "translate-y-0",
+          // Direction-aware easing: accelerate away when hiding (ease-in, no initial
+          // lurch), smooth expo deceleration when revealing.
+          hidden && !menuVisible
+            ? "-translate-y-full duration-700 ease-[cubic-bezier(0.5,0,0.75,0)]"
+            : "translate-y-0 duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
           isInverted && menu === "closed" ? "text-surface" : "text-ink"
         )}
       >
