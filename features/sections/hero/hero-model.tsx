@@ -9,6 +9,7 @@ type HeroModelProps = {
   ariaLabel?: string;
   maxRotationDegX?: number;
   maxRotationDegY?: number;
+  pivotScale?: number;
 };
 
 /**
@@ -26,7 +27,13 @@ type HeroModelProps = {
  * so it only reacts while the cursor is over its own section, not another one
  * rendered on top of or below it.
  */
-export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX = 90, maxRotationDegY = 90 }: HeroModelProps) {
+export function HeroModel({
+  src,
+  ariaLabel = "3D model viewer",
+  maxRotationDegX = 90,
+  maxRotationDegY = 90,
+  pivotScale = 0.7,
+}: HeroModelProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const reduceMotion = usePrefersReducedMotion();
   const [loaded, setLoaded] = React.useState(false);
@@ -47,6 +54,7 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
       ...HERO_DEBUG_DEFAULTS,
       maxRotationDegX,
       maxRotationDegY,
+      pivotScale,
     };
 
     Promise.all([import("three"), import("three/addons/loaders/GLTFLoader.js")]).then(([THREE, { GLTFLoader }]) => {
@@ -206,7 +214,7 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
         renderer.dispose();
       }
     };
-  }, [src, maxRotationDegX, maxRotationDegY]);
+  }, [src, maxRotationDegX, maxRotationDegY, pivotScale]);
 
   return (
     <div
