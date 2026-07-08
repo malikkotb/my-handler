@@ -3,9 +3,9 @@
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { AnimatedWordmark } from "~/components/brand/animated-wordmark";
-import { MyHandlerMonogram } from "~/components/brand/monogram";
 import { MainLink } from "~/components/main-link";
 import { loadGsap } from "~/features/motion/gsap";
+import { HeroModel } from "~/features/sections/hero/hero-model";
 import { NAV_LINKS, SOCIAL_LINKS } from "~/features/site/nav";
 
 export function SiteFooter() {
@@ -62,12 +62,12 @@ export function SiteFooter() {
         className="relative flex h-dvh-1 items-center bg-ink text-surface"
         data-inverted
       >
-        <div className="section-px flex w-full flex-col gap-80 pb-0 lg:flex-row lg:justify-between lg:pb-80">
-          {/* Logo: desktop only, centered */}
-          <div className="absolute top-[40%] left-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center lg:flex">
-            <MyHandlerMonogram aria-label="My Handler logo" className="w-auto lg:h-[40vh]" />
-          </div>
+        {/* Model: desktop only, full-bleed behind the content */}
+        <div className="absolute inset-0 hidden lg:flex">
+          <HeroModel src="/model.glb" ariaLabel="My Handler logo" />
+        </div>
 
+        <div className="section-px relative z-10 flex w-full flex-col gap-80 pb-0 lg:flex-row lg:justify-between lg:pb-80">
           <nav className="flex flex-col gap-20" aria-label="Footer navigation">
             {NAV_LINKS.map((link) => (
               <MainLink key={link.path} to={link.path} tone="surface" size="mobileLarge">
@@ -108,7 +108,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="absolute right-0 bottom-0 left-0 flex flex-col gap-8 overflow-hidden px-20 pb-20 text-surface lg:px-40">
+        <div className="absolute right-0 bottom-0 left-0 z-10 flex flex-col gap-8 overflow-hidden px-20 pb-20 text-surface lg:px-40">
           <AnimatedWordmark className="h-full w-full object-cover" />
         </div>
       </footer>

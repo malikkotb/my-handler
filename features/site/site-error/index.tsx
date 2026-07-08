@@ -1,10 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { MyHandlerMonogram } from "~/components/brand/monogram";
 import { Button } from "~/components/button";
 import { CtaButton } from "~/components/cta-button";
 import { AnimatedSanityRichText } from "~/features/rich-text";
 import { sanityFetch } from "~/features/sanity/client";
 import { SanityLink } from "~/features/sanity/link";
+import { HeroModel } from "~/features/sections/hero/hero-model";
 import { SiteErrorQ } from "~/features/site/site-error/query";
 import { SiteShell } from "~/features/site/site-shell";
 import { SANITY_SINGLETON_SITE_ID } from "~/sanity/constants";
@@ -23,9 +23,13 @@ export async function SiteError() {
     <SiteShell showHeader={showHeader} showFooter={false}>
       <div
         data-inverted
-        className="flex min-h-dvh-1 flex-col items-center justify-center gap-64 bg-ink px-16 py-64 text-center text-surface"
+        className="relative flex min-h-dvh-1 flex-col items-center justify-center gap-64 bg-ink px-16 py-64 text-center text-surface"
       >
-        <div className="flex max-w-600 px-32 flex-col items-center gap-24">
+        <div className="absolute inset-0">
+          <HeroModel src="/model.glb" ariaLabel="My Handler logo" />
+        </div>
+
+        <div className="relative z-10 flex max-w-600 flex-col items-center gap-24 px-32">
           {text ? (
             <AnimatedSanityRichText value={text} viewport={false} />
           ) : (
@@ -46,8 +50,6 @@ export async function SiteError() {
             </CtaButton>
           )}
         </div>
-
-        <MyHandlerMonogram aria-label="My Handler logo" className="w-auto h-[50vw] lg:h-[25vw]" />
       </div>
     </SiteShell>
   );
