@@ -22,7 +22,7 @@ type HeroModelProps = {
  * DOM subtree, so an element-scoped listener would stop receiving events (and the
  * model would appear to freeze) whenever the cursor moved over the header.
  */
-export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX = 45, maxRotationDegY = 90 }: HeroModelProps) {
+export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX = 120, maxRotationDegY = 120 }: HeroModelProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const reduceMotion = usePrefersReducedMotion();
   const [loaded, setLoaded] = React.useState(false);
@@ -105,6 +105,7 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
 
       let targetX = 0;
       let targetY = 0;
+      let isHovering = false;
 
       const onMouseMove = (e: MouseEvent) => {
         const rect = container.getBoundingClientRect();
@@ -114,11 +115,13 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
         const maxRadY = THREE.MathUtils.degToRad(settings.maxRotationDegY);
         targetY = nx * maxRadY;
         targetX = -ny * maxRadX;
+        isHovering = true;
       };
 
       const onMouseLeave = () => {
         targetX = 0;
         targetY = 0;
+        isHovering = false;
       };
 
       window.addEventListener("mousemove", onMouseMove);
@@ -158,8 +161,9 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
 
       const animate = () => {
         frameId = requestAnimationFrame(animate);
-        pivot.rotation.x = THREE.MathUtils.lerp(pivot.rotation.x, targetX, settings.lerpFactor);
-        pivot.rotation.y = THREE.MathUtils.lerp(pivot.rotation.y, targetY, settings.lerpFactor);
+        const factor = isHovering ? settings.lerpFactor : settings.returnLerpFactor;
+        pivot.rotation.x = THREE.MathUtils.lerp(pivot.rotation.x, targetX, factor);
+        pivot.rotation.y = THREE.MathUtils.lerp(pivot.rotation.y, targetY, factor);
         renderer?.render(scene, camera);
       };
       animate();

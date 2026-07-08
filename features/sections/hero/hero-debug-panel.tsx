@@ -9,6 +9,7 @@ export type HeroDebugSettings = {
   maxRotationDegX: number;
   maxRotationDegY: number;
   lerpFactor: number;
+  returnLerpFactor: number;
 };
 
 export const HERO_DEBUG_DEFAULTS: HeroDebugSettings = {
@@ -17,9 +18,10 @@ export const HERO_DEBUG_DEFAULTS: HeroDebugSettings = {
   fill: { intensity: 5, color: "#fffdf8" },
   exposure: 3,
   pivotScale: 0.7,
-  maxRotationDegX: 45,
-  maxRotationDegY: 90,
+  maxRotationDegX: 120,
+  maxRotationDegY: 120,
   lerpFactor: 0.06,
+  returnLerpFactor: 0.025,
 };
 
 /**
@@ -56,9 +58,10 @@ export function createHeroDebugGui(GUICtor: typeof GUI, settings: HeroDebugSetti
   renderingFolder.add(settings, "pivotScale", 0.1, 2, 0.01).onChange(syncToScene);
 
   const pointerFolder = gui.addFolder("Pointer follow");
-  pointerFolder.add(settings, "maxRotationDegX", 0, 90, 1);
+  pointerFolder.add(settings, "maxRotationDegX", 0, 180, 1);
   pointerFolder.add(settings, "maxRotationDegY", 0, 180, 1);
   pointerFolder.add(settings, "lerpFactor", 0.01, 1, 0.01);
+  pointerFolder.add(settings, "returnLerpFactor", 0.01, 1, 0.01);
 
   gui
     .add(
