@@ -109,8 +109,8 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
 
       const onMouseMove = (e: MouseEvent) => {
         const rect = container.getBoundingClientRect();
-        const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+        const nx = THREE.MathUtils.clamp(((e.clientX - rect.left) / rect.width) * 2 - 1, -1, 1);
+        const ny = THREE.MathUtils.clamp(((e.clientY - rect.top) / rect.height) * 2 - 1, -1, 1);
         const maxRadX = THREE.MathUtils.degToRad(settings.maxRotationDegX);
         const maxRadY = THREE.MathUtils.degToRad(settings.maxRotationDegY);
         targetY = nx * maxRadY;
