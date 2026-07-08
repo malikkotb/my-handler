@@ -132,6 +132,7 @@ export function SiteHeader() {
   return (
     <>
       <header
+        data-site-header
         className={cx(
           "fixed inset-x-0 top-0 z-50 transition-transform-color",
           "motion-reduce:transition-none",

@@ -57,6 +57,7 @@ export function Hero() {
         className="sticky top-0 h-dvh w-full overflow-hidden bg-ink will-change-transform"
         aria-label="Hero"
         data-inverted
+        data-hero-model-boundary
       >
         <HeroModel src="/model.glb" ariaLabel="My Handler hero model" />
         <MaskTextReveal splitType="words" immediate duration={0.8}>

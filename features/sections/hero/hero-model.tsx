@@ -2,8 +2,7 @@
 
 import * as React from "react";
 import { usePrefersReducedMotion } from "~/features/motion/use-prefers-reduced-motion";
-import { IS_DEV } from "~/features/utils/constants";
-import { createHeroDebugGui, HERO_DEBUG_DEFAULTS } from "./hero-debug-panel";
+import { HERO_DEBUG_DEFAULTS } from "./hero-debug-panel";
 
 type HeroModelProps = {
   src: string;
@@ -22,10 +21,12 @@ type HeroModelProps = {
  * DOM subtree, so an element-scoped listener would stop receiving events (and the
  * model would appear to freeze) whenever the cursor moved over the header. Since
  * this component is mounted multiple times on a page (hero, footer, 404), each
- * instance checks the pointer position against its own container bounds so it
- * only reacts while the cursor is actually over it.
+ * instance hit-tests the pointer against its own hover boundary — the nearest
+ * ancestor with `data-hero-model-boundary` (falling back to its own container) —
+ * so it only reacts while the cursor is over its own section, not another one
+ * rendered on top of or below it.
  */
-export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX = 120, maxRotationDegY = 120 }: HeroModelProps) {
+export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX = 120, maxRotationDegY = 90 }: HeroModelProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const reduceMotion = usePrefersReducedMotion();
   const [loaded, setLoaded] = React.useState(false);
@@ -41,7 +42,6 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
     let frameId: number | null = null;
     let resizeObserver: ResizeObserver | null = null;
     let detachPointer: (() => void) | undefined;
-    let gui: import("lil-gui").default | null = null;
 
     const settings = {
       ...HERO_DEBUG_DEFAULTS,
@@ -86,29 +86,15 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
       pivot.scale.setScalar(settings.pivotScale);
       scene.add(pivot);
 
-      if (IS_DEV) {
-        import("lil-gui").then(({ default: GUI }) => {
-          if (disposed) {
-            return;
-          }
-          gui = createHeroDebugGui(GUI, settings, () => {
-            ambient.intensity = settings.ambient.intensity;
-            ambient.color.set(settings.ambient.color);
-            dir.intensity = settings.key.intensity;
-            dir.color.set(settings.key.color);
-            fill.intensity = settings.fill.intensity;
-            fill.color.set(settings.fill.color);
-            if (renderer) {
-              renderer.toneMappingExposure = settings.exposure;
-            }
-            pivot.scale.setScalar(settings.pivotScale);
-          });
-        });
-      }
-
       let targetX = 0;
       let targetY = 0;
       let isHovering = false;
+
+      // The hover area defaults to the model's own container, but a caller can opt a wider
+      // ancestor in via `data-hero-model-boundary` (e.g. the whole footer, so links/text
+      // rendered above the model still count as "hovering it"). Resolved once here rather than
+      // per mousemove since it can't change for the life of this effect.
+      const hoverBoundary = container.closest<HTMLElement>("[data-hero-model-boundary]") ?? container;
 
       const onMouseLeave = () => {
         targetX = 0;
@@ -117,15 +103,20 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
       };
 
       const onMouseMove = (e: MouseEvent) => {
-        const rect = container.getBoundingClientRect();
+        const rect = hoverBoundary.getBoundingClientRect();
         const isInsideRect =
           e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
 
         // A geometric rect check isn't enough: sections like the intro block are pulled up with a
         // negative margin and a higher z-index to visually slide over the pinned hero on scroll, so
-        // the hero's own container still geometrically contains the pointer while it's covered.
-        // Hit-test the actual topmost element so covered pointer positions don't count as hovering.
-        const isTopmost = isInsideRect && container.contains(document.elementFromPoint(e.clientX, e.clientY));
+        // the hero's own boundary still geometrically contains the pointer while it's covered by a
+        // different section. Hit-test the actual topmost element so covered pointer positions don't
+        // count as hovering, while still allowing elements inside the boundary (e.g. footer links).
+        // The site header is exempt: it's a persistent `position: fixed` chrome element rendered as
+        // a sibling above every section (not a competing page section), so hovering it should still
+        // count as hovering whatever it's sitting on top of.
+        const topElement = document.elementFromPoint(e.clientX, e.clientY);
+        const isTopmost = isInsideRect && (hoverBoundary.contains(topElement) || !!topElement?.closest("[data-site-header]"));
 
         if (!isTopmost) {
           if (isHovering) {
@@ -214,7 +205,6 @@ export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX 
         renderer.domElement.remove();
         renderer.dispose();
       }
-      gui?.destroy();
     };
   }, [src, maxRotationDegX, maxRotationDegY]);
 

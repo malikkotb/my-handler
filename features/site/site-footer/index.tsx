@@ -61,6 +61,7 @@ export function SiteFooter() {
         data-footer-parallax-inner
         className="relative flex h-dvh-1 items-center bg-ink text-surface"
         data-inverted
+        data-hero-model-boundary
       >
         {/* Model: desktop only, full-bleed behind the content */}
         <div className="absolute inset-0 hidden lg:flex">

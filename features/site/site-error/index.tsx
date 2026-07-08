@@ -23,6 +23,7 @@ export async function SiteError() {
     <SiteShell showHeader={showHeader} showFooter={false}>
       <div
         data-inverted
+        data-hero-model-boundary
         className="relative flex min-h-dvh-1 flex-col items-center justify-center gap-64 bg-ink px-16 py-64 text-center text-surface"
       >
         <div className="absolute inset-0">
