@@ -10,23 +10,19 @@ type HeroModelProps = {
   ariaLabel?: string;
   maxRotationDegX?: number;
   maxRotationDegY?: number;
-  /** Ancestor to track hover on instead of the model's own container — lets overlays
-   *  stacked on top of the model (header, headline) keep driving the rotation. */
-  hoverRef?: React.RefObject<HTMLElement | null>;
 };
 
 /**
  * Three.js GLTF viewer for the hero. The model lerps toward the cursor position
- * (rotation only) and recenters on leave. `three` is imported dynamically so it
- * stays out of the server bundle.
+ * (rotation only) and recenters when the pointer leaves the viewport. `three` is
+ * imported dynamically so it stays out of the server bundle.
+ *
+ * Pointer tracking is bound to the window rather than the model's own container:
+ * the site header renders as a `position: fixed` sibling outside this component's
+ * DOM subtree, so an element-scoped listener would stop receiving events (and the
+ * model would appear to freeze) whenever the cursor moved over the header.
  */
-export function HeroModel({
-  src,
-  ariaLabel = "3D model viewer",
-  maxRotationDegX = 45,
-  maxRotationDegY = 90,
-  hoverRef,
-}: HeroModelProps) {
+export function HeroModel({ src, ariaLabel = "3D model viewer", maxRotationDegX = 45, maxRotationDegY = 90 }: HeroModelProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const reduceMotion = usePrefersReducedMotion();
   const [loaded, setLoaded] = React.useState(false);
@@ -125,12 +121,11 @@ export function HeroModel({
         targetY = 0;
       };
 
-      const hoverEl = hoverRef?.current ?? container;
-      hoverEl.addEventListener("mousemove", onMouseMove);
-      hoverEl.addEventListener("mouseleave", onMouseLeave);
+      window.addEventListener("mousemove", onMouseMove);
+      document.documentElement.addEventListener("mouseleave", onMouseLeave);
       detachPointer = () => {
-        hoverEl.removeEventListener("mousemove", onMouseMove);
-        hoverEl.removeEventListener("mouseleave", onMouseLeave);
+        window.removeEventListener("mousemove", onMouseMove);
+        document.documentElement.removeEventListener("mouseleave", onMouseLeave);
       };
 
       const loader = new GLTFLoader();

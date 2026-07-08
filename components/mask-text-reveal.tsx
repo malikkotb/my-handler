@@ -112,12 +112,11 @@ export function MaskTextReveal({
             setIsVisible(true);
 
             if (fade) {
-              fadeTween = gsap.from(host, {
-                opacity: 0,
-                duration: config.duration,
-                delay,
-                ease,
-              });
+              // fromTo (not `.from`) so the end state is explicit — under Strict Mode's dev
+              // double-invoke, a second `.from` on the same host would read the first tween's
+              // already-applied opacity: 0 as its own "current" end value and animate 0 -> 0,
+              // leaving the element stuck invisible.
+              fadeTween = gsap.fromTo(host, { opacity: 0 }, { opacity: 1, duration: config.duration, delay, ease });
             }
 
             const revealTween = gsap.from(targets, {

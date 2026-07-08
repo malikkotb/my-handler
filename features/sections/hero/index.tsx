@@ -58,14 +58,14 @@ export function Hero() {
         aria-label="Hero"
         data-inverted
       >
-        <HeroModel src="/model.glb" ariaLabel="My Handler hero model" hoverRef={pinRef} />
+        <HeroModel src="/model.glb" ariaLabel="My Handler hero model" />
         <MaskTextReveal splitType="words" immediate duration={0.8}>
           <h2 className="type-h2 pointer-events-none absolute bottom-48 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
             <span className="block">{t("line1")}</span>
             <span className="block">{t("line2")}</span>
           </h2>
         </MaskTextReveal>
-        <MaskTextReveal splitType="words" immediate fade delay={0.6}>
+        <MaskTextReveal splitType="words" immediate fade delay={0.2}>
           <p className="type-eyebrow pointer-events-none absolute bottom-20 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
             {t("scroll")}
           </p>

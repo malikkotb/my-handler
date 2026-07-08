@@ -12,10 +12,10 @@ export type HeroDebugSettings = {
 };
 
 export const HERO_DEBUG_DEFAULTS: HeroDebugSettings = {
-  ambient: { intensity: 0.8, color: "#ffffff" },
-  key: { intensity: 1.5, color: "#ffffff" },
-  fill: { intensity: 0.6, color: "#ffffff" },
-  exposure: 1,
+  ambient: { intensity: 3, color: "#fffdf8" },
+  key: { intensity: 5, color: "#fffdf8" },
+  fill: { intensity: 5, color: "#fffdf8" },
+  exposure: 3,
   pivotScale: 0.7,
   maxRotationDegX: 45,
   maxRotationDegY: 90,
