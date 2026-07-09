@@ -3,6 +3,7 @@
 import * as React from "react";
 import { loadGsap } from "~/features/motion/gsap";
 import { usePrefersReducedMotion } from "~/features/motion/use-prefers-reduced-motion";
+import { useContentReady } from "~/features/use-content-ready";
 
 export type MaskTextRevealSplitType = "lines" | "words" | "letters";
 
@@ -65,6 +66,12 @@ export function MaskTextReveal({
 }: MaskTextRevealProps) {
   const ref = React.useRef<HTMLElement | null>(null);
   const reduceMotion = usePrefersReducedMotion();
+  // Gate the reveal on view-transition completion (same gate as `AnimatedText`). Without this, on a
+  // client route transition the reveal fires on mount — while the page is frozen under the outgoing
+  // `::view-transition` snapshot — and finishes before the new page is shown, so the `h1` just pops
+  // in. `isComplete` is `true` on initial load (immediate reveals still fire right away) and flips
+  // back to `true` on `transition.finished`, deferring the reveal until the new page is visible.
+  const contentReady = useContentReady().isComplete;
   const [isVisible, setIsVisible] = React.useState(false);
 
   React.useEffect(() => {
@@ -76,6 +83,10 @@ export function MaskTextReveal({
 
     if (reduceMotion) {
       setIsVisible(true);
+      return;
+    }
+
+    if (!contentReady) {
       return;
     }
 
@@ -152,7 +163,7 @@ export function MaskTextReveal({
       fadeTween?.kill();
       split?.revert();
     };
-  }, [reduceMotion, splitType, duration, stagger, delay, ease, start, once, immediate, debug, fade]);
+  }, [reduceMotion, splitType, duration, stagger, delay, ease, start, once, immediate, debug, fade, contentReady]);
 
   // `children` can arrive as something other than a single element for a transient render (e.g.
   // mid-navigation) — guard like `components/slot/slot.tsx` does before touching `.props`.
