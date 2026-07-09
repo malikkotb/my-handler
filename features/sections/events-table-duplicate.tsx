@@ -54,32 +54,49 @@ export function EventsTableDuplicate({ events }: { events: EventItem[] }) {
 
       const timelines: ReturnType<typeof gsap.timeline>[] = [];
 
-      const buildGroup = (trigger: Element, cells: HTMLElement[], line: HTMLElement | undefined) => {
+      // `delay` offsets the reveal within the timeline so groups already on screen at load can
+      // cascade one-by-one instead of all firing together; groups revealed later on scroll use 0.
+      const buildGroup = (trigger: Element, cells: HTMLElement[], line: HTMLElement | undefined, delay: number) => {
         const tl = gsap.timeline({
           scrollTrigger: { trigger, start: "top 90%", once: true },
         });
         if (cells.length > 0) {
           // `y: 0` clears the pixel offset GSAP decodes from the CSS `translateY(100%)` matrix;
           // without it the leftover px `y` keeps cells shifted down (clipped) even at yPercent 0.
-          tl.fromTo(cells, { yPercent: 100, y: 0 }, { yPercent: 0, duration: 0.7, ease: "mainLink", stagger: 0.06 }, 0);
+          tl.fromTo(cells, { yPercent: 100, y: 0 }, { yPercent: 0, duration: 0.7, ease: "mainLink", stagger: 0.06 }, delay);
         }
         if (line) {
-          tl.fromTo(line, { width: 0 }, { width: "100%", duration: 0.7, ease: "mainLink" }, 0);
+          tl.fromTo(line, { width: 0 }, { width: "100%", duration: 0.7, ease: "mainLink" }, delay);
         }
         timelines.push(tl);
       };
 
-      // Header group: its labels + the first line (the header/rows separator).
+      // Groups in DOM order: the header (labels + first line), then each row button paired
+      // with the separator line directly below it.
+      const groups: Array<{ trigger: HTMLElement; cells: HTMLElement[]; line: HTMLElement | undefined }> = [];
       const header = container.querySelector<HTMLElement>(`.${styles.header}`);
       if (header) {
-        buildGroup(header, groupCells(header), lines[0]);
+        groups.push({ trigger: header, cells: groupCells(header), line: lines[0] });
       }
-
-      // Row groups: each row button pairs with the separator line directly below it.
       const buttons = Array.from(container.querySelectorAll<HTMLElement>(`.${styles.project}`));
       buttons.forEach((button, index) => {
-        buildGroup(button, groupCells(button), lines[index + 1]);
+        groups.push({ trigger: button, cells: groupCells(button), line: lines[index + 1] });
       });
+
+      // Cascade only the groups already visible at load; each gets the next step of delay so
+      // they reveal top-to-bottom one at a time. Off-screen groups animate on scroll (delay 0).
+      const CASCADE_STEP = 0.12;
+      const viewportHeight = window.innerHeight;
+      let visibleIndex = 0;
+      for (const group of groups) {
+        const rect = group.trigger.getBoundingClientRect();
+        const initiallyInView = rect.top < viewportHeight * 0.9 && rect.bottom > 0;
+        const delay = initiallyInView ? visibleIndex * CASCADE_STEP : 0;
+        if (initiallyInView) {
+          visibleIndex += 1;
+        }
+        buildGroup(group.trigger, group.cells, group.line, delay);
+      }
 
       ScrollTrigger.refresh();
 
