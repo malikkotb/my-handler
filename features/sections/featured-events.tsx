@@ -100,25 +100,28 @@ function FeaturedEventParallaxFrame({ children }: { children: React.ReactNode })
 
     let cleanup: (() => void) | undefined;
 
-    loadGsap().then(({ gsap }) => {
+    loadGsap().then(({ gsap, CustomEase }) => {
       if (!outerRef.current) {
         return;
+      }
+
+      if (!CustomEase.get("featured-reveal")) {
+        CustomEase.create("featured-reveal", "0.65, 0.05, 0.36, 1");
       }
 
       const ctx = gsap.context(() => {
         gsap.fromTo(
           el,
-          { opacity: 0, y: 40 },
+          { opacity: 0, y: 20 },
           {
             opacity: 1,
             y: 0,
-            duration: 1,
-            ease: "ease-custom-easing",
+            duration: 0.64,
+            ease: "featured-reveal",
             scrollTrigger: {
               trigger: el,
-              start: "top 85%",
+              start: "top 95%",
               toggleActions: "play none none reverse",
-              markers: true,
             },
           }
         );

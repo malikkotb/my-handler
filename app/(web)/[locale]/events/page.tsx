@@ -31,14 +31,18 @@ const EventsQ = defineQuery(`
   }
 `);
 
-export async function generateMetadata({ params }: EventsPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: EventsPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "events" });
 
   return { title: t("heading") };
 }
 
-export default async function EventsPage({ params }: EventsPageProps) {
+export default async function EventsPage({
+  params,
+}: EventsPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "events" });
@@ -55,19 +59,27 @@ export default async function EventsPage({ params }: EventsPageProps) {
     type: e.type ?? "",
     location: e.location ?? "",
     description: e.description ?? "",
-    descriptionRichText: e.descriptionRichText?.length ? e.descriptionRichText : null,
+    descriptionRichText: e.descriptionRichText?.length
+      ? e.descriptionRichText
+      : null,
     images: (e.images ?? []).map((img) => ({
       src: getImageSrc(img, { width: 1200 }),
       alt: img.altText ?? "",
-      orientation: (img.dimensions?.aspectRatio ?? 1) >= 1 ? "landscape" : "portrait",
+      orientation:
+        (img.dimensions?.aspectRatio ?? 1) >= 1
+          ? "landscape"
+          : "portrait",
     })),
   }));
 
   return (
     <SiteShell>
-      <div className="min-h-dvh-1">
-        <PageIntroSection title={t("heading").toUpperCase()} ariaLabel="Events" />
-        <EventsTable events={events} />
+      <div className='min-h-dvh-1'>
+        <PageIntroSection
+          title={t("heading").toUpperCase()}
+          ariaLabel='Events'
+        />
+        {/* <EventsTable events={events} /> */}
         <EventsTableDuplicate events={events} />
       </div>
       <DynamicTextCursor />

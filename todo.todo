@@ -1,23 +1,15 @@
-☐ Text animations
-    ☐ subtle animation on the logo (in the header)
-    ☐ subtle intro animation on the images or not ? check byMonolog
+Todo:
 
 ☐ add parallax to some more sections; get inspo from homepage: by monolog
 
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
-☐ animate the first image of the featured events section in (check prototype)
-
-☐ aniamte the images in using interscition observer ?
-
-☐ animate each line and client name in evnets table, just like olivier larose on scroll @started(26-07-09 11:13)
-
 ☐ optimize performance of the 3d hero model like David Faure's post
 
-only animate sub-headings in services and about page, not body text
 
-SEO / DNS Management / Presentation
 
+
+SEO / DNS Management / Presentation:
 ☐ present project on linkedin like Jakob Wiemer did with Era of Arc
 
 ☐ point my-handler.com DNS at this Vercel project once I have access in SANITY WEBHOOK
