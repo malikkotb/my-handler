@@ -4,54 +4,14 @@ import { useTranslations } from "next-intl";
 import * as React from "react";
 // import { CURSOR_REFRESH_EVENT } from "~/features/dom/dynamic-text-cursor";
 import { useDragScroll } from "~/features/dom/use-drag-scroll";
-import { loadGsap } from "~/features/motion/gsap";
 import { SanityRichText } from "~/features/rich-text";
 import { cx } from "~/features/style/utils";
 import type { EventImage, EventItem } from "./events-data";
-
-type GsapBundle = Awaited<ReturnType<typeof loadGsap>>;
 
 export function EventsTable({ events }: { events: EventItem[] }) {
   const t = useTranslations("eventsTable");
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const detailRefs = React.useRef(new Map<string, HTMLDivElement>());
-  const gsapRef = React.useRef<GsapBundle | null>(null);
-  const reduceMotionRef = React.useRef(false);
-
-  React.useEffect(() => {
-    reduceMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    let active = true;
-    loadGsap().then((bundle) => {
-      if (!active) {
-        return;
-      }
-      if (!bundle.CustomEase.get("eventReveal")) {
-        bundle.CustomEase.create("eventReveal", "0.36, 0.33, 0, 1");
-      }
-      if (!bundle.CustomEase.get("eventRevealOpen")) {
-        bundle.CustomEase.create("eventRevealOpen", "0.625, 0.05, 0, 1");
-      }
-      if (!bundle.CustomEase.get("eventContentReveal")) {
-        bundle.CustomEase.create("eventContentReveal", "0.5, 0, 1, 0.55");
-      }
-      gsapRef.current = bundle;
-    });
-
-    const refs = detailRefs.current;
-    return () => {
-      active = false;
-      const bundle = gsapRef.current;
-      if (bundle) {
-        for (const el of refs.values()) {
-          bundle.gsap.killTweensOf(el);
-          if (el.firstElementChild instanceof HTMLElement) {
-            bundle.gsap.killTweensOf(el.firstElementChild);
-          }
-        }
-      }
-    };
-  }, []);
 
   // Toggling a row swaps its `data-cursor-text` ("View Project" ⇄ "Close") without the
   // pointer moving. Nudge the dynamic cursor to re-read once the new value is committed.
@@ -59,40 +19,15 @@ export function EventsTable({ events }: { events: EventItem[] }) {
   //   window.dispatchEvent(new Event(CURSOR_REFRESH_EVENT));
   // }, [activeId]);
 
-  const animateDetails = React.useCallback((element: HTMLElement, open: boolean) => {
-    const bundle = gsapRef.current;
-    const content = element.firstElementChild instanceof HTMLElement ? element.firstElementChild : null;
-
-    if (!bundle || reduceMotionRef.current) {
-      // Instant fallback (also covers reduced motion).
-      element.style.height = open ? "auto" : "0px";
-      if (content) {
-        content.style.opacity = open ? "1" : "0";
-      }
+  // Height animates via a CSS transition (see the row's Tailwind classes). We measure
+  // scrollHeight on open and set an explicit px height so the transition has a target;
+  // closing sets it back to 0. Same easing/duration for both directions.
+  const setBodyHeight = React.useCallback((id: string, open: boolean) => {
+    const el = detailRefs.current.get(id);
+    if (!el) {
       return;
     }
-
-    bundle.gsap.killTweensOf(element);
-    if (content) {
-      bundle.gsap.killTweensOf(content);
-    }
-
-    if (!open) {
-      if (content) {
-        bundle.gsap.to(content, { opacity: 0, duration: 0.42, ease: "none" });
-      }
-      bundle.gsap.to(element, {
-        height: 0,
-        duration: 0.48,
-        ease: "eventReveal",
-      });
-    } else {
-      if (content) {
-        content.style.opacity = "0";
-        bundle.gsap.to(content, { opacity: 1, duration: 0.28, delay: 0.03, ease: "eventContentReveal" });
-      }
-      bundle.gsap.to(element, { height: "auto", duration: 0.6, ease: "eventRevealOpen" });
-    }
+    el.style.height = open ? `${el.scrollHeight}px` : "0px";
   }, []);
 
   const toggleEvent = React.useCallback(
@@ -101,23 +36,17 @@ export function EventsTable({ events }: { events: EventItem[] }) {
         const next = prev === eventId ? null : eventId;
 
         if (prev !== null) {
-          const prevEl = detailRefs.current.get(prev);
-          if (prevEl) {
-            animateDetails(prevEl, false);
-          }
+          setBodyHeight(prev, false);
         }
 
         if (next !== null) {
-          const nextEl = detailRefs.current.get(next);
-          if (nextEl) {
-            animateDetails(nextEl, true);
-          }
+          setBodyHeight(next, true);
         }
 
         return next;
       });
     },
-    [animateDetails]
+    [setBodyHeight]
   );
 
   return (
@@ -158,11 +87,11 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                   >
                     <div
                       aria-hidden="true"
-                      className="pointer-events-none absolute -inset-px bg-ink opacity-0 transition-opacity duration-[850ms] ease-custom-easing group-hover:opacity-100 group-hover:duration-[650ms]"
+                      className="pointer-events-none absolute -inset-px bg-ink opacity-0 transition-opacity duration-850 ease-custom-easing group-hover:opacity-100 group-hover:duration-650"
                     />
                     <button
                       type="button"
-                      className="relative z-10 w-full cursor-pointer whitespace-nowrap text-left uppercase transition-colors duration-[450ms] ease-[cubic-bezier(0.83,0,0.17,1)] focus-visible:outline focus-visible:outline-offset-8 group-hover:text-surface motion-safe:transition-[padding-left] motion-safe:duration-[850ms] motion-safe:ease-custom-easing motion-safe:group-hover:pl-10 motion-safe:group-hover:duration-[650ms]"
+                      className="relative z-10 w-full cursor-pointer whitespace-nowrap text-left uppercase transition-colors duration-450 ease-[cubic-bezier(0.83,0,0.17,1)] focus-visible:outline focus-visible:outline-offset-8 group-hover:text-surface motion-safe:transition-[padding-left] motion-safe:duration-850 motion-safe:ease-custom-easing motion-safe:group-hover:pl-14 motion-safe:group-hover:duration-650"
                       aria-expanded={isOpen}
                       aria-controls={`event-details-${event.id}`}
                     >
@@ -173,7 +102,7 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                     </button>
                   </th>
                   {/* <td className="type-eyebrow-xs p-0 text-right align-middle motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12 lg:text-left">{event.type}</td> */}
-                  <td className="type-eyebrow-xs relative z-10 p-0 text-right align-middle transition-colors duration-[450ms] ease-[cubic-bezier(0.83,0,0.17,1)] group-hover:text-surface motion-safe:transition-[padding-right] motion-safe:duration-[850ms] motion-safe:ease-custom-easing motion-safe:group-hover:pr-10 motion-safe:group-hover:duration-[650ms]">
+                  <td className="type-eyebrow-xs relative z-10 p-0 text-right align-middle transition-colors duration-450 ease-[cubic-bezier(0.83,0,0.17,1)] group-hover:text-surface motion-safe:transition-[padding-right] motion-safe:duration-850 motion-safe:ease-custom-easing motion-safe:group-hover:pr-14 motion-safe:group-hover:duration-650">
                     {event.location}
                   </td>
                 </tr>
@@ -188,10 +117,10 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                           detailRefs.current.delete(event.id);
                         }
                       }}
-                      className="h-0 overflow-hidden"
+                      className="h-0 overflow-hidden transition-[height] duration-600 ease-[cubic-bezier(0.625,0.05,0,1)]"
                       aria-hidden={!isOpen}
                     >
-                      <div className="pt-12 pb-20 opacity-0 lg:pb-28">
+                      <div className="pt-12 pb-20 lg:pb-28">
                         {event.descriptionRichText ? (
                           <SanityRichText value={event.descriptionRichText} className="type-body max-w-xl" tone="light" />
                         ) : (
