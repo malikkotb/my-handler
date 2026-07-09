@@ -71,7 +71,7 @@ export function ServicesDetail() {
   }, [updateActiveService]);
 
   return (
-    <section className='layout-grid pt-0 section-padding gap-y-40 overflow-clip'>
+    <section className='layout-grid section-padding gap-y-40 overflow-clip'>
       <div className='col-span-full lg:sticky lg:top-80 lg:col-span-3 lg:self-start'>
         <div className='relative aspect-3/2'>
           {serviceImages.map((service, index) => {

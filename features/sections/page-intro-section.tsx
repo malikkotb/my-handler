@@ -13,7 +13,7 @@ export function PageIntroSection({ title, body, ariaLabel = "Intro" }: PageIntro
       <MaskTextReveal splitType="letters" immediate><h1 className="type-h1 col-span-full -ml-[0.07em] uppercase lg:col-span-6">{title}</h1></MaskTextReveal>
       {body && (
         <div className="layout-grid">
-          <MaskTextReveal splitType="lines" immediate><h3 className="type-h3 lg:type-h3 col-span-full mt-32 lg:mt-32">{body}</h3></MaskTextReveal>
+          <h3 className="type-h3 lg:type-h3 col-span-full mt-32 lg:mt-32">{body}</h3>
         </div>
       )}
     </section>

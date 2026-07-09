@@ -50,6 +50,7 @@ function FeaturedEventImage({ event }: { event: FeaturedCard }) {
 }
 
 function FeaturedEventParallaxFrame({ children }: { children: React.ReactNode }) {
+  const outerRef = React.useRef<HTMLDivElement>(null);
   const frameRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -88,8 +89,49 @@ function FeaturedEventParallaxFrame({ children }: { children: React.ReactNode })
     return () => cleanup?.();
   }, []);
 
+  // Reveal-on-scroll: fades the frame in and lifts it slightly the first time it enters the
+  // viewport. Lives on the outer (non-overflow-clipped) wrapper so it doesn't fight the
+  // yPercent parallax tween running on the images above.
+  React.useEffect(() => {
+    const el = outerRef.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    let cleanup: (() => void) | undefined;
+
+    loadGsap().then(({ gsap }) => {
+      if (!outerRef.current) {
+        return;
+      }
+
+      const ctx = gsap.context(() => {
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "ease-custom-easing",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+              markers: true,
+            },
+          }
+        );
+      }, el);
+
+      cleanup = () => ctx.revert();
+    });
+
+    return () => cleanup?.();
+  }, []);
+
   return (
-    <div className="aspect-3/2 overflow-hidden bg-body/10">
+    <div ref={outerRef} className="aspect-3/2 overflow-hidden bg-body/10">
       <div ref={frameRef} className="-mx-[5%] h-full w-[110%] [&_img]:block [&_img]:h-full [&_img]:w-full [&_img]:scale-120 [&_img]:object-cover">
         {children}
       </div>
