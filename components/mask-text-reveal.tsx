@@ -177,6 +177,13 @@ export function MaskTextReveal({
     style: {
       ...children.props.style,
       visibility: reduceMotion || isVisible ? "visible" : "hidden",
+      // KERNING FIX — do not remove. SplitText wraps each unit in its own `inline-block` box, and
+      // font kerning only applies within one continuous text run, so splitting makes the text render
+      // ~1% wider (kerning lost). On a route transition the reveal shows the loose split text, then it
+      // reverts to a kerned run and compresses — the "letters shrink slightly to the left" glitch.
+      // Disabling kerning makes the pre-split, split, and reverted states identical width, so there's
+      // nothing to compress. Trade-off: resting text sits ~1% looser (negligible on uppercase display).
+      fontKerning: "none",
     },
   });
 }
