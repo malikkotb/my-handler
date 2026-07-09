@@ -7,7 +7,8 @@ import { sanityFetch } from "~/features/sanity/client";
 import { ImageFragment } from "~/features/sanity/media/fragment";
 import { getImageSrc } from "~/features/sanity/media/image/utils";
 import type { EventItem } from "~/features/sections/events-data";
-import { EventsTable } from "~/features/sections/events-table";
+// import { EventsTable } from "~/features/sections/events-table";
+import { EventsTable2 } from "~/features/sections/events-table-2";
 import { EventsTableDuplicate } from "~/features/sections/events-table-duplicate";
 import { PageIntroSection } from "~/features/sections/page-intro-section";
 import { SiteShell } from "~/features/site/site-shell";
@@ -31,18 +32,14 @@ const EventsQ = defineQuery(`
   }
 `);
 
-export async function generateMetadata({
-  params,
-}: EventsPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: EventsPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "events" });
 
   return { title: t("heading") };
 }
 
-export default async function EventsPage({
-  params,
-}: EventsPageProps) {
+export default async function EventsPage({ params }: EventsPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "events" });
@@ -59,28 +56,20 @@ export default async function EventsPage({
     type: e.type ?? "",
     location: e.location ?? "",
     description: e.description ?? "",
-    descriptionRichText: e.descriptionRichText?.length
-      ? e.descriptionRichText
-      : null,
+    descriptionRichText: e.descriptionRichText?.length ? e.descriptionRichText : null,
     images: (e.images ?? []).map((img) => ({
       src: getImageSrc(img, { width: 1200 }),
       alt: img.altText ?? "",
-      orientation:
-        (img.dimensions?.aspectRatio ?? 1) >= 1
-          ? "landscape"
-          : "portrait",
+      orientation: (img.dimensions?.aspectRatio ?? 1) >= 1 ? "landscape" : "portrait",
     })),
   }));
 
   return (
     <SiteShell>
-      <div className='min-h-dvh-1'>
-        <PageIntroSection
-          title={t("heading").toUpperCase()}
-          ariaLabel='Events'
-        />
+      <div className="min-h-dvh-1">
+        <PageIntroSection title={t("heading").toUpperCase()} ariaLabel="Events" />
         {/* <EventsTable events={events} /> */}
-        <EventsTableDuplicate events={events} />
+        <EventsTable2 events={events} />
       </div>
       <DynamicTextCursor />
     </SiteShell>
