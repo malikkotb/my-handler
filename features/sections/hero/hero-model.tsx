@@ -31,7 +31,7 @@ type HeroModelProps = {
 export function HeroModel({
   src,
   ariaLabel = "3D model viewer",
-  maxRotationDegX = 90,
+  maxRotationDegX = 60,
   maxRotationDegY = 90,
   pivotScale = 0.7,
 }: HeroModelProps) {
