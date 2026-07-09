@@ -33,7 +33,7 @@ function FeaturedEventImage({ event }: { event: FeaturedCard }) {
   if (typeof event.image === "string") {
     return (
       // biome-ignore lint/performance/noImgElement: local static fallback asset
-      <img src={event.image} alt={event.name} width={960} height={640} className="h-full w-full object-cover" />
+      <img src={event.image} alt={event.name} width={960} height={640} className="h-full w-full object-cover" loading="lazy" />
     );
   }
 
@@ -135,7 +135,10 @@ function FeaturedEventParallaxFrame({ children }: { children: React.ReactNode })
 
   return (
     <div ref={outerRef} className="aspect-3/2 overflow-hidden bg-body/10">
-      <div ref={frameRef} className="-mx-[5%] h-full w-[110%] [&_img]:block [&_img]:h-full [&_img]:w-full [&_img]:scale-120 [&_img]:object-cover">
+      <div
+        ref={frameRef}
+        className="-mx-[5%] h-full w-[110%] [&_img]:block [&_img]:h-full [&_img]:w-full [&_img]:scale-120 [&_img]:object-cover"
+      >
         {children}
       </div>
     </div>
@@ -219,7 +222,10 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
       {/* Desktop: sticky titles over a scrolling image column */}
       <section className="relative hidden text-ink lg:-mt-240 lg:block" aria-label="Featured events">
         <div ref={stickySentinelRef} aria-hidden="true" className="h-px" />
-        <div id="sticky-titles-wrap" className="layout-grid section-px pointer-events-none sticky top-0 z-10 h-dvh-1 items-center">
+        <div
+          id="sticky-titles-wrap"
+          className="layout-grid section-px pointer-events-none sticky top-0 z-10 h-dvh-1 items-center"
+        >
           <span
             className={`type-eyebrow col-span-2 col-start-1 overflow-visible whitespace-nowrap transition-opacity duration-500 ease-out ${isStuck ? "opacity-100" : "opacity-0"}`}
           >
@@ -256,7 +262,10 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
       </section>
 
       {/* Mobile: stacked cards */}
-      <section className="flex flex-col items-center featured-images-gap section-px py-40 text-ink lg:hidden" aria-label="Featured events">
+      <section
+        className="featured-images-gap section-px flex flex-col items-center py-40 text-ink lg:hidden"
+        aria-label="Featured events"
+      >
         {featured.map((event) => (
           <article key={event.id} className="flex flex-col gap-8">
             <FeaturedEventParallaxFrame>

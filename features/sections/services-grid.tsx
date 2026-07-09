@@ -163,7 +163,7 @@ export function ServicesGrid({ services: servicesInput }: { services?: ServiceIn
           style={{ willChange: "transform, opacity" }}
           aria-hidden="true"
         >
-          <img ref={imageRef} alt="" width={480} height={600} className="h-full w-full object-cover" loading="eager" />
+          <img ref={imageRef} alt="" width={480} height={600} className="h-full w-full object-cover" loading="lazy" />
         </div>
       </div>
 

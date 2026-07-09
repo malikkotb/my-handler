@@ -96,65 +96,66 @@ export function MaskTextReveal({
     let tween: { kill: () => void } | undefined;
     let fadeTween: { kill: () => void } | undefined;
 
-    void document.fonts.ready.then(() =>
-      loadGsap().then(({ gsap, SplitText }) => {
-        if (cancelled || !ref.current) {
-          return;
-        }
+    // Load the GSAP chunk and wait for fonts in parallel (not sequentially) — SplitText still
+    // needs fonts.ready for accurate line/word measurement, but there's no reason to delay
+    // fetching+parsing the GSAP bundle until fonts finish loading first.
+    void Promise.all([document.fonts.ready, loadGsap()]).then(([, { gsap, SplitText }]) => {
+      if (cancelled || !ref.current) {
+        return;
+      }
 
-        const config = {
-          duration: duration ?? SPLIT_TYPE_CONFIG[splitType].duration,
-          stagger: stagger ?? SPLIT_TYPE_CONFIG[splitType].stagger,
-        };
+      const config = {
+        duration: duration ?? SPLIT_TYPE_CONFIG[splitType].duration,
+        stagger: stagger ?? SPLIT_TYPE_CONFIG[splitType].stagger,
+      };
 
-        split = SplitText.create(ref.current, {
-          type: SPLIT_TYPE_TO_GSAP_TYPE[splitType],
-          mask: "lines",
-          autoSplit: true,
-          onSplit(instance) {
-            const targets = splitType === "lines" ? instance.lines : splitType === "words" ? instance.words : instance.chars;
+      split = SplitText.create(ref.current, {
+        type: SPLIT_TYPE_TO_GSAP_TYPE[splitType],
+        mask: "lines",
+        autoSplit: true,
+        onSplit(instance) {
+          const targets = splitType === "lines" ? instance.lines : splitType === "words" ? instance.words : instance.chars;
 
-            if (debug) {
-              for (const mask of instance.masks) {
-                (mask as HTMLElement).style.border = "1px solid red";
-              }
+          if (debug) {
+            for (const mask of instance.masks) {
+              (mask as HTMLElement).style.border = "1px solid red";
             }
+          }
 
-            setIsVisible(true);
+          setIsVisible(true);
 
-            if (fade) {
-              // fromTo (not `.from`) so the end state is explicit — under Strict Mode's dev
-              // double-invoke, a second `.from` on the same host would read the first tween's
-              // already-applied opacity: 0 as its own "current" end value and animate 0 -> 0,
-              // leaving the element stuck invisible.
-              fadeTween = gsap.fromTo(host, { opacity: 0 }, { opacity: 1, duration: config.duration, delay, ease });
-            }
+          if (fade) {
+            // fromTo (not `.from`) so the end state is explicit — under Strict Mode's dev
+            // double-invoke, a second `.from` on the same host would read the first tween's
+            // already-applied opacity: 0 as its own "current" end value and animate 0 -> 0,
+            // leaving the element stuck invisible.
+            fadeTween = gsap.fromTo(host, { opacity: 0 }, { opacity: 1, duration: config.duration, delay, ease });
+          }
 
-            const revealTween = gsap.from(targets, {
-              yPercent: 110,
-              duration: config.duration,
-              stagger: config.stagger,
-              delay,
-              ease,
-              ...(immediate
-                ? {}
-                : {
-                    scrollTrigger: {
-                      trigger: host,
-                      start,
-                      once,
-                    },
-                  }),
-            });
+          const revealTween = gsap.from(targets, {
+            yPercent: 110,
+            duration: config.duration,
+            stagger: config.stagger,
+            delay,
+            ease,
+            ...(immediate
+              ? {}
+              : {
+                  scrollTrigger: {
+                    trigger: host,
+                    start,
+                    once,
+                  },
+                }),
+          });
 
-            tween = revealTween;
-            scrollTrigger = revealTween.scrollTrigger ?? undefined;
+          tween = revealTween;
+          scrollTrigger = revealTween.scrollTrigger ?? undefined;
 
-            return revealTween;
-          },
-        });
-      })
-    );
+          return revealTween;
+        },
+      });
+    });
 
     return () => {
       cancelled = true;

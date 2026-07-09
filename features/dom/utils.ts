@@ -1,5 +1,26 @@
 import { type Screen, screens } from "./constants";
 
+/**
+ * `requestIdleCallback` isn't in Safari — fall back to a short timeout so callers still defer past
+ * the initial paint. A `timeout` is always passed to `requestIdleCallback` too: pages with continuous
+ * `requestAnimationFrame` loops (smooth scroll, GSAP ticker, WebGL render loops) can leave the main
+ * thread with no true idle time for a long while, so an unbounded idle callback risks never firing.
+ */
+export function scheduleIdle(callback: () => void, timeout = 1000): number {
+  if (typeof window.requestIdleCallback === "function") {
+    return window.requestIdleCallback(callback, { timeout });
+  }
+  return window.setTimeout(callback, 200);
+}
+
+export function cancelIdle(id: number) {
+  if (typeof window.cancelIdleCallback === "function") {
+    window.cancelIdleCallback(id);
+    return;
+  }
+  window.clearTimeout(id);
+}
+
 function parseRem(size: string) {
   return Number.parseFloat(size.replace("rem", ""));
 }
