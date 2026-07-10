@@ -43,8 +43,9 @@ function resolveImageSrc(image: Service["image"]): string | null {
 
 // Image preview cursor follower (Osmo Supply pattern): a fixed cursor tracks the
 // pointer via gsap.quickTo, and each hovered row clones its source image into the
-// follower, sliding the outgoing/incoming image up or down depending on whether the
-// newly hovered row is below or above the previously hovered one.
+// follower, sliding the incoming image up or down (depending on whether the newly
+// hovered row is below or above the previously hovered one) to layer on top of the
+// previous image, which stays put underneath instead of translating away.
 const SLIDE_OFFSET = 100;
 const SLIDE_DURATION = 0.5;
 const SLIDE_EASE = "power2.inOut";
@@ -72,6 +73,7 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
   const reducedMotionRef = React.useRef(false);
   const prevIndexRef = React.useRef<number | null>(null);
   const firstEntryRef = React.useRef(true);
+  const topZIndexRef = React.useRef(0);
 
   React.useEffect(() => {
     enabledRef.current = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -128,19 +130,22 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     const forward = prevIndexRef.current === null || index > prevIndexRef.current;
     prevIndexRef.current = index;
 
-    for (const el of Array.from(followerInner.querySelectorAll("img"))) {
-      bundle.gsap.killTweensOf(el);
-      bundle.gsap.to(el, {
-        yPercent: forward ? -SLIDE_OFFSET : SLIDE_OFFSET,
-        duration: SLIDE_DURATION,
-        ease: SLIDE_EASE,
-        overwrite: "auto",
-        onComplete: () => el.remove(),
-      });
+    // Drop any layers older than the immediately-previous one; that one stays put,
+    // covered by the incoming layer, instead of translating away.
+    const existingLayers = Array.from(followerInner.querySelectorAll("img"));
+    while (existingLayers.length > 1) {
+      const stale = existingLayers.shift();
+      if (!stale) {
+        break;
+      }
+      bundle.gsap.killTweensOf(stale);
+      stale.remove();
     }
 
     const clone = sourceImg.cloneNode(true) as HTMLImageElement;
     clone.className = "absolute inset-0 h-full w-full object-cover";
+    topZIndexRef.current += 1;
+    bundle.gsap.set(clone, { zIndex: topZIndexRef.current });
     followerInner.appendChild(clone);
 
     if (!firstEntryRef.current) {
@@ -152,28 +157,6 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     } else {
       firstEntryRef.current = false;
     }
-  }, []);
-
-  const handleItemLeave = React.useCallback(() => {
-    const bundle = gsapRef.current;
-    const followerInner = followerInnerRef.current;
-    if (!bundle || !followerInner) {
-      return;
-    }
-
-    const el = followerInner.querySelector("img");
-    if (!el) {
-      return;
-    }
-
-    bundle.gsap.killTweensOf(el);
-    bundle.gsap.to(el, {
-      yPercent: -SLIDE_OFFSET,
-      duration: SLIDE_DURATION,
-      ease: SLIDE_EASE,
-      overwrite: "auto",
-      onComplete: () => el.remove(),
-    });
   }, []);
 
   const handleCollectionLeave = React.useCallback(() => {
@@ -191,6 +174,7 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     }
     firstEntryRef.current = true;
     prevIndexRef.current = null;
+    topZIndexRef.current = 0;
   }, []);
 
   const isActive = hoveredIndex !== null;
@@ -214,7 +198,6 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
                 opacity: isActive && hoveredIndex !== index ? 0.5 : 1,
               }}
               onMouseEnter={() => handleItemEnter(service, index)}
-              onMouseLeave={handleItemLeave}
             >
               <h4 className="type-h4 col-span-full uppercase motion-safe:transition-transform motion-safe:duration-650 motion-safe:ease-custom-easing motion-safe:group-hover:translate-x-12">
                 {service.name || (service.labelKey ? t(`services.${service.labelKey}`) : "")}

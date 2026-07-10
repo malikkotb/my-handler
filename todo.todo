@@ -1,11 +1,8 @@
 Todo:
 ☐ add parallax to some more sections; get inspo from homepage: by monolog
 
-☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo) @started(26-07-10 11:09)
 
-☐ add highlight opacity fade-in text to one of the texts in about or services page
-
-☐ as for the titles..is it’s possible to make the animation a little sooner after loading?
+☐ as for the titles..is its possible to make the animation a little sooner after loading?
 ☐ like, right as the page loads the headers are showing up so it comes all together
 
 ☐ animate the client names in, in a staggered fashion with intersction observer,
@@ -14,6 +11,7 @@ Todo:
 
 ☐ pagespeed insights and fix
 
+☐ add highlight opacity fade-in text to one of the texts in about or services page
 
 
 SEO / DNS Management / Presentation:
