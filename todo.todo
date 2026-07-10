@@ -4,6 +4,11 @@ Todo:
 
 ☐ add proper transition to ServicesGrid.vue section for the iamges (check osmo)
 
+☐ add highlight text to one of the texts in about or services page
+
+☐ as for the titles..isit’s possible to make the animation a little sooner after loading?
+☐ like, right as the page loads the headers are showing up so it comes all together
+
 ☐ optimize performance of the 3d hero model like David Faure's post
 
 ☐ pagespeed insights and fix

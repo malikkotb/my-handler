@@ -3,6 +3,7 @@ import { FeaturedEvents } from "~/features/sections/featured-events";
 import { Hero } from "~/features/sections/hero";
 import { IntroSection } from "~/features/sections/intro-section";
 import { ServicesGrid } from "~/features/sections/services-grid";
+import { ServicesGridDuplicate } from "~/features/sections/services-grid-duplicate";
 import { TypographyTest } from "~/features/sections/typography-test";
 import { SiteShell } from "~/features/site/site-shell";
 import type { PageQResult } from "~/sanity/types";
@@ -19,7 +20,8 @@ export function HomePage({ page }: { page?: PageQResult }) {
           */}
         <IntroSection />
         <FeaturedEvents events={page?.featuredEvents} />
-        <ServicesGrid services={page?.services} />
+        <ServicesGridDuplicate services={page?.services} />
+        {/* <ServicesGrid services={page?.services} /> */}
         <ClientSection isHomepage />
       </div>
     </SiteShell>
