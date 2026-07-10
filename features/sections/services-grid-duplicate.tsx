@@ -37,10 +37,16 @@ function resolveImageSrc(image: Service["image"]): string | null {
   return null;
 }
 
-// Single-image cursor pop-up: one floating preview swaps `src` per hovered row,
-// pops in centered on the pointer, tracks mousemove, and eases out on leave.
-// Offsets are measured from the image's own rendered box (not hardcoded) so the
-// centering math always matches its actual size (h-[30vh], same as before).
+const LAYER_COUNT = 2;
+const LAYER_TRANSITION_DURATION = 0.5;
+
+// Cursor pop-up preview: a fixed pool of stacked image layers is reused round-robin
+// per hovered row — each new hover slides its layer up from the bottom (yPercent
+// 100 -> 0) and raises its z-index above the previous layer, so the incoming image
+// covers the last one instead of swapping in place. The wrapper pops in centered on
+// the pointer, tracks mousemove, and hides on leave. Offsets are measured from the
+// preview's own rendered box (not hardcoded) so the centering math always matches
+// its actual size (h-[30vh]).
 export function ServicesGridDuplicate({ services: servicesInput }: { services?: ServiceInput[] | null }) {
   const t = useTranslations();
   const locale = useLocale();
@@ -54,11 +60,13 @@ export function ServicesGridDuplicate({ services: servicesInput }: { services?: 
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const previewRef = React.useRef<HTMLDivElement>(null);
-  const imageRef = React.useRef<HTMLImageElement>(null);
+  const layerRefs = React.useRef<(HTMLImageElement | null)[]>([]);
   const gsapRef = React.useRef<GsapBundle | null>(null);
   const enabledRef = React.useRef(false);
   const reducedMotionRef = React.useRef(false);
   const activeIdRef = React.useRef<string | null>(null);
+  const activeLayerRef = React.useRef(-1);
+  const topZIndexRef = React.useRef(0);
 
   React.useEffect(() => {
     enabledRef.current = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -75,15 +83,28 @@ export function ServicesGridDuplicate({ services: servicesInput }: { services?: 
   const onEnter = React.useCallback((service: Service, event: React.MouseEvent<HTMLLIElement>) => {
     const bundle = gsapRef.current;
     const preview = previewRef.current;
-    const img = imageRef.current;
     const container = containerRef.current;
-    if (!bundle || !preview || !img || !container || !enabledRef.current) return;
+    if (!bundle || !preview || !container || !enabledRef.current) return;
 
     const src = resolveImageSrc(service.image);
     if (!src) return;
 
+    const layerIndex = (activeLayerRef.current + 1) % LAYER_COUNT;
+    const img = layerRefs.current[layerIndex];
+    if (!img) return;
+
     activeIdRef.current = service.id;
+    activeLayerRef.current = layerIndex;
     if (img.getAttribute("src") !== src) img.src = src;
+
+    topZIndexRef.current += 1;
+    bundle.gsap.set(img, { zIndex: topZIndexRef.current, yPercent: reducedMotionRef.current ? 0 : 100 });
+    bundle.gsap.to(img, {
+      yPercent: 0,
+      duration: reducedMotionRef.current ? 0 : LAYER_TRANSITION_DURATION,
+      ease: "expo.out",
+      overwrite: true,
+    });
 
     const rect = container.getBoundingClientRect();
     bundle.gsap.set(preview, {
@@ -141,14 +162,27 @@ export function ServicesGridDuplicate({ services: servicesInput }: { services?: 
           ))}
         </ul>
 
-        {/* Single floating preview: swaps src per hovered row, pops in on the cursor. */}
+        {/* Floating preview: each hovered row's image slides up as a new layer stacked on top of the previous one. */}
         <div
           ref={previewRef}
-          className="pointer-events-none invisible absolute top-0 left-0 z-10 hidden aspect-service-card h-[30vh] opacity-0 lg:block"
+          className="pointer-events-none invisible absolute top-0 left-0 z-10 hidden aspect-service-card h-[30vh] overflow-hidden opacity-0 lg:block"
           style={{ willChange: "transform, opacity" }}
           aria-hidden="true"
         >
-          <img ref={imageRef} alt="" width={480} height={600} className="h-full w-full object-cover" loading="lazy" />
+          {Array.from({ length: LAYER_COUNT }, (_, index) => (
+            <img
+              // biome-ignore lint/suspicious/noArrayIndexKey: fixed-size layer pool, index is a stable slot id
+              key={index}
+              ref={(el) => {
+                layerRefs.current[index] = el;
+              }}
+              alt=""
+              width={480}
+              height={600}
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="lazy"
+            />
+          ))}
         </div>
       </div>
 
