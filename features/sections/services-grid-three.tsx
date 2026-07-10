@@ -51,6 +51,8 @@ const SLIDE_DURATION = 0.5;
 const SLIDE_EASE = "power2.inOut";
 const FOLLOW_DURATION = 0.6;
 const FOLLOW_EASE = "power3";
+const COVERED_LAYER_OVERLAY_OPACITY = 0.5;
+const OVERLAY_FADE_EASE = "power2.out";
 
 export function ServicesGridThree({ services: servicesInput }: { services?: ServiceInput[] | null }) {
   const t = useTranslations();
@@ -74,6 +76,7 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
   const prevIndexRef = React.useRef<number | null>(null);
   const firstEntryRef = React.useRef(true);
   const topZIndexRef = React.useRef(0);
+  const layersRef = React.useRef<{ img: HTMLImageElement; overlay: HTMLDivElement }[]>([]);
 
   React.useEffect(() => {
     enabledRef.current = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -131,15 +134,26 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     prevIndexRef.current = index;
 
     // Drop any layers older than the immediately-previous one; that one stays put,
-    // covered by the incoming layer, instead of translating away.
-    const existingLayers = Array.from(followerInner.querySelectorAll("img"));
-    while (existingLayers.length > 1) {
-      const stale = existingLayers.shift();
+    // dimmed by its overlay and covered by the incoming layer, instead of translating away.
+    while (layersRef.current.length > 1) {
+      const stale = layersRef.current.shift();
       if (!stale) {
         break;
       }
-      bundle.gsap.killTweensOf(stale);
-      stale.remove();
+      bundle.gsap.killTweensOf([stale.img, stale.overlay]);
+      stale.img.remove();
+      stale.overlay.remove();
+    }
+
+    const previousLayer = layersRef.current[0] ?? null;
+    if (previousLayer) {
+      bundle.gsap.killTweensOf(previousLayer.overlay);
+      bundle.gsap.to(previousLayer.overlay, {
+        opacity: COVERED_LAYER_OVERLAY_OPACITY,
+        duration: SLIDE_DURATION,
+        ease: OVERLAY_FADE_EASE,
+        overwrite: "auto",
+      });
     }
 
     const clone = sourceImg.cloneNode(true) as HTMLImageElement;
@@ -147,6 +161,15 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     topZIndexRef.current += 1;
     bundle.gsap.set(clone, { zIndex: topZIndexRef.current });
     followerInner.appendChild(clone);
+
+    // Overlay shares the new image's z-index and paints right above it (later in
+    // document order), so the dark dim only ever lands on the covered layer, never this one.
+    const overlay = document.createElement("div");
+    overlay.className = "absolute inset-0 bg-black";
+    bundle.gsap.set(overlay, { zIndex: topZIndexRef.current, opacity: 0 });
+    followerInner.appendChild(overlay);
+
+    layersRef.current.push({ img: clone, overlay });
 
     if (!firstEntryRef.current) {
       bundle.gsap.fromTo(
@@ -168,10 +191,14 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
       return;
     }
 
-    for (const el of Array.from(followerInner.querySelectorAll("img"))) {
-      bundle.gsap.killTweensOf(el);
-      bundle.gsap.delayedCall(SLIDE_DURATION, () => el.remove());
+    for (const layer of layersRef.current) {
+      bundle.gsap.killTweensOf([layer.img, layer.overlay]);
+      bundle.gsap.delayedCall(SLIDE_DURATION, () => {
+        layer.img.remove();
+        layer.overlay.remove();
+      });
     }
+    layersRef.current = [];
     firstEntryRef.current = true;
     prevIndexRef.current = null;
     topZIndexRef.current = 0;
