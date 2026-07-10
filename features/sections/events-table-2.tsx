@@ -98,7 +98,7 @@ export function EventsTable2({ events }: { events: EventItem[] }) {
       // instead of all firing together; groups revealed later on scroll use 0.
       const buildGroup = (trigger: Element, cells: HTMLElement[], line: HTMLElement | undefined, delay: number) => {
         const tl = gsap.timeline({
-          scrollTrigger: { trigger, start: "top 90%", once: true },
+          scrollTrigger: { trigger, start: "top 95%", once: true },
         });
         if (cells.length > 0) {
           // `y: 0` clears the pixel offset GSAP decodes from the CSS `translateY(100%)` matrix;
@@ -198,9 +198,14 @@ export function EventsTable2({ events }: { events: EventItem[] }) {
                       aria-hidden="true"
                       className="pointer-events-none absolute -inset-px bg-ink opacity-0 transition-opacity duration-850 ease-custom-easing group-hover:opacity-100 group-hover:duration-650"
                     />
+                    {/* `align-bottom`: the RevealCell's `overflow-hidden` clip mask moves this
+                        inline-block button's baseline to its bottom edge, so the default
+                        `vertical-align: baseline` reserves the font's descender space below it and
+                        makes the row taller than the plain-text EventsTable. A non-baseline align
+                        collapses that gap so heights match. */}
                     <button
                       type="button"
-                      className="relative z-10 w-full cursor-pointer whitespace-nowrap text-left uppercase transition-colors duration-450 ease-[cubic-bezier(0.83,0,0.17,1)] focus-visible:outline focus-visible:outline-offset-8 group-hover:text-surface motion-safe:transition-[padding-left] motion-safe:duration-850 motion-safe:ease-custom-easing motion-safe:group-hover:pl-14 motion-safe:group-hover:duration-650"
+                      className="relative z-10 w-full cursor-pointer whitespace-nowrap text-left align-bottom uppercase transition-colors duration-450 ease-[cubic-bezier(0.83,0,0.17,1)] focus-visible:outline focus-visible:outline-offset-8 group-hover:text-surface motion-safe:transition-[padding-left] motion-safe:duration-850 motion-safe:ease-custom-easing motion-safe:group-hover:pl-14 motion-safe:group-hover:duration-650"
                       aria-expanded={isOpen}
                       aria-controls={`event-details-2-${event.id}`}
                     >

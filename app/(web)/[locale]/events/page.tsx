@@ -7,7 +7,7 @@ import { sanityFetch } from "~/features/sanity/client";
 import { ImageFragment } from "~/features/sanity/media/fragment";
 import { getImageSrc } from "~/features/sanity/media/image/utils";
 import type { EventItem } from "~/features/sections/events-data";
-// import { EventsTable } from "~/features/sections/events-table";
+import { EventsTable } from "~/features/sections/events-table";
 import { EventsTable2 } from "~/features/sections/events-table-2";
 import { EventsTableDuplicate } from "~/features/sections/events-table-duplicate";
 import { PageIntroSection } from "~/features/sections/page-intro-section";

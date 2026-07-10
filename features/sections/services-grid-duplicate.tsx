@@ -38,7 +38,11 @@ function resolveImageSrc(image: Service["image"]): string | null {
 }
 
 const LAYER_COUNT = 2;
-const LAYER_TRANSITION_DURATION = 0.5;
+const LAYER_TRANSITION_DURATION = 0.9;
+const FIRST_REVEAL_DURATION = 0.6;
+const LEAVE_DURATION = 0.7;
+const FADE_EASE = "power2.out";
+const COVERED_LAYER_OVERLAY_OPACITY = 0.5;
 
 // Cursor pop-up preview: a fixed pool of stacked image layers is reused round-robin
 // per hovered row — each new hover slides its layer up from the bottom (yPercent
@@ -61,6 +65,7 @@ export function ServicesGridDuplicate({ services: servicesInput }: { services?: 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const previewRef = React.useRef<HTMLDivElement>(null);
   const layerRefs = React.useRef<(HTMLImageElement | null)[]>([]);
+  const overlayRefs = React.useRef<(HTMLDivElement | null)[]>([]);
   const gsapRef = React.useRef<GsapBundle | null>(null);
   const enabledRef = React.useRef(false);
   const reducedMotionRef = React.useRef(false);
@@ -89,8 +94,11 @@ export function ServicesGridDuplicate({ services: servicesInput }: { services?: 
     const src = resolveImageSrc(service.image);
     if (!src) return;
 
-    const layerIndex = (activeLayerRef.current + 1) % LAYER_COUNT;
+    const isFirstReveal = activeIdRef.current === null;
+    const previousLayerIndex = activeLayerRef.current;
+    const layerIndex = (previousLayerIndex + 1) % LAYER_COUNT;
     const img = layerRefs.current[layerIndex];
+    const overlay = overlayRefs.current[layerIndex];
     if (!img) return;
 
     activeIdRef.current = service.id;
@@ -98,20 +106,46 @@ export function ServicesGridDuplicate({ services: servicesInput }: { services?: 
     if (img.getAttribute("src") !== src) img.src = src;
 
     topZIndexRef.current += 1;
-    bundle.gsap.set(img, { zIndex: topZIndexRef.current, yPercent: reducedMotionRef.current ? 0 : 100 });
-    bundle.gsap.to(img, {
-      yPercent: 0,
-      duration: reducedMotionRef.current ? 0 : LAYER_TRANSITION_DURATION,
-      ease: "expo.out",
-      overwrite: true,
-    });
+    bundle.gsap.killTweensOf(img);
+    bundle.gsap.set(img, { zIndex: topZIndexRef.current });
+    if (overlay) {
+      bundle.gsap.killTweensOf(overlay);
+      bundle.gsap.set(overlay, { zIndex: topZIndexRef.current, opacity: 0 });
+    }
 
     const rect = container.getBoundingClientRect();
     bundle.gsap.set(preview, {
       x: event.clientX - rect.left - preview.offsetWidth / 2,
       y: event.clientY - rect.top - preview.offsetHeight / 2,
-      autoAlpha: 1,
     });
+
+    if (reducedMotionRef.current) {
+      bundle.gsap.set(img, { yPercent: 0 });
+      bundle.gsap.set(preview, { autoAlpha: 1 });
+    } else if (isFirstReveal) {
+      bundle.gsap.set(img, { yPercent: 0 });
+      bundle.gsap.set(preview, { autoAlpha: 0 });
+      bundle.gsap.to(preview, { autoAlpha: 1, duration: FIRST_REVEAL_DURATION, ease: FADE_EASE, overwrite: true });
+    } else {
+      bundle.gsap.set(preview, { autoAlpha: 1 });
+      bundle.gsap.set(img, { yPercent: 100 });
+      bundle.gsap.to(img, {
+        yPercent: 0,
+        duration: LAYER_TRANSITION_DURATION,
+        ease: "expo.out",
+        overwrite: true,
+      });
+
+      const previousOverlay = overlayRefs.current[previousLayerIndex];
+      if (previousOverlay) {
+        bundle.gsap.to(previousOverlay, {
+          opacity: COVERED_LAYER_OVERLAY_OPACITY,
+          duration: LAYER_TRANSITION_DURATION,
+          ease: FADE_EASE,
+          overwrite: true,
+        });
+      }
+    }
   }, []);
 
   const onMove = React.useCallback((event: React.MouseEvent<HTMLDivElement>) => {
@@ -130,11 +164,21 @@ export function ServicesGridDuplicate({ services: servicesInput }: { services?: 
   }, []);
 
   const onLeave = React.useCallback(() => {
+    const wasActive = activeIdRef.current !== null;
     activeIdRef.current = null;
     const bundle = gsapRef.current;
     const preview = previewRef.current;
-    if (!bundle || !preview) return;
-    bundle.gsap.set(preview, { autoAlpha: 0 });
+    if (!bundle || !preview || !wasActive) return;
+
+    const activeImg = layerRefs.current[activeLayerRef.current];
+
+    if (reducedMotionRef.current) {
+      bundle.gsap.set(preview, { autoAlpha: 0 });
+      if (activeImg) bundle.gsap.set(activeImg, { yPercent: 0 });
+      return;
+    }
+
+    bundle.gsap.to(preview, { autoAlpha: 0, duration: LEAVE_DURATION, ease: FADE_EASE, overwrite: true });
   }, []);
 
   return (
@@ -170,18 +214,25 @@ export function ServicesGridDuplicate({ services: servicesInput }: { services?: 
           aria-hidden="true"
         >
           {Array.from({ length: LAYER_COUNT }, (_, index) => (
-            <img
-              // biome-ignore lint/suspicious/noArrayIndexKey: fixed-size layer pool, index is a stable slot id
-              key={index}
-              ref={(el) => {
-                layerRefs.current[index] = el;
-              }}
-              alt=""
-              width={480}
-              height={600}
-              className="absolute inset-0 h-full w-full object-cover"
-              loading="lazy"
-            />
+            // biome-ignore lint/suspicious/noArrayIndexKey: fixed-size layer pool, index is a stable slot id
+            <React.Fragment key={index}>
+              <img
+                ref={(el) => {
+                  layerRefs.current[index] = el;
+                }}
+                alt=""
+                width={480}
+                height={600}
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+              />
+              <div
+                ref={(el) => {
+                  overlayRefs.current[index] = el;
+                }}
+                className="absolute inset-0 bg-black opacity-0"
+              />
+            </React.Fragment>
           ))}
         </div>
       </div>
