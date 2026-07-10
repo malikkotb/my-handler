@@ -41,9 +41,6 @@ function resolveImageSrc(image: Service["image"]): string | null {
 // pops in centered on the pointer, tracks mousemove, and eases out on leave.
 // Offsets are measured from the image's own rendered box (not hardcoded) so the
 // centering math always matches its actual size (h-[30vh], same as before).
-const ENTER_DURATION = 0.2;
-const LEAVE_DURATION = 0.8;
-
 export function ServicesGridDuplicate({ services: servicesInput }: { services?: ServiceInput[] | null }) {
   const t = useTranslations();
   const locale = useLocale();
@@ -92,12 +89,8 @@ export function ServicesGridDuplicate({ services: servicesInput }: { services?: 
     bundle.gsap.set(preview, {
       x: event.clientX - rect.left - preview.offsetWidth / 2,
       y: event.clientY - rect.top - preview.offsetHeight / 2,
+      autoAlpha: 1,
     });
-    bundle.gsap.fromTo(
-      preview,
-      { autoAlpha: 0, scale: 0.8 },
-      { scale: 1, autoAlpha: 1, duration: reducedMotionRef.current ? 0 : ENTER_DURATION, overwrite: true }
-    );
   }, []);
 
   const onMove = React.useCallback((event: React.MouseEvent<HTMLDivElement>) => {
@@ -120,15 +113,7 @@ export function ServicesGridDuplicate({ services: servicesInput }: { services?: 
     const bundle = gsapRef.current;
     const preview = previewRef.current;
     if (!bundle || !preview) return;
-    bundle.gsap.to(preview, {
-      autoAlpha: 0,
-      scale: 0.2,
-      duration: reducedMotionRef.current ? 0 : LEAVE_DURATION,
-      ease: "expo.out",
-      onComplete: () => {
-        bundle.gsap.set(preview, { autoAlpha: 0 });
-      },
-    });
+    bundle.gsap.set(preview, { autoAlpha: 0 });
   }, []);
 
   return (

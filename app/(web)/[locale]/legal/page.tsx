@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { MaskTextReveal } from "~/components/mask-text-reveal";
 import { SiteShell } from "~/features/site/site-shell";
 
 type LegalPageProps = {
@@ -31,8 +32,8 @@ export default async function LegalPage({ params }: LegalPageProps) {
   return (
     <SiteShell>
       <section className="section-padding flex min-h-dvh items-center">
-        <div className="flex max-w-800 flex-col gap-48">
-          <h1 className="type-h2">{t("title")}</h1>
+        <div className="flex max-w-800 pt-60 flex-col gap-48">
+          <MaskTextReveal immediate><h1 className="type-h2">{t("title")}</h1></MaskTextReveal>
           <dl className="flex flex-col gap-16">
             {fields.map(({ label, value }) => (
               <div key={label} className="flex flex-col gap-4">
