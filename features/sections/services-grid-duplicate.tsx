@@ -43,6 +43,7 @@ const FIRST_REVEAL_DURATION = 0.6;
 const LEAVE_DURATION = 0.7;
 const FADE_EASE = "power2.out";
 const COVERED_LAYER_OVERLAY_OPACITY = 0.5;
+const INCOMING_LAYER_START_SCALE = 1.2;
 
 // Cursor pop-up preview: a fixed pool of stacked image layers is reused round-robin
 // per hovered row — each new hover slides its layer up from the bottom (yPercent
@@ -120,17 +121,18 @@ export function ServicesGridDuplicate({ services: servicesInput }: { services?: 
     });
 
     if (reducedMotionRef.current) {
-      bundle.gsap.set(img, { yPercent: 0 });
+      bundle.gsap.set(img, { yPercent: 0, scale: 1 });
       bundle.gsap.set(preview, { autoAlpha: 1 });
     } else if (isFirstReveal) {
-      bundle.gsap.set(img, { yPercent: 0 });
+      bundle.gsap.set(img, { yPercent: 0, scale: 1 });
       bundle.gsap.set(preview, { autoAlpha: 0 });
       bundle.gsap.to(preview, { autoAlpha: 1, duration: FIRST_REVEAL_DURATION, ease: FADE_EASE, overwrite: true });
     } else {
       bundle.gsap.set(preview, { autoAlpha: 1 });
-      bundle.gsap.set(img, { yPercent: 100 });
+      bundle.gsap.set(img, { yPercent: 100, scale: INCOMING_LAYER_START_SCALE });
       bundle.gsap.to(img, {
         yPercent: 0,
+        scale: 1,
         duration: LAYER_TRANSITION_DURATION,
         ease: "expo.out",
         overwrite: true,
