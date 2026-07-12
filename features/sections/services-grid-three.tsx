@@ -48,14 +48,23 @@ function resolveImageSrc(image: Service["image"]): string | null {
 // underneath instead of translating away.
 const CURTAIN_CLIP_HIDDEN = "inset(100% 0% 0% 0%)";
 const CURTAIN_CLIP_VISIBLE = "inset(0% 0% 0% 0%)";
-const SLIDE_DURATION = 0.64;
-const SLIDE_EASE = "cubic-bezier(0.79,0.14,0.15,0.86)";
+const SLIDE_DURATION = 0.5;
+// Used instead of SLIDE_DURATION when this hover already has later ones queued behind it —
+// it's being passed through on the way to wherever the cursor actually settled, so it plays
+// fast to help the queue catch up instead of making every quick sweep feel laggy.
+const SLIDE_DURATION_QUEUED = 0.25;
+const SLIDE_EASE = "cubic-bezier(0.17, 0.84, 0.44, 1)";
 const INCOMING_LAYER_START_SCALE = 1.2;
 const FOLLOW_DURATION = 0.6;
 const FOLLOW_EASE = "power3";
 const COVERED_LAYER_OVERLAY_OPACITY = 0.5;
 const OVERLAY_FADE_DURATION = 0.3;
 const OVERLAY_FADE_EASE = "sine.out";
+// Snappy but visible fade-out when the pointer leaves the hoverable list, instead of the
+// layers just vanishing. Kept in sync with the follower wrapper's own opacity transition
+// duration below so the wrapper doesn't hide the image before its own fade has a chance to play.
+const LEAVE_FADE_DURATION = 0.22;
+const LEAVE_FADE_EASE = "power2.out";
 
 export function ServicesGridThree({ services: servicesInput }: { services?: ServiceInput[] | null }) {
   const t = useTranslations();
@@ -78,7 +87,15 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
   const reducedMotionRef = React.useRef(false);
   const firstEntryRef = React.useRef(true);
   const topZIndexRef = React.useRef(0);
-  const layersRef = React.useRef<{ img: HTMLImageElement; overlay: HTMLDivElement }[]>([]);
+  const layersRef = React.useRef<
+    { img: HTMLImageElement; overlay: HTMLDivElement; tween: ReturnType<GsapBundle["gsap"]["to"]> | null }[]
+  >([]);
+  // Hover targets are queued and drained one at a time so a fast sweep across rows never
+  // interrupts a curtain reveal mid-flight (the previous bug: starting a new tween, or dimming
+  // a layer, before its own reveal had finished). Each queued item plays to completion before
+  // the next one starts, even if that means the visual lags a moment behind the cursor.
+  const hoverQueueRef = React.useRef<{ service: Service; index: number }[]>([]);
+  const isAnimatingRef = React.useRef(false);
 
   React.useEffect(() => {
     enabledRef.current = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -117,31 +134,32 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     };
   }, []);
 
-  const handleItemEnter = React.useCallback((service: Service, index: number) => {
-    setHoveredIndex(index);
-
+  // Drains one queued hover target at a time. Only ever called when idle (queue was empty and
+  // nothing animating) or from a tween's onComplete, so at most one curtain reveal runs at once.
+  const processHoverQueue = React.useCallback(() => {
     const bundle = gsapRef.current;
     const followerInner = followerInnerRef.current;
-    const sourceImg = visualRefs.current[index];
-    if (!bundle || !followerInner || !sourceImg || !enabledRef.current || reducedMotionRef.current) {
+    const next = hoverQueueRef.current.shift();
+    if (!bundle || !followerInner || !next) {
+      isAnimatingRef.current = false;
+      return;
+    }
+    isAnimatingRef.current = true;
+
+    const sourceImg = visualRefs.current[next.index];
+    const src = resolveImageSrc(next.service.image);
+    if (!sourceImg || !src) {
+      processHoverQueue();
       return;
     }
 
-    const src = resolveImageSrc(service.image);
-    if (!src) {
-      return;
-    }
-
-    // Drop any layers older than the immediately-previous one; that one stays put,
-    // dimmed by its overlay and covered by the incoming layer, instead of translating away.
+    // The only layer that can still be here is the immediately-previous one — everything
+    // older was already removed once its own reveal tween completed, since queue draining
+    // is strictly sequential (never trims a layer mid-animation).
     while (layersRef.current.length > 1) {
       const stale = layersRef.current.shift();
-      if (!stale) {
-        break;
-      }
-      bundle.gsap.killTweensOf([stale.img, stale.overlay]);
-      stale.img.remove();
-      stale.overlay.remove();
+      stale?.img.remove();
+      stale?.overlay.remove();
     }
 
     const previousLayer = layersRef.current[0] ?? null;
@@ -168,41 +186,99 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     bundle.gsap.set(overlay, { zIndex: topZIndexRef.current, opacity: 0 });
     followerInner.appendChild(overlay);
 
-    layersRef.current.push({ img: clone, overlay });
+    const layer = { img: clone, overlay, tween: null as ReturnType<GsapBundle["gsap"]["to"]> | null };
+    layersRef.current.push(layer);
 
     if (!firstEntryRef.current) {
-      bundle.gsap.fromTo(
+      // If more hovers are already queued behind this one, it's just being passed through —
+      // speed it up so the queue catches up to wherever the cursor actually settled.
+      const duration = hoverQueueRef.current.length > 0 ? SLIDE_DURATION_QUEUED : SLIDE_DURATION;
+      layer.tween = bundle.gsap.fromTo(
         clone,
         { clipPath: CURTAIN_CLIP_HIDDEN, scale: INCOMING_LAYER_START_SCALE },
-        { clipPath: CURTAIN_CLIP_VISIBLE, scale: 1, duration: SLIDE_DURATION, ease: SLIDE_EASE, overwrite: "auto" }
+        {
+          clipPath: CURTAIN_CLIP_VISIBLE,
+          scale: 1,
+          duration,
+          ease: SLIDE_EASE,
+          overwrite: "auto",
+          onComplete: processHoverQueue,
+        }
       );
     } else {
       firstEntryRef.current = false;
+      processHoverQueue();
     }
   }, []);
+
+  const handleItemEnter = React.useCallback(
+    (service: Service, index: number) => {
+      setHoveredIndex(index);
+
+      if (!enabledRef.current || reducedMotionRef.current) {
+        return;
+      }
+      const src = resolveImageSrc(service.image);
+      if (!src) {
+        return;
+      }
+
+      // Skip only true repeats (re-triggering the same row without leaving it) — every
+      // genuinely different row hovered still gets queued and fully animated.
+      const lastQueued = hoverQueueRef.current[hoverQueueRef.current.length - 1];
+      if (lastQueued?.index === index) {
+        return;
+      }
+
+      hoverQueueRef.current.push({ service, index });
+      if (!isAnimatingRef.current) {
+        processHoverQueue();
+      }
+    },
+    [processHoverQueue]
+  );
 
   const handleCollectionLeave = React.useCallback(() => {
     setHoveredIndex(null);
 
+    // Leaving the whole section is a hard boundary, unlike hovering within it — clear the
+    // queue and any in-flight tween immediately rather than letting it finish.
+    hoverQueueRef.current = [];
+    isAnimatingRef.current = false;
+
     const bundle = gsapRef.current;
-    const followerInner = followerInnerRef.current;
-    if (!bundle || !followerInner) {
+    if (!bundle) {
+      for (const layer of layersRef.current) {
+        layer.img.remove();
+        layer.overlay.remove();
+      }
+      layersRef.current = [];
+      firstEntryRef.current = true;
       return;
     }
 
-    // Remove synchronously (not via a delayed call) — the follower wrapper itself fades out
-    // over 0.1s via CSS, so a lingering delayed removal only risks leaving stale, high-z-index
-    // DOM layers behind when the pointer re-enters the list before the delay fires. A fast re-hover
-    // would then reset `topZIndexRef` to 0 while those stale nodes still outrank the new clone,
-    // burying the incoming image behind them.
-    for (const layer of layersRef.current) {
-      bundle.gsap.killTweensOf([layer.img, layer.overlay]);
-      layer.img.remove();
-      layer.overlay.remove();
-    }
+    // Detach the layers being removed rather than clearing them in place — the next hover
+    // (processHoverQueue) should start from a clean slate immediately instead of waiting on
+    // this fade. topZIndexRef is deliberately NOT reset here: these detached layers keep
+    // fading out on their own, still at their old (high) z-index, so a fresh clone from the
+    // next hover — stacked above them — never gets buried underneath a still-visible fade-out.
+    const leavingLayers = layersRef.current;
     layersRef.current = [];
     firstEntryRef.current = true;
-    topZIndexRef.current = 0;
+
+    for (const layer of leavingLayers) {
+      bundle.gsap.killTweensOf([layer.img, layer.overlay]);
+      bundle.gsap.to([layer.img, layer.overlay], {
+        opacity: 0,
+        duration: LEAVE_FADE_DURATION,
+        ease: LEAVE_FADE_EASE,
+        overwrite: "auto",
+        onComplete: () => {
+          layer.img.remove();
+          layer.overlay.remove();
+        },
+      });
+    }
   }, []);
 
   const isActive = hoveredIndex !== null;
@@ -261,7 +337,7 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
           style={{
             opacity: isActive ? 1 : 0,
             transform: isActive ? "scale(1)" : "scale(0)",
-            transition: "opacity 0.1s ease, transform 0.6s cubic-bezier(0.65, 0.1, 0, 1)",
+            transition: `opacity ${LEAVE_FADE_DURATION}s ease-out, transform 0.6s cubic-bezier(0.65, 0.1, 0, 1)`,
           }}
         />
       </div>
