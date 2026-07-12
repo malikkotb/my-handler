@@ -43,16 +43,19 @@ function resolveImageSrc(image: Service["image"]): string | null {
 
 // Image preview cursor follower (Osmo Supply pattern): a fixed cursor tracks the
 // pointer via gsap.quickTo, and each hovered row clones its source image into the
-// follower, sliding the incoming image up or down (depending on whether the newly
-// hovered row is below or above the previously hovered one) to layer on top of the
-// previous image, which stays put underneath instead of translating away.
-const SLIDE_OFFSET = 100;
-const SLIDE_DURATION = 0.5;
-const SLIDE_EASE = "power2.inOut";
+// follower, revealing the incoming image with an upward-rising clip-path "curtain"
+// (no actual translation) to layer on top of the previous image, which stays put
+// underneath instead of translating away.
+const CURTAIN_CLIP_HIDDEN = "inset(100% 0% 0% 0%)";
+const CURTAIN_CLIP_VISIBLE = "inset(0% 0% 0% 0%)";
+const SLIDE_DURATION = 0.64;
+const SLIDE_EASE = "cubic-bezier(0.79,0.14,0.15,0.86)";
+const INCOMING_LAYER_START_SCALE = 1.2;
 const FOLLOW_DURATION = 0.6;
 const FOLLOW_EASE = "power3";
 const COVERED_LAYER_OVERLAY_OPACITY = 0.5;
-const OVERLAY_FADE_EASE = "power2.out";
+const OVERLAY_FADE_DURATION = 0.3;
+const OVERLAY_FADE_EASE = "sine.out";
 
 export function ServicesGridThree({ services: servicesInput }: { services?: ServiceInput[] | null }) {
   const t = useTranslations();
@@ -73,7 +76,6 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
   const gsapRef = React.useRef<GsapBundle | null>(null);
   const enabledRef = React.useRef(false);
   const reducedMotionRef = React.useRef(false);
-  const prevIndexRef = React.useRef<number | null>(null);
   const firstEntryRef = React.useRef(true);
   const topZIndexRef = React.useRef(0);
   const layersRef = React.useRef<{ img: HTMLImageElement; overlay: HTMLDivElement }[]>([]);
@@ -130,9 +132,6 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
       return;
     }
 
-    const forward = prevIndexRef.current === null || index > prevIndexRef.current;
-    prevIndexRef.current = index;
-
     // Drop any layers older than the immediately-previous one; that one stays put,
     // dimmed by its overlay and covered by the incoming layer, instead of translating away.
     while (layersRef.current.length > 1) {
@@ -150,7 +149,7 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
       bundle.gsap.killTweensOf(previousLayer.overlay);
       bundle.gsap.to(previousLayer.overlay, {
         opacity: COVERED_LAYER_OVERLAY_OPACITY,
-        duration: SLIDE_DURATION,
+        duration: OVERLAY_FADE_DURATION,
         ease: OVERLAY_FADE_EASE,
         overwrite: "auto",
       });
@@ -174,8 +173,8 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     if (!firstEntryRef.current) {
       bundle.gsap.fromTo(
         clone,
-        { yPercent: forward ? SLIDE_OFFSET : -SLIDE_OFFSET },
-        { yPercent: 0, duration: SLIDE_DURATION, ease: SLIDE_EASE, overwrite: "auto" }
+        { clipPath: CURTAIN_CLIP_HIDDEN, scale: INCOMING_LAYER_START_SCALE },
+        { clipPath: CURTAIN_CLIP_VISIBLE, scale: 1, duration: SLIDE_DURATION, ease: SLIDE_EASE, overwrite: "auto" }
       );
     } else {
       firstEntryRef.current = false;
@@ -191,16 +190,18 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
       return;
     }
 
+    // Remove synchronously (not via a delayed call) — the follower wrapper itself fades out
+    // over 0.1s via CSS, so a lingering delayed removal only risks leaving stale, high-z-index
+    // DOM layers behind when the pointer re-enters the list before the delay fires. A fast re-hover
+    // would then reset `topZIndexRef` to 0 while those stale nodes still outrank the new clone,
+    // burying the incoming image behind them.
     for (const layer of layersRef.current) {
       bundle.gsap.killTweensOf([layer.img, layer.overlay]);
-      bundle.gsap.delayedCall(SLIDE_DURATION, () => {
-        layer.img.remove();
-        layer.overlay.remove();
-      });
+      layer.img.remove();
+      layer.overlay.remove();
     }
     layersRef.current = [];
     firstEntryRef.current = true;
-    prevIndexRef.current = null;
     topZIndexRef.current = 0;
   }, []);
 

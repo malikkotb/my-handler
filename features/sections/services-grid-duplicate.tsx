@@ -43,7 +43,7 @@ const FIRST_REVEAL_DURATION = 0.6;
 const LEAVE_DURATION = 0.7;
 const FADE_EASE = "power2.out";
 const COVERED_LAYER_OVERLAY_OPACITY = 0.5;
-const INCOMING_LAYER_START_SCALE = 1.2;
+const INCOMING_LAYER_START_SCALE = 1.3;
 
 // Cursor pop-up preview: a fixed pool of stacked image layers is reused round-robin
 // per hovered row — each new hover slides its layer up from the bottom (yPercent

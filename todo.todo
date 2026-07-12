@@ -5,8 +5,6 @@ Todo:
 ☐ as for the titles..is its possible to make the animation a little sooner after loading?
 ☐ like, right as the page loads the headers are showing up so it comes all together
 
-☐ animate the client names in, in a staggered fashion with intersction observer,
-
 ☐ optimize performance of the 3d hero model like David Faure's post
 
 ☐ pagespeed insights and fix
