@@ -33,7 +33,7 @@ export function OurTeam() {
           {
             yPercent: 20,
             ease: "none",
-            scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true, markers: true },
+            scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
           }
         );
       }, el);
