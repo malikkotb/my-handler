@@ -73,6 +73,30 @@ export function MaskTextReveal({
   // back to `true` on `transition.finished`, deferring the reveal until the new page is visible.
   const contentReady = useContentReady().isComplete;
   const [isVisible, setIsVisible] = React.useState(false);
+  const [bundle, setBundle] = React.useState<Awaited<ReturnType<typeof loadGsap>> | null>(null);
+
+  // Load the GSAP chunk and wait for fonts as soon as this reveal mounts — independent of the
+  // `contentReady` gate below — so this overlaps with the view-transition's own duration instead
+  // of stacking serially after it. Fonts/GSAP load in parallel (not sequentially): SplitText still
+  // needs fonts.ready for accurate line/word measurement, but there's no reason to delay
+  // fetching+parsing the GSAP bundle until fonts finish loading first.
+  React.useEffect(() => {
+    if (reduceMotion) {
+      return;
+    }
+
+    let cancelled = false;
+
+    void Promise.all([document.fonts.ready, loadGsap()]).then(([, loaded]) => {
+      if (!cancelled) {
+        setBundle(loaded);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [reduceMotion]);
 
   React.useEffect(() => {
     const host = ref.current;
@@ -86,85 +110,80 @@ export function MaskTextReveal({
       return;
     }
 
-    if (!contentReady) {
+    if (!contentReady || !bundle) {
       return;
     }
 
-    let cancelled = false;
     let split: { revert: () => void } | undefined;
     let scrollTrigger: { kill: () => void } | undefined;
     let tween: { kill: () => void } | undefined;
     let fadeTween: { kill: () => void } | undefined;
 
-    // Load the GSAP chunk and wait for fonts in parallel (not sequentially) — SplitText still
-    // needs fonts.ready for accurate line/word measurement, but there's no reason to delay
-    // fetching+parsing the GSAP bundle until fonts finish loading first.
-    void Promise.all([document.fonts.ready, loadGsap()]).then(([, { gsap, SplitText }]) => {
-      if (cancelled || !ref.current) {
-        return;
-      }
+    const { gsap, SplitText } = bundle;
 
-      const config = {
-        duration: duration ?? SPLIT_TYPE_CONFIG[splitType].duration,
-        stagger: stagger ?? SPLIT_TYPE_CONFIG[splitType].stagger,
-      };
+    const config = {
+      duration: duration ?? SPLIT_TYPE_CONFIG[splitType].duration,
+      stagger: stagger ?? SPLIT_TYPE_CONFIG[splitType].stagger,
+    };
 
-      split = SplitText.create(ref.current, {
-        type: SPLIT_TYPE_TO_GSAP_TYPE[splitType],
-        mask: "lines",
-        autoSplit: true,
-        onSplit(instance) {
-          const targets = splitType === "lines" ? instance.lines : splitType === "words" ? instance.words : instance.chars;
+    split = SplitText.create(ref.current, {
+      type: SPLIT_TYPE_TO_GSAP_TYPE[splitType],
+      mask: "lines",
+      // `autoSplit` re-splits (and re-fires `onSplit`, restarting the reveal tween on fresh
+      // DOM nodes) on any ResizeObserver/font-loadingdone event — including the layout jitter
+      // from this element's own `visibility: hidden -> visible` flip below, which snapped the
+      // reveal back to hidden mid-animation. This is a one-shot mount reveal (torn down via
+      // `split.revert()` right after), so staying in sync with later resizes buys nothing.
+      onSplit(instance) {
+        const targets = splitType === "lines" ? instance.lines : splitType === "words" ? instance.words : instance.chars;
 
-          if (debug) {
-            for (const mask of instance.masks) {
-              (mask as HTMLElement).style.border = "1px solid red";
-            }
+        if (debug) {
+          for (const mask of instance.masks) {
+            (mask as HTMLElement).style.border = "1px solid red";
           }
+        }
 
-          setIsVisible(true);
+        setIsVisible(true);
 
-          if (fade) {
-            // fromTo (not `.from`) so the end state is explicit — under Strict Mode's dev
-            // double-invoke, a second `.from` on the same host would read the first tween's
-            // already-applied opacity: 0 as its own "current" end value and animate 0 -> 0,
-            // leaving the element stuck invisible.
-            fadeTween = gsap.fromTo(host, { opacity: 0 }, { opacity: 1, duration: config.duration, delay, ease });
-          }
+        if (fade) {
+          // fromTo (not `.from`) so the end state is explicit — under Strict Mode's dev
+          // double-invoke, a second `.from` on the same host would read the first tween's
+          // already-applied opacity: 0 as its own "current" end value and animate 0 -> 0,
+          // leaving the element stuck invisible.
+          fadeTween = gsap.fromTo(host, { opacity: 0 }, { opacity: 1, duration: config.duration, delay, ease });
+        }
 
-          const revealTween = gsap.from(targets, {
-            yPercent: 110,
-            duration: config.duration,
-            stagger: config.stagger,
-            delay,
-            ease,
-            ...(immediate
-              ? {}
-              : {
-                  scrollTrigger: {
-                    trigger: host,
-                    start,
-                    once,
-                  },
-                }),
-          });
+        const revealTween = gsap.from(targets, {
+          yPercent: 110,
+          duration: config.duration,
+          stagger: config.stagger,
+          delay,
+          ease,
+          ...(immediate
+            ? {}
+            : {
+                scrollTrigger: {
+                  trigger: host,
+                  start,
+                  once,
+                },
+              }),
+        });
 
-          tween = revealTween;
-          scrollTrigger = revealTween.scrollTrigger ?? undefined;
+        tween = revealTween;
+        scrollTrigger = revealTween.scrollTrigger ?? undefined;
 
-          return revealTween;
-        },
-      });
+        return revealTween;
+      },
     });
 
     return () => {
-      cancelled = true;
       scrollTrigger?.kill();
       tween?.kill();
       fadeTween?.kill();
       split?.revert();
     };
-  }, [reduceMotion, splitType, duration, stagger, delay, ease, start, once, immediate, debug, fade, contentReady]);
+  }, [reduceMotion, splitType, duration, stagger, delay, ease, start, once, immediate, debug, fade, contentReady, bundle]);
 
   // `children` can arrive as something other than a single element for a transient render (e.g.
   // mid-navigation) — guard like `components/slot/slot.tsx` does before touching `.props`.
