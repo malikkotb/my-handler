@@ -18,11 +18,6 @@ export const event = defineType({
       title: "Client (French)",
     }),
     defineField({
-      name: "type",
-      type: "string",
-      title: "Type",
-    }),
-    defineField({
       name: "location",
       type: "string",
       title: "Location",
@@ -33,16 +28,9 @@ export const event = defineType({
       title: "Location (French)",
     }),
     defineField({
-      name: "description",
-      type: "text",
-      title: "Description",
-      rows: 4,
-    }),
-    defineField({
-      name: "descriptionFrench",
-      type: "text",
-      title: "Description (French)",
-      rows: 4,
+      name: "pressLink",
+      type: "url",
+      title: "Press Link",
     }),
     {
       ...createRichTextField({
@@ -82,7 +70,7 @@ export const event = defineType({
   preview: {
     select: {
       title: "client",
-      subtitle: "type",
+      subtitle: "location",
       media: "images.0",
     },
     prepare({ title, subtitle, media }) {

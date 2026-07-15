@@ -9,9 +9,8 @@ export type EventImage = {
 export type EventItem = {
   id: string;
   client: string;
-  type: string;
   location: string;
-  description: string;
+  pressLink: string | null;
   descriptionRichText: RichTextFragmentResult | null;
   images: EventImage[];
 };

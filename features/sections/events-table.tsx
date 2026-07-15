@@ -101,7 +101,6 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                       <span className="hidden lg:inline">{event.client}</span>
                     </button>
                   </th>
-                  {/* <td className="type-eyebrow-xs p-0 text-right align-middle motion-safe:transition-[padding-left] motion-safe:duration-service motion-safe:ease-service motion-safe:group-hover:pl-12 lg:text-left">{event.type}</td> */}
                   <td className="type-eyebrow-xs relative z-10 p-0 text-right align-middle transition-colors duration-450 ease-[cubic-bezier(0.83,0,0.17,1)] group-hover:text-surface motion-safe:transition-[padding-right] motion-safe:duration-850 motion-safe:ease-custom-easing motion-safe:group-hover:pr-14 motion-safe:group-hover:duration-650">
                     {event.location}
                   </td>
@@ -121,10 +120,8 @@ export function EventsTable({ events }: { events: EventItem[] }) {
                       aria-hidden={!isOpen}
                     >
                       <div className="pt-12 pb-20 lg:pb-28">
-                        {event.descriptionRichText ? (
+                        {event.descriptionRichText && (
                           <SanityRichText value={event.descriptionRichText} className="type-body max-w-xl" tone="light" />
-                        ) : (
-                          <p className="type-body max-w-xl">{event.description}</p>
                         )}
                         <EventImageStrip images={event.images} />
                       </div>

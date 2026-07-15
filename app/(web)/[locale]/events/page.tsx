@@ -9,7 +9,6 @@ import { getImageSrc } from "~/features/sanity/media/image/utils";
 import type { EventItem } from "~/features/sections/events-data";
 import { EventsTable } from "~/features/sections/events-table";
 import { EventsTable2 } from "~/features/sections/events-table-2";
-import { EventsTableDuplicate } from "~/features/sections/events-table-duplicate";
 import { PageIntroSection } from "~/features/sections/page-intro-section";
 import { SiteShell } from "~/features/site/site-shell";
 import type { EventsQResult } from "~/sanity/types";
@@ -22,9 +21,8 @@ const EventsQ = defineQuery(`
   *[_type == "event"] | order(_createdAt desc) {
     _id,
     "client": select($locale == "fr" => coalesce(clientFrench, client), client),
-    type,
     "location": select($locale == "fr" => coalesce(locationFrench, location), location),
-    "description": select($locale == "fr" => coalesce(descriptionFrench, description), description),
+    pressLink,
     "descriptionRichText": select($locale == "fr" => descriptionFrenchRichText, descriptionRichText)[]{${RichTextFragment}},
     "images": images[defined(asset)]{
       ${ImageFragment}
@@ -53,9 +51,8 @@ export default async function EventsPage({ params }: EventsPageProps) {
   const events: EventItem[] = (raw ?? []).map((e) => ({
     id: e._id,
     client: e.client ?? "",
-    type: e.type ?? "",
     location: e.location ?? "",
-    description: e.description ?? "",
+    pressLink: e.pressLink ?? null,
     descriptionRichText: e.descriptionRichText?.length ? e.descriptionRichText : null,
     images: (e.images ?? []).map((img) => ({
       src: getImageSrc(img, { width: 1200 }),

@@ -3204,13 +3204,6 @@
         },
         "optional": true
       },
-      "type": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
       "location": {
         "type": "objectAttribute",
         "value": {
@@ -3225,14 +3218,7 @@
         },
         "optional": true
       },
-      "description": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "descriptionFrench": {
+      "pressLink": {
         "type": "objectAttribute",
         "value": {
           "type": "string"

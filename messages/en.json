@@ -97,7 +97,8 @@
     "clientHeader": "Client",
     "locationHeader": "Location",
     "cursorClose": "Close",
-    "cursorView": "View Project"
+    "cursorView": "View Project",
+    "pressLink": "Press"
   },
   "clients": {
     "heading": "Clients"
