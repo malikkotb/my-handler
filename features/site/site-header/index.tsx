@@ -2,6 +2,7 @@
 
 import { useReducedMotion } from "@mantine/hooks";
 import { useLenis } from "lenis/react";
+import { motion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { createPortal } from "react-dom";
@@ -19,8 +20,32 @@ type MenuState = "closed" | "open" | "closing";
 
 const MENU_ANIMATION_MS = 350;
 
-// Left-to-right entrance stagger step (seconds) for each header element's AnimatedText reveal.
+// Left-to-right entrance stagger step (seconds) for each header element's mount reveal.
 const HEADER_STAGGER_STEP = 0.09;
+const HEADER_REVEAL_EASE = [0.23, 1, 0.32, 1] as const;
+
+type HeaderFadeItemProps = {
+  children: React.ReactNode;
+  delay: number;
+  className?: string;
+};
+
+/** Fades and lifts `children` in on mount, left-to-right via `delay` — used for `MainLink` items,
+ * which manage their own hover DOM/listeners and can't go through `AnimatedText`'s text splitting. */
+function HeaderFadeItem({ children, delay, className }: HeaderFadeItemProps) {
+  const reducedMotion = useReducedMotion();
+
+  return (
+    <motion.span
+      className={className}
+      initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: HEADER_REVEAL_EASE, delay }}
+    >
+      {children}
+    </motion.span>
+  );
+}
 
 // Scrolled past roughly the header's own height before it may hide; below this it stays pinned.
 const HEADER_HIDE_AFTER = 80;
@@ -133,7 +158,7 @@ export function SiteHeader() {
             </Link>
           </AnimatedText>
 
-          <AnimatedText as="span" className="lg:hidden" viewport={false} animationDelay={HEADER_STAGGER_STEP}>
+          <HeaderFadeItem className="lg:hidden" delay={HEADER_STAGGER_STEP}>
             <MainLink
               type="button"
               className="cursor-pointer"
@@ -144,27 +169,27 @@ export function SiteHeader() {
             >
               {menuVisible ? t("header.close") : t("header.menu")}
             </MainLink>
-          </AnimatedText>
+          </HeaderFadeItem>
 
           {/* Desktop center nav */}
           <nav className="hidden gap-20 lg:flex">
             {HEADER_NAV_LINKS.map((link, index) => (
-              <AnimatedText key={link.path} as="span" viewport={false} animationDelay={HEADER_STAGGER_STEP * (index + 1)}>
+              <HeaderFadeItem key={link.path} delay={HEADER_STAGGER_STEP * (index + 1)}>
                 <MainLink to={link.path}>{t(link.i18nKey)}</MainLink>
-              </AnimatedText>
+              </HeaderFadeItem>
             ))}
           </nav>
 
           {/* Desktop right nav */}
           <nav className="hidden items-center gap-20 lg:flex">
-            <AnimatedText as="span" viewport={false} animationDelay={HEADER_STAGGER_STEP * (HEADER_NAV_LINKS.length + 1)}>
+            <HeaderFadeItem delay={HEADER_STAGGER_STEP * (HEADER_NAV_LINKS.length + 1)}>
               <MainLink href={switchHref} aria-label="Switch language">
                 {t("header.switchLang")}
               </MainLink>
-            </AnimatedText>
-            <AnimatedText as="span" viewport={false} animationDelay={HEADER_STAGGER_STEP * (HEADER_NAV_LINKS.length + 2)}>
+            </HeaderFadeItem>
+            <HeaderFadeItem delay={HEADER_STAGGER_STEP * (HEADER_NAV_LINKS.length + 2)}>
               <MainLink to="/contact">{t("nav.contact")}</MainLink>
-            </AnimatedText>
+            </HeaderFadeItem>
           </nav>
         </div>
       </header>
