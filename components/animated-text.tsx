@@ -1,6 +1,6 @@
 "use client";
 
-import SplitText from "@activetheory/split-text";
+import SplitText, { type SplitTextOptions } from "@activetheory/split-text";
 import { useDebouncedCallback, useWindowEvent } from "@mantine/hooks";
 import { animate as motionAnimate, stagger } from "motion";
 import { motion, usePresence } from "motion/react";
@@ -15,6 +15,23 @@ import { run } from "~/features/utils/common";
 
 const REVEAL_EASE = [0.23, 1, 0.32, 1] as const;
 const EXIT_EASE = [0.7, 0, 0.84, 0] as const;
+
+type SplitType = "lines" | "words" | "chars";
+
+const DEFAULT_STAGGER_DELAY_BY_SPLIT_TYPE: Record<SplitType, number> = {
+  lines: 0.1,
+  words: 0.06,
+  chars: 0.02,
+};
+
+// Masks always wrap whole lines (see `wrapLinesInRevealMasks`) — asking SplitText for the
+// coarser units too keeps that mask intact and only changes what animates *inside* it, so
+// word/char reveals clip and move exactly like the line reveal, just at finer granularity.
+const SPLIT_TYPE_TO_LIB_TYPE: Record<SplitType, NonNullable<SplitTextOptions["type"]>> = {
+  lines: "lines",
+  words: "lines,words",
+  chars: "lines,words,chars",
+};
 
 type SplitHostInlineSnap = {
   width: string;
@@ -87,10 +104,14 @@ function clearSplitHostExpandos(el: HTMLElement) {
   }
 }
 
-function getConnectedLines(splits: InstanceType<typeof SplitText>[]): Element[] {
+function getAnimationTargetElements(split: InstanceType<typeof SplitText>, splitType: SplitType): Element[] {
+  return (split[splitType] ?? []) as unknown as Element[];
+}
+
+function getConnectedAnimationTargets(splits: InstanceType<typeof SplitText>[], splitType: SplitType): Element[] {
   return splits
-    .flatMap((split) => (split.lines ?? []) as unknown as Element[])
-    .filter((line) => line.isConnected && (line.textContent?.trim().length ?? 0) > 0);
+    .flatMap((split) => getAnimationTargetElements(split, splitType))
+    .filter((target) => target.isConnected && (target.textContent?.trim().length ?? 0) > 0);
 }
 
 function wrapLinesInRevealMasks(splits: InstanceType<typeof SplitText>[], maskSet: Set<HTMLElement>) {
@@ -153,6 +174,7 @@ function revertSplits(
 function createSplits(
   host: HTMLElement,
   sizingMap: Map<HTMLElement, SplitHostInlineSnap>,
+  splitType: SplitType,
   splitSelector?: string,
   ariaLabel?: string
 ): InstanceType<typeof SplitText>[] {
@@ -172,11 +194,25 @@ function createSplits(
       minWidth: splitHost.style.minWidth,
     });
 
-    const split = new SplitText(splitHost, { type: "lines", noBalance: true });
+    const split = new SplitText(splitHost, {
+      type: SPLIT_TYPE_TO_LIB_TYPE[splitType],
+      noBalance: true,
+      // Our own aria-label (on the AnimatedText wrapper) covers accessibility; skip the
+      // library's own per-word/char sr-only spans.
+      noAriaLabel: true,
+    });
     pruneEmptySplitLines(split);
 
     if (ariaLabel) {
       setSplitLinesAriaHidden(split, true);
+    }
+
+    if (splitType === "chars") {
+      // `word` units get `display: inline-block` from the library automatically; plain
+      // `char` spans stay `display: inline`, which CSS transforms don't reliably apply to.
+      for (const char of split.chars as unknown as HTMLElement[]) {
+        char.style.display = "inline-block";
+      }
     }
 
     return split;
@@ -217,6 +253,13 @@ export type AnimatedTextProps = {
   children: React.ReactNode;
   className?: string;
   ariaLabel?: string;
+  /**
+   * Reveal granularity. Masking always happens per line (same overflow-hidden reveal as
+   * `"lines"`) — `"words"`/`"chars"` only change what animates inside each line's mask.
+   * Default: `"lines"`.
+   */
+  splitType?: SplitType;
+  /** Defaults to 0.1 (lines), 0.06 (words), or 0.02 (chars) based on `splitType`. */
   staggerDelay?: number;
   duration?: number;
   animationDelay?: number;
@@ -235,7 +278,8 @@ export function AnimatedText({
   children,
   className,
   ariaLabel,
-  staggerDelay = 0.1,
+  splitType = "lines",
+  staggerDelay,
   duration = 1,
   animationDelay = 0,
   revert = false,
@@ -244,6 +288,7 @@ export function AnimatedText({
   splitSelector,
   exit,
 }: AnimatedTextProps) {
+  const resolvedStaggerDelay = staggerDelay ?? DEFAULT_STAGGER_DELAY_BY_SPLIT_TYPE[splitType];
   const isDraft = useDraftMode();
   const [isPresent, safeToRemove] = usePresence();
   const contentReady = useContentReady().isComplete;
@@ -264,8 +309,8 @@ export function AnimatedText({
   const lastAnimatedWholeHostRef = React.useRef(false);
   const animationRef = React.useRef<ReturnType<typeof motionAnimate> | null>(null);
 
-  const shouldSplitLines = !reduceMotion && !isDraft;
-  const canSplitLines = !shouldSplitLines || fontsReady;
+  const shouldSplit = !reduceMotion && !isDraft;
+  const canSplit = !shouldSplit || fontsReady;
 
   const reactAriaLabel = React.useMemo(() => {
     if (ariaLabel && ariaLabel.trim().length > 0) {
@@ -286,14 +331,14 @@ export function AnimatedText({
 
     setIsReady(false);
 
-    if (shouldSplitLines && canSplitLines) {
+    if (shouldSplit && canSplit) {
       const host = ref.current;
       if (!reactAriaLabel) {
         const text = normalizeAriaLabel(host.textContent ?? "");
         setDomAriaLabel(text.length > 0 ? text : undefined);
       }
 
-      const splits = createSplits(host, sizingMapRef.current, splitSelector, resolvedAriaLabel);
+      const splits = createSplits(host, sizingMapRef.current, splitType, splitSelector, resolvedAriaLabel);
       wrapLinesInRevealMasks(splits, maskElementsRef.current);
       splitRefs.current = splits;
       setIsSplitActive(splits.length > 0);
@@ -311,7 +356,7 @@ export function AnimatedText({
       splitRefs.current = [];
       setIsSplitActive(false);
     };
-  }, [shouldSplitLines, canSplitLines, reactAriaLabel, resolvedAriaLabel, splitSelector]);
+  }, [shouldSplit, canSplit, reactAriaLabel, resolvedAriaLabel, splitSelector, splitType]);
 
   React.useEffect(() => {
     lastAnimatedWholeHostRef.current = false;
@@ -329,20 +374,20 @@ export function AnimatedText({
       return;
     }
 
-    const lineTargets = getConnectedLines(splitRefs.current);
-    const useLines = lineTargets.length > 0 && shouldSplitLines;
+    const splitTargets = getConnectedAnimationTargets(splitRefs.current, splitType);
+    const useSplitTargets = splitTargets.length > 0 && shouldSplit;
 
     setIsVisible(true);
 
-    const targets = useLines ? lineTargets : ref.current;
-    const delayOption = useLines ? stagger(staggerDelay, { startDelay: animationDelay }) : animationDelay;
-    lastAnimatedWholeHostRef.current = !useLines;
+    const targets = useSplitTargets ? splitTargets : ref.current;
+    const delayOption = useSplitTargets ? stagger(resolvedStaggerDelay, { startDelay: animationDelay }) : animationDelay;
+    lastAnimatedWholeHostRef.current = !useSplitTargets;
 
     animationRef.current?.cancel();
 
     let completionCancelled = false;
 
-    const yKeyframes = useLines ? ["100%", "0%"] : [8, 0];
+    const yKeyframes = useSplitTargets ? ["100%", "0%"] : [8, 0];
     const animation = motionAnimate(
       targets,
       { opacity: [0, 1], y: yKeyframes },
@@ -374,7 +419,18 @@ export function AnimatedText({
         ref.current.style.removeProperty("transform");
       }
     };
-  }, [animationDelay, duration, isDraft, isReady, reduceMotion, revert, shouldPlayIntro, shouldSplitLines, staggerDelay]);
+  }, [
+    animationDelay,
+    duration,
+    isDraft,
+    isReady,
+    reduceMotion,
+    revert,
+    shouldPlayIntro,
+    shouldSplit,
+    splitType,
+    resolvedStaggerDelay,
+  ]);
 
   React.useEffect(() => {
     if (isPresent) {
@@ -389,17 +445,17 @@ export function AnimatedText({
       return;
     }
 
-    const lineTargets = getConnectedLines(splitRefs.current);
+    const splitTargets = getConnectedAnimationTargets(splitRefs.current, splitType);
 
-    if (lineTargets.length === 0) {
+    if (splitTargets.length === 0) {
       safeToRemove?.();
       return;
     }
 
     const exitAnim = motionAnimate(
-      lineTargets,
+      splitTargets,
       { opacity: [1, 0], y: ["0%", "-100%"] },
-      { delay: stagger(staggerDelay * 0.6), duration: duration * 0.55, ease: EXIT_EASE }
+      { delay: stagger(resolvedStaggerDelay * 0.6), duration: duration * 0.55, ease: EXIT_EASE }
     );
 
     void exitAnim.then(() => {
@@ -409,7 +465,7 @@ export function AnimatedText({
     return () => {
       exitAnim.cancel();
     };
-  }, [isPresent, isSplitActive, reduceMotion, staggerDelay, duration, safeToRemove]);
+  }, [isPresent, isSplitActive, reduceMotion, splitType, resolvedStaggerDelay, duration, safeToRemove]);
 
   const handleResizeResplit = useDebouncedCallback(() => {
     if (animationRef.current || !ref.current) {
@@ -419,13 +475,13 @@ export function AnimatedText({
     revertSplits(splitRefs.current, sizingMapRef.current, maskElementsRef.current);
     sizingMapRef.current.clear();
 
-    const splits = createSplits(ref.current, sizingMapRef.current, splitSelector, resolvedAriaLabel);
+    const splits = createSplits(ref.current, sizingMapRef.current, splitType, splitSelector, resolvedAriaLabel);
     wrapLinesInRevealMasks(splits, maskElementsRef.current);
     splitRefs.current = splits;
     setIsSplitActive(splits.length > 0);
   }, 200);
 
-  const resizeResplitActive = !revert && shouldSplitLines && canSplitLines && isVisible && isPresent;
+  const resizeResplitActive = !revert && shouldSplit && canSplit && isVisible && isPresent;
 
   React.useEffect(() => {
     if (!resizeResplitActive) {
@@ -442,7 +498,7 @@ export function AnimatedText({
   });
 
   const rootClassName = cx(
-    as === "span" && !shouldSplitLines && "inline-block max-w-full align-top",
+    as === "span" && !shouldSplit && "inline-block max-w-full align-top",
     as === "div" && "block w-full",
     className
   );

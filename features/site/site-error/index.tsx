@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { AnimatedText } from "~/components/animated-text";
 import { Button } from "~/components/button";
 import { CtaButton } from "~/components/cta-button";
 import { AnimatedSanityRichText } from "~/features/rich-text";
@@ -35,9 +36,15 @@ export async function SiteError() {
             <AnimatedSanityRichText value={text} viewport={false} />
           ) : (
             <>
-              <h1 className="type-h4 uppercase">{t("title")}</h1>
-              <p className="type-body text-surface">{t("body")}</p>
-              <p className="type-body text-surface">{t("bodySecondary")}</p>
+              <h1 className="type-h4 uppercase">
+                <AnimatedText as="span">{t("title")}</AnimatedText>
+              </h1>
+              <p className="type-body text-surface">
+                <AnimatedText as="span">{t("body")}</AnimatedText>
+              </p>
+              <p className="type-body text-surface">
+                <AnimatedText as="span">{t("bodySecondary")}</AnimatedText>
+              </p>
             </>
           )}
 

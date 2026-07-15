@@ -18,7 +18,9 @@ export function PageIntroSection({
       aria-label={ariaLabel}
     >
       <h1 className='type-h1 col-span-full -ml-[0.07em] uppercase lg:col-span-6'>
-        <AnimatedText as='span'>{title}</AnimatedText>
+        <AnimatedText as='span' splitType='chars'>
+          {title}
+        </AnimatedText>
       </h1>
       {body && (
         <div className='layout-grid'>
