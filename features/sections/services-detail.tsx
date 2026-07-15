@@ -2,12 +2,16 @@
 
 import { useWindowEvent } from "@mantine/hooks";
 import { useLenis } from "lenis/react";
+import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { AnimatedText } from "~/components/animated-text";
 import { CtaButton } from "~/components/cta-button";
 import { useBreakpoint } from "~/features/dom/use-breakpoint";
+import { usePrefersReducedMotion } from "~/features/motion/use-prefers-reduced-motion";
 import { cx } from "~/features/style/utils";
+
+const REVEAL_EASE = [0.23, 1, 0.32, 1] as const;
 
 type ServiceItem = {
   title: string;
@@ -30,6 +34,7 @@ export function ServicesDetail() {
   const tCta = useTranslations("cta");
   const isDesktop = useBreakpoint("lg");
   const [activeIndex, setActiveIndex] = React.useState(0);
+  const reduceMotion = usePrefersReducedMotion();
 
   const serviceItems: ServiceItem[] = SERVICE_IMAGES_STATIC.map(({ key, image }) => ({
     title: t(`${key}.title`),
@@ -71,68 +76,66 @@ export function ServicesDetail() {
   }, [updateActiveService]);
 
   return (
-    <section className='layout-grid section-padding gap-y-40 overflow-clip'>
-      <div className='col-span-full lg:sticky lg:top-80 lg:col-span-3 lg:self-start'>
-        <div className='relative aspect-3/2'>
+    <section className="layout-grid section-padding pt-20 gap-y-40 overflow-clip">
+      <div className="col-span-full lg:sticky lg:top-80 lg:col-span-3 lg:self-start">
+        <div className="relative aspect-3/2">
           {serviceImages.map((service, index) => {
-            const status: StepStatus =
-              index < activeIndex
-                ? "before"
-                : index > activeIndex
-                  ? "after"
-                  : "active";
-            const isVisible =
-              status === "before" || status === "active";
+            const status: StepStatus = index < activeIndex ? "before" : index > activeIndex ? "after" : "active";
+            const isVisible = status === "before" || status === "active";
 
             return (
               <div
                 key={service.title}
                 className={cx(
-                  "h-full w-full overflow-hidden bg-body/10",
+                  "h-full w-full overflow-hidden",
                   "transition-[opacity,visibility] duration-500 ease-in-out motion-reduce:transition-none",
                   index === 0 ? "relative" : "hidden lg:block",
                   "lg:absolute lg:inset-0",
-                  isVisible
-                    ? "lg:visible lg:opacity-100"
-                    : "lg:invisible lg:opacity-0",
+                  isVisible ? "lg:visible lg:opacity-100" : "lg:invisible lg:opacity-0"
                 )}
               >
-                {/* biome-ignore lint/performance/noImgElement: local static assets */}
-                <img
-                  src={service.image}
-                  alt={service.alt}
-                  width={900}
-                  height={1200}
-                  className='h-full w-full object-cover'
-                />
+                <motion.div
+                  className="h-full w-full"
+                  initial={reduceMotion ? undefined : { opacity: 0, y: 24 }}
+                  whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+                  transition={{ duration: 0.8, ease: REVEAL_EASE }}
+                >
+                  {/* biome-ignore lint/performance/noImgElement: local static assets */}
+                  <img src={service.image} alt={service.alt} width={900} height={1200} className="h-full w-full object-cover" />
+                </motion.div>
               </div>
             );
           })}
         </div>
       </div>
 
-      <div className='col-span-full flex flex-col lg:col-span-4 lg:col-start-5'>
+      <div className="col-span-full flex flex-col lg:col-span-4 lg:col-start-5">
         {/* <h3 className="type-h3-alt pb-120">
           Whether shaping a brand experience, producing a private event, curating a journey, or managing day-to-day requests, our
           approach remains the same: thoughtful, fluid, and entirely bespoke.
         </h3> */}
-        <div id='services' className='flex flex-col gap-40'>
+        <div id="services" className="flex flex-col gap-40">
           {serviceItems.map((service, index) => (
             <article
               key={service.title}
               ref={(el) => {
                 serviceRefs.current[index] = el;
               }}
-              className='relative flex flex-col gap-20'
+              className="relative flex flex-col gap-20"
             >
-              <h2 className='type-h4 uppercase'>{service.title}</h2>
-              <p className='type-body'>
-                {service.body}
+              <h2 className="type-h4 uppercase">
+                <AnimatedText as="span">{service.title}</AnimatedText>
+              </h2>
+              <p className="type-body">
+                <AnimatedText as="span">{service.body}</AnimatedText>
               </p>
             </article>
           ))}
         </div>
-        <CtaButton className="pt-60" to='/events'>{tCta("discoverCampaigns")}</CtaButton>
+        <CtaButton className="pt-60" to="/events">
+          {tCta("discoverCampaigns")}
+        </CtaButton>
       </div>
     </section>
   );

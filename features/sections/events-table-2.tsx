@@ -156,7 +156,6 @@ export function EventsTable2({ events }: { events: EventItem[] }) {
       <table ref={containerRef} className="w-full table-fixed border-collapse text-ink">
         <colgroup>
           <col className="w-3/5 lg:w-3/5" />
-          {/* <col className="w-2/5 lg:w-1/5" /> */}
           <col className="w-2/5" />
         </colgroup>
         <thead>
@@ -164,9 +163,6 @@ export function EventsTable2({ events }: { events: EventItem[] }) {
             <th scope="col" className="type-eyebrow pb-8 text-left font-normal">
               <RevealCell>{t("clientHeader")}</RevealCell>
             </th>
-            {/* <th scope="col" className="type-eyebrow pb-8 text-right font-normal lg:text-left">
-              Type
-            </th> */}
             <th scope="col" className="type-eyebrow pb-8 text-right font-normal">
               <RevealCell>{t("locationHeader")}</RevealCell>
             </th>
@@ -238,9 +234,9 @@ export function EventsTable2({ events }: { events: EventItem[] }) {
                     >
                       <div className="pt-12 pb-20 lg:pb-28">
                         {event.descriptionRichText ? (
-                          <SanityRichText value={event.descriptionRichText} className="type-body max-w-xl" tone="light" />
+                          <SanityRichText value={event.descriptionRichText} className="type-body max-w-[40vw]" tone="light" />
                         ) : (
-                          <p className="type-body max-w-xl">{event.description}</p>
+                          <p className="type-body max-w-[40vw]">{event.description}</p>
                         )}
                         <EventImageStrip images={event.images} />
                       </div>
