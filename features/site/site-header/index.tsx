@@ -6,7 +6,6 @@ import { motion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { AnimatedText } from "~/components/animated-text";
 import { MyHandlerWordmark } from "~/components/brand/wordmark";
 import { Link } from "~/components/link";
 import { MainLink } from "~/components/main-link";
@@ -30,8 +29,9 @@ type HeaderFadeItemProps = {
   className?: string;
 };
 
-/** Fades and lifts `children` in on mount, left-to-right via `delay` — used for `MainLink` items,
- * which manage their own hover DOM/listeners and can't go through `AnimatedText`'s text splitting. */
+/** Fades and lifts `children` in on mount, left-to-right via `delay`. Used for every header
+ * element — `MainLink` items manage their own hover DOM/listeners and can't go through
+ * `AnimatedText`'s text splitting, so a plain opacity/y fade keeps the whole header consistent. */
 function HeaderFadeItem({ children, delay, className }: HeaderFadeItemProps) {
   const reducedMotion = useReducedMotion();
 
@@ -147,7 +147,7 @@ export function SiteHeader() {
         )}
       >
         <div className="flex h-80 items-center justify-between px-20 lg:px-40">
-          <AnimatedText as="span" viewport={false} animationDelay={0}>
+          <HeaderFadeItem delay={0}>
             <Link
               href={getPathname({ href: "/", locale })}
               className="cursor-pointer"
@@ -156,7 +156,7 @@ export function SiteHeader() {
             >
               <MyHandlerWordmark aria-hidden className="h-16 w-auto" />
             </Link>
-          </AnimatedText>
+          </HeaderFadeItem>
 
           <HeaderFadeItem className="lg:hidden" delay={HEADER_STAGGER_STEP}>
             <MainLink

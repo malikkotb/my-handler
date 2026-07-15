@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import * as React from "react";
-import { MaskTextReveal } from "~/components/mask-text-reveal";
+import { AnimatedText } from "~/components/animated-text";
 import { loadGsap } from "~/features/motion/gsap";
 import { cx } from "~/features/style/utils";
 
@@ -169,9 +169,9 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
   return (
     <section className="section-padding" aria-label="Clients">
       <div ref={containerRef} className="layout-grid relative">
-        <MaskTextReveal splitType="letters">
-          <h1 className={cx("type-h1 col-span-8 pb-20 uppercase", titleAlign === "right" && "lg:col-start-5")}>{t("heading")}</h1>
-        </MaskTextReveal>
+        <h1 className={cx("type-h1 col-span-8 pb-20 uppercase", titleAlign === "right" && "lg:col-start-5")}>
+          <AnimatedText as="span">{t("heading")}</AnimatedText>
+        </h1>
 
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover preview only */}
         <ul ref={listRef} className="group col-span-full row-start-2 flex flex-col gap-16" onMouseLeave={onListLeave}>

@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import * as React from "react";
-import { MaskTextReveal } from "~/components/mask-text-reveal";
+import { AnimatedText } from "~/components/animated-text";
 import { loadGsap } from "~/features/motion/gsap";
 import { HeroModel } from "./hero-model";
 
@@ -64,17 +64,19 @@ export function Hero() {
         data-hero-model-boundary
       >
         <HeroModel src="/model.glb" ariaLabel="My Handler hero model" />
-        <MaskTextReveal splitType="words" immediate duration={0.8}>
-          <h2 className="type-h2 pointer-events-none absolute bottom-48 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
+        {/* this was originally splitType words, not lines */}
+        <h2 className="type-h2 pointer-events-none absolute bottom-48 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
+          <AnimatedText as="div" viewport={false} duration={0.8}>
             <span className="block">{t("line1")}</span>
             <span className="block">{t("line2")}</span>
-          </h2>
-        </MaskTextReveal>
-        <MaskTextReveal splitType="words" immediate fade delay={0.2}>
-          <p className="type-eyebrow pointer-events-none absolute bottom-20 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
+          </AnimatedText>
+        </h2>
+        {/* this was originally splitType words, not lines */}
+        <p className="type-eyebrow pointer-events-none absolute bottom-20 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
+          <AnimatedText as="span" viewport={false} animationDelay={0.2}>
             {t("scroll")}
-          </p>
-        </MaskTextReveal>
+          </AnimatedText>
+        </p>
 
         <div ref={darkRef} data-hero-parallax-dark className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
         <div ref={blurRef} data-hero-parallax-blur className="pointer-events-none absolute inset-0" />
