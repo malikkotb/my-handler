@@ -51,7 +51,10 @@ function pruneEmptySplitLines(split: InstanceType<typeof SplitText>) {
   const lines = (split.lines ?? []) as unknown as Element[];
 
   lines.forEach((line) => {
-    if ((line.textContent?.trim() ?? "").length > 0) {
+    // A line can be genuinely empty (blank trailing line) or wrap non-text content
+    // (e.g. an icon/logo) that SplitText still parks in a single fallback "line" — only
+    // prune the former.
+    if ((line.textContent?.trim() ?? "").length > 0 || line.children.length > 0) {
       return;
     }
 

@@ -2,14 +2,13 @@
 
 import { useReducedMotion } from "@mantine/hooks";
 import { useLenis } from "lenis/react";
-import { motion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { createPortal } from "react-dom";
+import { AnimatedText } from "~/components/animated-text";
 import { MyHandlerWordmark } from "~/components/brand/wordmark";
 import { Link } from "~/components/link";
 import { MainLink } from "~/components/main-link";
-import { usePrefersReducedMotion } from "~/features/motion/use-prefers-reduced-motion";
 import { HEADER_NAV_LINKS, LABELS, NAV_LINKS, SOCIAL_LINKS } from "~/features/site/nav";
 import { useHeaderTheme } from "~/features/site/use-header-theme";
 import { cx } from "~/features/style/utils";
@@ -20,29 +19,8 @@ type MenuState = "closed" | "open" | "closing";
 
 const MENU_ANIMATION_MS = 350;
 
-// Entrance: each nav element rises from behind an overflow-hidden mask, left to right.
-const REVEAL_EASE = [0.23, 1, 0.32, 1] as const;
-
-const revealContainerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.09 } },
-};
-
-const revealItemVariants = {
-  hidden: { y: "100%" },
-  visible: { y: "0%", transition: { duration: 0.7, ease: REVEAL_EASE } },
-};
-
-/** Masks `children` with `overflow-hidden` and rises them into place as part of the header's entrance stagger. */
-function HeaderRevealItem({ children, className }: { children: React.ReactNode; className?: string }) {
-  return (
-    <span className={cx("block overflow-hidden", className)}>
-      <motion.span className="block" variants={revealItemVariants}>
-        {children}
-      </motion.span>
-    </span>
-  );
-}
+// Left-to-right entrance stagger step (seconds) for each header element's AnimatedText reveal.
+const HEADER_STAGGER_STEP = 0.09;
 
 // Scrolled past roughly the header's own height before it may hide; below this it stays pinned.
 const HEADER_HIDE_AFTER = 80;
@@ -69,7 +47,6 @@ export function SiteHeader() {
   const switchHref = getLocaleSwitchHref(pathname, otherLocale);
 
   const isInverted = useHeaderTheme();
-  const reduceMotion = usePrefersReducedMotion();
   const [menu, setMenu] = React.useState<MenuState>("closed");
   const [mounted, setMounted] = React.useState(false);
   const [hidden, setHidden] = React.useState(false);
@@ -144,13 +121,8 @@ export function SiteHeader() {
           isInverted && menu === "closed" ? "text-surface" : "text-ink"
         )}
       >
-        <motion.div
-          className="flex h-80 items-center justify-between px-20 lg:px-40"
-          variants={revealContainerVariants}
-          initial={reduceMotion ? false : "hidden"}
-          animate="visible"
-        >
-          <HeaderRevealItem>
+        <div className="flex h-80 items-center justify-between px-20 lg:px-40">
+          <AnimatedText as="span" viewport={false} animationDelay={0}>
             <Link
               href={getPathname({ href: "/", locale })}
               className="cursor-pointer"
@@ -159,14 +131,9 @@ export function SiteHeader() {
             >
               <MyHandlerWordmark aria-hidden className="h-16 w-auto" />
             </Link>
-          </HeaderRevealItem>
+          </AnimatedText>
 
-          {/* Mobile menu toggle. Placed right after the logo (not after the desktop nav below) so its
-              stagger slot is second, not last — on mobile it's the only other visible element, and the
-              desktop nav's `hidden` items would otherwise eat stagger slots nobody sees. Both this and
-              the desktop nav below are hidden (not unmounted) at the other breakpoint via CSS, so this
-              reorder doesn't change layout at either size. */}
-          <HeaderRevealItem className="lg:hidden">
+          <AnimatedText as="span" className="lg:hidden" viewport={false} animationDelay={HEADER_STAGGER_STEP}>
             <MainLink
               type="button"
               className="cursor-pointer"
@@ -177,29 +144,29 @@ export function SiteHeader() {
             >
               {menuVisible ? t("header.close") : t("header.menu")}
             </MainLink>
-          </HeaderRevealItem>
+          </AnimatedText>
 
           {/* Desktop center nav */}
           <nav className="hidden gap-20 lg:flex">
-            {HEADER_NAV_LINKS.map((link) => (
-              <HeaderRevealItem key={link.path}>
+            {HEADER_NAV_LINKS.map((link, index) => (
+              <AnimatedText key={link.path} as="span" viewport={false} animationDelay={HEADER_STAGGER_STEP * (index + 1)}>
                 <MainLink to={link.path}>{t(link.i18nKey)}</MainLink>
-              </HeaderRevealItem>
+              </AnimatedText>
             ))}
           </nav>
 
           {/* Desktop right nav */}
           <nav className="hidden items-center gap-20 lg:flex">
-            <HeaderRevealItem>
+            <AnimatedText as="span" viewport={false} animationDelay={HEADER_STAGGER_STEP * (HEADER_NAV_LINKS.length + 1)}>
               <MainLink href={switchHref} aria-label="Switch language">
                 {t("header.switchLang")}
               </MainLink>
-            </HeaderRevealItem>
-            <HeaderRevealItem>
+            </AnimatedText>
+            <AnimatedText as="span" viewport={false} animationDelay={HEADER_STAGGER_STEP * (HEADER_NAV_LINKS.length + 2)}>
               <MainLink to="/contact">{t("nav.contact")}</MainLink>
-            </HeaderRevealItem>
+            </AnimatedText>
           </nav>
-        </motion.div>
+        </div>
       </header>
 
       {/* Mobile fullscreen */}

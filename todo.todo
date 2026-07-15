@@ -1,12 +1,8 @@
 Todo:
-☐ add parallax to some more sections; get inspo from homepage: by monolog
-
-☐ as for the titles..is its possible to make the animation a little sooner after loading?
-☐ like, right as the page loads the headers are showing up so it comes all together
-
 ☐ pagespeed insights and fix
 
-☐ add highlight opacity fade-in text to one of the texts in about or services page
+☐ add mask text reveal animations to other h3's in about and services page
+☐ add mask animation to text in contact page
 
 
 SEO / DNS Management / Presentation:

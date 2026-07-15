@@ -1,4 +1,4 @@
-import { MaskTextReveal } from "~/components/mask-text-reveal";
+import { AnimatedText } from "~/components/animated-text";
 
 type PageIntroSectionProps = {
   title: string;
@@ -14,21 +14,17 @@ export function PageIntroSection({
 }: PageIntroSectionProps) {
   return (
     <section
-      className={`section-padding pt-80 lg:pt-120 bg-surface text-ink${!body ? "pb-40" : ""}`}
+      className={`section-padding bg-surface pt-80 lg:pt-120 text-ink${!body ? "pb-40" : ""}`}
       aria-label={ariaLabel}
     >
-      <MaskTextReveal splitType='letters' immediate>
-        <h1 className='type-h1 col-span-full -ml-[0.07em] uppercase lg:col-span-6'>
-          {title}
-        </h1>
-      </MaskTextReveal>
+      <h1 className='type-h1 col-span-full -ml-[0.07em] uppercase lg:col-span-6'>
+        <AnimatedText as='span'>{title}</AnimatedText>
+      </h1>
       {body && (
         <div className='layout-grid'>
-          <MaskTextReveal splitType='lines' immediate>
-            <h3 className='type-h3 lg:type-h3 col-span-full mt-32 lg:mt-32'>
-              {body}
-            </h3>
-          </MaskTextReveal>
+          <h3 className='type-h3 lg:type-h3 col-span-full mt-32 lg:mt-32'>
+            <AnimatedText as='span'>{body}</AnimatedText>
+          </h3>
         </div>
       )}
     </section>
