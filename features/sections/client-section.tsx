@@ -23,6 +23,11 @@ const CLIENTS: Client[] = [
   { name: "AXA", maskUrl: "/logos/clients/axa.svg" },
   { name: "BANQUE DE FRANCE", maskUrl: "/logos/clients/banque-de-france.svg" },
   { name: "LINDA FARROW", maskUrl: "/logos/clients/linda-farrow.svg" },
+  { name: "NVST", maskUrl: "/logos/clients/nvst.svg" },
+  { name: "ALPHA BANK", maskUrl: "/logos/clients/alpha-bank.svg" },
+  { name: "LOUIS VUITTON", maskUrl: "/logos/clients/louis-vuitton.svg" },
+  { name: "PROLOGIS", maskUrl: "/logos/clients/prologis.svg" },
+  { name: "HEYDATA", maskUrl: "/logos/clients/heydata.svg" },
 ];
 
 const HOMEPAGE_CLIENTS = CLIENTS.slice(0, 7);

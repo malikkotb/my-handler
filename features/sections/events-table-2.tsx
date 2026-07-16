@@ -240,25 +240,27 @@ export function EventsTable2({ events }: { events: EventItem[] }) {
                             href={event.pressLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="type-body group relative mt-8 inline-block w-fit uppercase"
+                            className="type-body group mt-8 inline-block w-fit uppercase"
                           >
-                            {t("pressLink")}
-                            <span className="pointer-events-none absolute inset-x-0 -bottom-[0.0625em] h-[0.0625em]">
-                              <span className="relative block h-full w-full">
-                                <span
-                                  className={cx(
-                                    "absolute inset-0 origin-left scale-x-100 bg-current transition-transform delay-300 duration-[735ms] ease-[cubic-bezier(0.625,0.05,0,1)]",
-                                    "group-hover:origin-right group-hover:scale-x-0 group-hover:delay-0",
-                                    "motion-reduce:transition-none"
-                                  )}
-                                />
-                                <span
-                                  className={cx(
-                                    "absolute inset-0 origin-right scale-x-0 bg-current transition-transform delay-0 duration-[735ms] ease-[cubic-bezier(0.625,0.05,0,1)]",
-                                    "group-hover:origin-left group-hover:scale-x-100 group-hover:delay-300",
-                                    "motion-reduce:transition-none"
-                                  )}
-                                />
+                            <span className="relative inline-block leading-none">
+                              {t("pressLink")}
+                              <span className="pointer-events-none absolute inset-x-0 -bottom-[0.025em] h-[0.0625em]">
+                                <span className="relative block h-full w-full">
+                                  <span
+                                    className={cx(
+                                      "absolute inset-0 origin-left scale-x-100 bg-current transition-transform delay-300 duration-[735ms] ease-[cubic-bezier(0.625,0.05,0,1)]",
+                                      "group-hover:origin-right group-hover:scale-x-0 group-hover:delay-0",
+                                      "motion-reduce:transition-none"
+                                    )}
+                                  />
+                                  <span
+                                    className={cx(
+                                      "absolute inset-0 origin-right scale-x-0 bg-current transition-transform delay-0 duration-[735ms] ease-[cubic-bezier(0.625,0.05,0,1)]",
+                                      "group-hover:origin-left group-hover:scale-x-100 group-hover:delay-300",
+                                      "motion-reduce:transition-none"
+                                    )}
+                                  />
+                                </span>
                               </span>
                             </span>
                           </a>
