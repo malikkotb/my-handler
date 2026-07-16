@@ -18,13 +18,14 @@ type ServiceItem = {
   body: string;
   image: string;
   alt: string;
+  objectPosition?: string;
 };
 
 const SERVICE_IMAGES_STATIC = [
   { key: "consultancy" as const, image: "/services-page-images/9EED0276-5138-4121-9A25-0D9F5886DDCF 2.avif" },
   { key: "events" as const, image: "/services-page-images/07771994-233A-4D3B-A1E9-DB3A83660138 2.avif" },
-  { key: "travel" as const, image: "/services-page-images/477B1A68-C302-472A-9FB8-E98984A5500A 3.avif" },
-  { key: "conciergerie" as const, image: "/services-page-images/E4FF1093-A55D-4F8B-8F12-B109E72F01A0 2.avif" },
+  { key: "travel" as const, image: "/services-page-images/chauffeur.avif", objectPosition: "50% 35%" },
+  { key: "conciergerie" as const, image: "/services-page-images/concierge.avif" },
 ];
 
 type StepStatus = "before" | "active" | "after";
@@ -36,15 +37,16 @@ export function ServicesDetail() {
   const [activeIndex, setActiveIndex] = React.useState(0);
   const reduceMotion = usePrefersReducedMotion();
 
-  const serviceItems: ServiceItem[] = SERVICE_IMAGES_STATIC.map(({ key, image }) => ({
+  const serviceItems: ServiceItem[] = SERVICE_IMAGES_STATIC.map(({ key, image, objectPosition }) => ({
     title: t(`${key}.title`),
     body: t(`${key}.body`),
     image,
     alt: t(`${key}.alt`),
+    objectPosition,
   }));
 
-  const serviceImages: Array<Pick<ServiceItem, "title" | "image" | "alt">> = [
-    ...serviceItems.map(({ title, image, alt }) => ({ title, image, alt })),
+  const serviceImages: Array<Pick<ServiceItem, "title" | "image" | "alt" | "objectPosition">> = [
+    ...serviceItems.map(({ title, image, alt, objectPosition }) => ({ title, image, alt, objectPosition })),
   ];
   const serviceRefs = React.useRef<(HTMLElement | null)[]>([]);
 
@@ -102,7 +104,14 @@ export function ServicesDetail() {
                   transition={{ duration: 0.8, ease: REVEAL_EASE }}
                 >
                   {/* biome-ignore lint/performance/noImgElement: local static assets */}
-                  <img src={service.image} alt={service.alt} width={900} height={1200} className="h-full w-full object-cover" />
+                  <img
+                    src={service.image}
+                    alt={service.alt}
+                    width={900}
+                    height={1200}
+                    className="h-full w-full object-cover"
+                    style={service.objectPosition ? { objectPosition: service.objectPosition } : undefined}
+                  />
                 </motion.div>
               </div>
             );
