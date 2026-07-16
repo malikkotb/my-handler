@@ -126,31 +126,6 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
         };
       });
 
-      // mm.add("(max-width: 1023px)", () => {
-      //   isDesktopRef.current = false;
-      //   updateBaseTop();
-      //   const lastIndex = CLIENTS.length - 1;
-      //   activate(0, lastIndex);
-      //
-      //   const triggers = (liRefs.current.filter(Boolean) as HTMLLIElement[]).map((li, index) =>
-      //     ScrollTrigger.create({
-      //       trigger: li,
-      //       start: "top center",
-      //       end: "bottom center",
-      //       onEnter: () => activate(index, lastIndex),
-      //       onEnterBack: () => activate(index, lastIndex),
-      //     })
-      //   );
-      //
-      //   ScrollTrigger.refresh();
-      //
-      //   return () => {
-      //     for (const t of triggers) {
-      //       t.kill();
-      //     }
-      //   };
-      // });
-
       cleanup = () => mm.revert();
     });
 
@@ -175,7 +150,7 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
     <section className="section-padding" aria-label="Clients">
       <div ref={containerRef} className="layout-grid relative">
         <h1 className={cx("type-h1 col-span-8 pb-20 uppercase", titleAlign === "right" && "lg:col-start-5")}>
-          <AnimatedText as="span">{t("heading")}</AnimatedText>
+          <AnimatedText splitType="chars" as="span">{t("heading")}</AnimatedText>
         </h1>
 
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover preview only */}

@@ -287,7 +287,7 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     <section className="section-padding bg-surface text-ink lg:-mt-80 lg:pt-0" aria-label="Services">
       <div className="layout-grid">
         <h1 className="type-h1 col-span-full pb-20 uppercase lg:text-right">
-          <AnimatedText as="span">{t("services.heading")}</AnimatedText>
+          <AnimatedText splitType="chars" as="span">{t("services.heading")}</AnimatedText>
         </h1>
       </div>
 
