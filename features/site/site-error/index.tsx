@@ -25,7 +25,7 @@ export async function SiteError() {
       <div
         data-inverted
         data-hero-model-boundary
-        className="relative flex min-h-dvh-1 flex-col items-center justify-center gap-64 overflow-hidden bg-ink px-16 py-64 text-center text-surface"
+        className="relative left-1/2 flex min-h-dvh-1 w-screen -translate-x-1/2 flex-col items-center justify-center gap-64 overflow-hidden bg-ink px-16 py-64 text-center text-surface"
       >
         <div className="absolute inset-0 translate-y-[25vh]">
           <div className="hero-model-frame">

@@ -51,7 +51,7 @@ export function Hero() {
   }, []);
 
   return (
-    <div ref={wrapRef} className="relative z-2 h-dvh-2">
+    <div ref={wrapRef} className="relative left-1/2 z-2 h-dvh-2 w-screen -translate-x-1/2">
       {/* Marks where the header should stay inverted. Sized/positioned to match the hero's actual
           visible span (it's covered by the IntroSection's -mt-dvh-1 overlap at the halfway point of
           this 200dvh track), not the sticky+parallaxed section below, whose transformed rect keeps
