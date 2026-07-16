@@ -78,7 +78,7 @@ export function AboutIntroSection() {
         </motion.div>
       </div>
       <div className="layout-grid section-padding pb-0">
-        <h3 className="type-h4 col-span-full">{t("teamTagline")}</h3>
+        <h4 className="type-h4 col-span-full">{t("teamTagline")}</h4>
       </div>
     </>
   );
