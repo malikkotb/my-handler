@@ -31,7 +31,7 @@
 /* Mobile Portrait */
 @media screen and (max-width: 479px) {
   :root {
-    --size-container-ideal: 390; /* screen-size in design - no px */
+    --size-container-ideal: 402; /* screen-size in design - no px */
     --size-container-min: 320px;
     --size-container-max: 479px;
   }

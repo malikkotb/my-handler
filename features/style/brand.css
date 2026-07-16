@@ -181,14 +181,69 @@ main {
   }
 }
 
-/* ─── Desktop token overrides (≥1024px) ──────────────────────────────────── */
+/* ─── Desktop token overrides (≥992px, matching the Osmo scaling system's tablet breakpoint) ──────────────────────────────────── */
 
-@media (min-width: 1024px) {
+@media (min-width: 992px) {
   :root {
     --section-py: 5rem;
     --section-px: 2.5rem;
     --cta-pt: 2.5rem;
     --featured-images-gap: 1rem;
+  }
+}
+
+/*
+ * Type scale — tiered overrides, mirroring the Osmo scaling system's own
+ * breakpoints (typography.css). Each value is the old clamp() formula
+ * re-evaluated at that tier's --size-container-ideal reference width
+ * (834 / 550 / 390), so headings shrink the same amount they did before the
+ * em conversion instead of staying pinned near their 1440px desktop size.
+ * --text-eyebrow, --text-eyebrow-xs, --text-brand-cta, --text-nav-mobile were
+ * already static (not fluid) in the old system, so they're left unchanged.
+ */
+
+/* Tablet (≤991px) — sampled at 834px, rounded to the nearest 0.25em */
+@media screen and (max-width: 991px) {
+  :root {
+    --text-h1: 8em;
+    --text-h2: 3.5em;
+    --text-h3: 2.5em;
+    --text-h3-alt: 1.75em;
+    --text-h4: 1.75em;
+    --text-h5: 1.25em;
+    --text-eyebrow-alt: 1em;
+    --text-body: 1em;
+    --text-cursor: 1em;
+  }
+}
+
+/* Mobile Landscape (≤767px) — sampled at 550px, rounded to the nearest 0.25em */
+@media screen and (max-width: 767px) {
+  :root {
+    --text-h1: 5.5em;
+    --text-h2: 2.75em;
+    --text-h3: 2.25em;
+    --text-h3-alt: 1.5em;
+    --text-h4: 1.5em;
+    --text-h5: 1em;
+    --text-eyebrow-alt: 1em;
+    --text-body: 1em;
+    --text-cursor: 1em;
+  }
+}
+
+/* Mobile Portrait (≤479px) — sampled at 390px, rounded to the nearest 0.25em */
+@media screen and (max-width: 479px) {
+  :root {
+    --text-h1: 4.25em;
+    --text-h2: 2.25em;
+    --text-h3: 2em;
+    --text-h3-alt: 1.25em;
+    --text-h4: 1.25em;
+    --text-h5: 1em;
+    --text-eyebrow-alt: 1em;
+    --text-body: 1em;
+    --text-cursor: 1em;
   }
 }
 
@@ -284,7 +339,7 @@ main {
     line-height: var(--leading-relaxed);
     letter-spacing: var(--tracking-open);
 
-    @media (min-width: 1024px) {
+    @media (min-width: 992px) {
       line-height: var(--leading-tight);
     }
   }
@@ -295,7 +350,7 @@ main {
     line-height: var(--leading-relaxed);
     letter-spacing: var(--tracking-open);
 
-    @media (min-width: 1024px) {
+    @media (min-width: 992px) {
       line-height: var(--leading-tight);
     }
   }
@@ -434,7 +489,7 @@ main {
   column-gap: var(--grid-gutter);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 992px) {
   .layout-grid,
   .lg\:layout-grid {
     --grid-gutter: 1.25rem;

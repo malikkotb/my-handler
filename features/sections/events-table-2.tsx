@@ -233,7 +233,7 @@ export function EventsTable2({ events }: { events: EventItem[] }) {
                     >
                       <div className="pt-12 pb-20 lg:pb-28">
                         {event.descriptionRichText && (
-                          <SanityRichText value={event.descriptionRichText} className="type-body max-w-[40vw]" tone="light" />
+                          <SanityRichText value={event.descriptionRichText} className="type-body lg:max-w-[40vw]" tone="light" />
                         )}
                         {event.pressLink && (
                           <a
