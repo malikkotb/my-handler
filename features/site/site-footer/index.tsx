@@ -78,12 +78,9 @@ export function SiteFooter() {
               </MainLink>
             ))}
 
-            <div className="hidden flex-col gap-4 pt-80 lg:flex">
-              <MainLink to="/legal" tone="surface">
-                {t("footer.legal")}
-              </MainLink>
+            {/* <div className="flex flex-col gap-4 pt-80">
               <div className="type-eyebrow text-surface uppercase no-underline">{t("footer.copyright")}</div>
-            </div>
+            </div> */}
           </nav>
 
           <div className="flex flex-col gap-80">
@@ -100,19 +97,30 @@ export function SiteFooter() {
                   {link.label}
                 </MainLink>
               ))}
+              <MainLink to="/legal" tone="surface" size="mobileLarge">
+                {t("footer.legal")}
+              </MainLink>
             </div>
-          </div>
-
-          <div className="flex flex-col gap-4 lg:hidden">
-            <MainLink to="/legal" tone="surface">
-              {t("footer.legal")}
-            </MainLink>
-            <div className="type-eyebrow text-surface uppercase no-underline">{t("footer.copyright")}</div>
           </div>
         </div>
 
         <div className="absolute right-0 bottom-0 left-0 z-10 flex flex-col gap-8 overflow-hidden px-20 pb-20 text-surface lg:px-40">
           <AnimatedWordmark className="h-full w-full object-cover" />
+
+          <div className="flex items-center justify-between">
+            <span className="type-eyebrow text-surface uppercase no-underline">{t("footer.bottomCopyright")}</span>
+            <span className="type-eyebrow text-surface uppercase no-underline">
+              {t("footer.websiteByPrefix")}{" "}
+              <a
+                href="https://www.malikkotb.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="no-underline transition-opacity duration-200 hover:opacity-60"
+              >
+                Malik
+              </a>
+            </span>
+          </div>
         </div>
       </footer>
 

@@ -13,7 +13,9 @@
   },
   "footer": {
     "legal": "Mentions légales",
-    "copyright": "© 2026 MY HANDLER"
+    "copyright": "© 2026 MY HANDLER",
+    "bottomCopyright": "© 2026 MY HANDLER",
+    "websiteByPrefix": "Site web par"
   },
   "legal": {
     "title": "Mentions légales",

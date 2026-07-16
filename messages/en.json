@@ -13,7 +13,9 @@
   },
   "footer": {
     "legal": "Legal",
-    "copyright": "© 2026 MY HANDLER"
+    "copyright": "© 2026 MY HANDLER",
+    "bottomCopyright": "© 2026 MY HANDLER",
+    "websiteByPrefix": "Website by"
   },
   "legal": {
     "title": "Legal Notice",

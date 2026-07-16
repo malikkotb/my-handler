@@ -7,8 +7,6 @@ Todo:
 ☐ add a delay to animation of events page -> events table so its in tune with page intro section aniamtion
 ☐ the aniamtion is also fucked atm, the last one on the page aniamtes before it should, need to fix this
 
-☐ add site credit to footer
-
 SEO / DNS Management / Presentation:
 ☐ present project on linkedin like Jakob Wiemer did with Era of Arc
 ☐ point my-handler.com DNS at this Vercel project once I have access in SANITY WEBHOOK
