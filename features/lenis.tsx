@@ -78,7 +78,7 @@ export function Lenis(props: React.ComponentProps<typeof ReactLenis>) {
   return (
     <ReactLenis
       className={cx(
-        "scrollbar-thin relative h-dvh min-h-0 overflow-auto overscroll-none [scrollbar-color:gray_transparent]",
+        "scrollbar-thin relative h-dvh min-h-0 overflow-y-auto overflow-x-hidden overscroll-none [scrollbar-color:gray_transparent]",
         className
       )}
       options={{
