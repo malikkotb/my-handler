@@ -15,7 +15,7 @@ export function SiteShell(props: SiteShellProps) {
   return (
     <div className="flex min-h-dvh flex-col bg-surface text-ink">
       {showHeader && <SiteHeader />}
-      <main className="flex-1 bg-surface">{children}</main>
+      <main className="container mx-auto flex-1 bg-surface">{children}</main>
       {showFooter && <SiteFooter />}
     </div>
   );

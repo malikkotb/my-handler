@@ -28,7 +28,9 @@ export async function SiteError() {
         className="relative flex min-h-dvh-1 flex-col items-center justify-center gap-64 overflow-hidden bg-ink px-16 py-64 text-center text-surface"
       >
         <div className="absolute inset-0 translate-y-[25vh]">
-          <HeroModel src="/model.glb" ariaLabel="My Handler logo" pivotScale={0.6} />
+          <div className="hero-model-frame">
+            <HeroModel src="/model.glb" ariaLabel="My Handler logo" pivotScale={0.6} />
+          </div>
         </div>
 
         <div className="relative z-10 flex max-w-600 -translate-y-[25vh] flex-col items-center gap-24 px-32">

@@ -309,7 +309,7 @@ export function HeroModel({
   return (
     <div
       ref={containerRef}
-      className="h-full w-full transition-opacity duration-[1300ms] ease-out"
+      className="h-full w-full transition-opacity duration-1300 ease-out"
       style={{ opacity: reduceMotion || loaded ? 1 : 0 }}
       role="img"
       aria-label={ariaLabel}

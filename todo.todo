@@ -3,10 +3,13 @@ Todo:
 
 ☐ add mask text reveal animations to other h3's in about and services page
 
-☐ fluid typograophy for very large screens
+☐ fluid typograophy for very large screens use em instead of rem - osmo setup @started(26-07-16 10:56)
+☐ adapt section px and section py too, and spacing and height of header etc. 
 
 ☐ add a delay to animation of events page -> events table so its in tune with page intro section aniamtion
 ☐ the aniamtion is also fucked atm, the last one on the page aniamtes before it should, need to fix this
+
+☐ add site credit to footer
 
 ☐ and about page fix regarding text and edourard picture
 

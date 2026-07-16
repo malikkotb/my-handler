@@ -63,7 +63,9 @@ export function Hero() {
         aria-label="Hero"
         data-hero-model-boundary
       >
-        <HeroModel src="/model.glb" ariaLabel="My Handler hero model" />
+        <div className="hero-model-frame">
+          <HeroModel src="/model.glb" ariaLabel="My Handler hero model" />
+        </div>
         {/* this was originally splitType words, not lines */}
         <h2 className="type-h2 pointer-events-none absolute bottom-48 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-surface">
           <AnimatedText as="div" viewport={false} duration={0.8}>

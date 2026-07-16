@@ -12,24 +12,26 @@
   --spacing-services-preview: 20vh;
 
   /*
-   * Fluid type scale — clamp(min @ 375px, slope·vw + intercept, max @ 1920px).
-   * Hits the original desktop values exactly at 1440px, then continues to 1920px.
+   * Type scale — static em values calibrated at the 1440px design reference,
+   * so they scale fluidly off the inherited body font-size (var(--size-font),
+   * from the Osmo scaling system in typography.css) instead of each carrying
+   * its own clamp().
    */
-  --text-h1: clamp(4rem, 13.852vw + 0.753rem, 17.375rem);
-  --text-h2: clamp(2.25rem, 4.131vw + 1.282rem, 6.25rem);
-  --text-h3: clamp(2rem, 1.502vw + 1.648rem, 3.451rem);
-  --text-h3-alt: clamp(1.25rem, 1.849vw + 0.817rem, 2rem);
-  --text-h4: clamp(1.25rem, 1.878vw + 0.81rem, 3.063rem);
-  --text-h5: clamp(1rem, 0.777vw + 0.818rem, 1.75rem);
-  --text-eyebrow: 1rem;
-  --text-eyebrow-alt: clamp(1rem, 0.376vw + 0.912rem, 1.375rem);
-  --text-eyebrow-xs: 0.75rem;
-  --text-body: clamp(0.875rem, 0.188vw + 0.831rem, 1.056rem);
+  --text-h1: 13.22em;
+  --text-h2: 5em;
+  --text-h3: 3em;
+  --text-h3-alt: 2.481em;
+  --text-h4: 2.5em;
+  --text-h5: 1.517em;
+  --text-eyebrow: 1em;
+  --text-eyebrow-alt: 1.25em;
+  --text-eyebrow-xs: 0.75em;
+  --text-body: 1em;
   /* Namespaced: the starter's typography.css already owns `--text-cta`. */
-  --text-brand-cta: 1rem;
-  --text-cursor: clamp(0.875rem, -0.188vw + 1.044rem, 1rem);
+  --text-brand-cta: 1em;
+  --text-cursor: 0.875em;
   /* Enlarged nav label used in the mobile menu + footer (was `text-2xl`). */
-  --text-nav-mobile: 1.5rem;
+  --text-nav-mobile: 1.5em;
 
   /* Letter spacing scale */
   --tracking-snug: -0.04em; /* eyebrow-xs */
@@ -295,6 +297,24 @@ main {
 
     @media (min-width: 1024px) {
       line-height: var(--leading-tight);
+    }
+  }
+
+  /*
+   * Caps the hero/footer/404 3D model's render box once the viewport passes
+   * 1920px, so it stops growing with the container's height beyond that point
+   * (centers via absolute inset + auto margins inside its positioned ancestor).
+   */
+  .hero-model-frame {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+
+    @media (min-width: 1920px) {
+      max-width: var(--size-container-max);
+      max-height: calc(var(--size-container-max) * 9 / 16);
     }
   }
 

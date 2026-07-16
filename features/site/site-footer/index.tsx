@@ -65,10 +65,12 @@ export function SiteFooter() {
       >
         {/* Model: desktop only, full-bleed behind the content */}
         <div className="absolute inset-0 hidden lg:flex">
-          <HeroModel src="/model.glb" ariaLabel="My Handler logo" />
+          <div className="hero-model-frame">
+            <HeroModel src="/model.glb" ariaLabel="My Handler logo" />
+          </div>
         </div>
 
-        <div className="section-px relative z-10 flex w-full flex-col gap-80 pb-0 lg:flex-row lg:justify-between lg:pb-80">
+        <div className="section-px container relative z-10 mx-auto flex w-full flex-col gap-80 pb-0 lg:flex-row lg:justify-between lg:pb-80">
           <nav className="flex flex-col gap-20" aria-label="Footer navigation">
             {NAV_LINKS.map((link) => (
               <MainLink key={link.path} to={link.path} tone="surface" size="mobileLarge">

@@ -1,3 +1,54 @@
+/* ------------------------- Scaling System by Osmo [https://osmo.supply/] -------------------------  */
+
+/* Desktop */
+:root {
+  --size-unit: 16; /* body font-size in design - no px */
+  --size-container-ideal: 1440; /* screen-size in design - no px */
+  --size-container-min: 992px;
+  --size-container-max: 1920px;
+  --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
+  --size-font: calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit)));
+}
+
+/* Tablet */
+@media screen and (max-width: 991px) {
+  :root {
+    --size-container-ideal: 834; /* screen-size in design - no px */
+    --size-container-min: 768px;
+    --size-container-max: 991px;
+  }
+}
+
+/* Mobile Landscape */
+@media screen and (max-width: 767px) {
+  :root {
+    --size-container-ideal: 550; /* screen-size in design - no px */
+    --size-container-min: 480px;
+    --size-container-max: 767px;
+  }
+}
+
+/* Mobile Portrait */
+@media screen and (max-width: 479px) {
+  :root {
+    --size-container-ideal: 390; /* screen-size in design - no px */
+    --size-container-min: 320px;
+    --size-container-max: 479px;
+  }
+}
+
+@utility container {
+  max-width: var(--size-container);
+}
+
+@utility container-medium {
+  max-width: calc(var(--size-container) * 0.85);
+}
+
+@utility container-small {
+  max-width: calc(var(--size-container) * 0.7);
+}
+
 @theme {
   /*
    * Geist from ~/features/fonts (next/font sets `--font-geist-*` on `html`).
@@ -15,47 +66,43 @@
   --text-\*: initial;
 
   /*
-    By default, this will clamp the fluid font size between
-    its maximum and minimum values. This approach works well when the site design
-    has a defined max-width. For fully fluid designs, consider removing
-    the clamping from each text rule to allow unlimited scaling.
+    Static em values calibrated at the 1440px (--size-container-ideal) design
+    reference, so they scale fluidly off the inherited body font-size
+    (var(--size-font)) instead of each carrying its own clamp().
   */
-  --fluid-min-w: var(--layout-min-w, 375);
-  --fluid-max-w: var(--layout-max-w, 1600);
-  --fluid-slope: calc((100vw - --spacing(var(--fluid-min-w))) / (var(--fluid-max-w) - var(--fluid-min-w)));
 
-  /* 12px - 14px */
-  --text-caption: clamp(--spacing(12), --spacing(12) + (14 - 12) * var(--fluid-slope), --spacing(14));
+  /* 13.74px @ 1440 */
+  --text-caption: 0.859em;
   --text-caption--font-weight: 400;
   --text-caption--line-height: 1.25;
   --text-caption--letter-spacing: normal;
 
-  /* 14px - 16px */
-  --text-cta: clamp(--spacing(14), --spacing(14) + (16 - 14) * var(--fluid-slope), --spacing(16));
+  /* 15.74px @ 1440 */
+  --text-cta: 0.984em;
   --text-cta--font-weight: 400;
   --text-cta--line-height: 1.25;
   --text-cta--letter-spacing: normal;
 
-  /* 14px - 18px */
-  --text-body-10: clamp(--spacing(14), --spacing(14) + (18 - 14) * var(--fluid-slope), --spacing(18));
+  /* 17.48px @ 1440 */
+  --text-body-10: 1.092em;
   --text-body-10--font-weight: 400;
   --text-body-10--line-height: 1.25;
   --text-body-10--letter-spacing: normal;
 
-  /* 16px - 24px */
-  --text-body-20: clamp(--spacing(16), --spacing(16) + (24 - 16) * var(--fluid-slope), --spacing(24));
+  /* 22.96px @ 1440 */
+  --text-body-20: 1.435em;
   --text-body-20--font-weight: 400;
   --text-body-20--line-height: 1.25;
   --text-body-20--letter-spacing: normal;
 
-  /* 32px - 48px */
-  --text-headline-10: clamp(--spacing(32), --spacing(32) + (48 - 32) * var(--fluid-slope), --spacing(48));
+  /* 45.91px @ 1440 */
+  --text-headline-10: 2.869em;
   --text-headline-10--font-weight: 400;
   --text-headline-10--line-height: 1.1;
   --text-headline-10--letter-spacing: normal;
 
-  /* 40px - 80px */
-  --text-headline-20: clamp(--spacing(40), --spacing(40) + (80 - 40) * var(--fluid-slope), --spacing(80));
+  /* 74.78px @ 1440 */
+  --text-headline-20: 4.673em;
   --text-headline-20--font-weight: 400;
   --text-headline-20--line-height: 1.1;
   --text-headline-20--letter-spacing: normal;

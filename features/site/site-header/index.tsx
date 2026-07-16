@@ -146,7 +146,7 @@ export function SiteHeader() {
           isInverted && menu === "closed" ? "text-surface" : "text-ink"
         )}
       >
-        <div className="flex h-80 items-center justify-between px-20 lg:px-40">
+        <div className="container mx-auto flex h-80 items-center justify-between px-20 lg:px-40">
           <HeaderFadeItem delay={0}>
             <Link
               href={getPathname({ href: "/", locale })}
