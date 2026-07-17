@@ -124,7 +124,7 @@ export function ServicesDetail() {
           Whether shaping a brand experience, producing a private event, curating a journey, or managing day-to-day requests, our
           approach remains the same: thoughtful, fluid, and entirely bespoke.
         </h3> */}
-        <div id="services" className="flex flex-col gap-40">
+        <div id="services" className="flex flex-col gap-40 lg:gap-120">
           {serviceItems.map((service, index) => (
             <article
               key={service.title}
@@ -142,7 +142,7 @@ export function ServicesDetail() {
             </article>
           ))}
         </div>
-        <CtaButton className="pt-60" to="/events">
+        <CtaButton className="pt-60 lg:pt-120" to="/events">
           {tCta("discoverCampaigns")}
         </CtaButton>
       </div>
