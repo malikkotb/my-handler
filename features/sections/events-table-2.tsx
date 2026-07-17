@@ -125,12 +125,16 @@ export function EventsTable2({ events }: { events: EventItem[] }) {
 
       // Cascade only the groups already visible at load; each gets the next step of delay so
       // they reveal top-to-bottom one at a time. Off-screen groups animate on scroll (delay 0).
+      // The 95% cutoff must match the ScrollTrigger `start: "top 95%"` below: a row whose top
+      // has already crossed that line at load fires immediately regardless of this check, so
+      // using a smaller cutoff here would leave it out of the cascade while GSAP still fires it
+      // at delay 0 — same moment as the first group, breaking the stagger for that row.
       const CASCADE_STEP = 0.12;
       const viewportHeight = window.innerHeight;
       let visibleIndex = 0;
       for (const group of groups) {
         const rect = group.trigger.getBoundingClientRect();
-        const initiallyInView = rect.top < viewportHeight * 0.9 && rect.bottom > 0;
+        const initiallyInView = rect.top < viewportHeight * 0.95 && rect.bottom > 0;
         const delay = initiallyInView ? visibleIndex * CASCADE_STEP : 0;
         if (initiallyInView) {
           visibleIndex += 1;

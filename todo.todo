@@ -7,7 +7,9 @@ Todo:
 ☐ add a delay to animation of events page -> events table so its in tune with page intro section aniamtion
 ☐ the aniamtion is also fucked atm, the last one on the page aniamtes before it should, need to fix this
 
+☐ add remaining images to events table (from figma)
+☐ change events maybe and images of featured events, we have better images that can shine more
+
 SEO / DNS Management / Presentation:
 ☐ present project on linkedin like Jakob Wiemer did with Era of Arc
 ☐ point my-handler.com DNS at this Vercel project once I have access in SANITY WEBHOOK
-☐ emil design engineering
