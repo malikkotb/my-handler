@@ -4,11 +4,10 @@ Todo:
 ✔ fluid typograophy for very large screens use em instead of rem - osmo setup @started(26-07-16 10:56) @done(26-07-16 20:24) @lasted(9h28m59s)
 ☐ adapt section px and section py too, and spacing and height of header etc. 
 
-☐ add a delay to animation of events page -> events table so its in tune with page intro section aniamtion
-☐ the aniamtion is also fucked atm, the last one on the page aniamtes before it should, need to fix this
-
 ☐ add remaining images to events table (from figma)
 ☐ change events maybe and images of featured events, we have better images that can shine more
+
+☐ bug where when you change screen size, the footer sometimes scrolls past the bottom of the page and you see a white bar at the bottom
 
 SEO / DNS Management / Presentation:
 ☐ present project on linkedin like Jakob Wiemer did with Era of Arc

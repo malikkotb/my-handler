@@ -130,12 +130,13 @@ export function EventsTable2({ events }: { events: EventItem[] }) {
       // using a smaller cutoff here would leave it out of the cascade while GSAP still fires it
       // at delay 0 — same moment as the first group, breaking the stagger for that row.
       const CASCADE_STEP = 0.12;
+      const START_DELAY = 0.3;
       const viewportHeight = window.innerHeight;
       let visibleIndex = 0;
       for (const group of groups) {
         const rect = group.trigger.getBoundingClientRect();
         const initiallyInView = rect.top < viewportHeight * 0.95 && rect.bottom > 0;
-        const delay = initiallyInView ? visibleIndex * CASCADE_STEP : 0;
+        const delay = START_DELAY + (initiallyInView ? visibleIndex * CASCADE_STEP : 0);
         if (initiallyInView) {
           visibleIndex += 1;
         }
