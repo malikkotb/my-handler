@@ -13,17 +13,16 @@ export type NavLink = {
 };
 
 export const NAV_LINKS: NavLink[] = [
-  { i18nKey: "nav.about", label: "About", path: "/about" },
   { i18nKey: "nav.services", label: "Services", path: "/services" },
   { i18nKey: "nav.events", label: "Events", path: "/events" },
+  { i18nKey: "nav.about", label: "About", path: "/about" },
   { i18nKey: "nav.contact", label: "Contact", path: "/contact" },
 ];
 
-/** Header center nav (order differs from the mobile/footer list). */
 export const HEADER_NAV_LINKS: NavLink[] = [
+  { i18nKey: "nav.services", label: "Services", path: "/services" },
   { i18nKey: "nav.events", label: "Events", path: "/events" },
   { i18nKey: "nav.about", label: "About", path: "/about" },
-  { i18nKey: "nav.services", label: "Services", path: "/services" },
 ];
 
 export type SocialLink = {

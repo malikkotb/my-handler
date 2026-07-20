@@ -1,7 +1,6 @@
 "use client";
 
 import { useReducedMotion } from "@mantine/hooks";
-import { useLenis } from "lenis/react";
 import { motion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
@@ -47,11 +46,6 @@ function HeaderFadeItem({ children, delay, className }: HeaderFadeItemProps) {
   );
 }
 
-// Scrolled past roughly the header's own height before it may hide; below this it stays pinned.
-const HEADER_HIDE_AFTER = 80;
-// Ignore sub-pixel scroll jitter so the direction flip doesn't make the header flicker.
-const HEADER_SCROLL_DELTA = 4;
-
 function getLocaleSwitchHref(pathname: string, locale: Locale): string {
   const localizedHref = getPathname({ href: pathname, locale });
 
@@ -74,34 +68,10 @@ export function SiteHeader() {
   const isInverted = useHeaderTheme();
   const [menu, setMenu] = React.useState<MenuState>("closed");
   const [mounted, setMounted] = React.useState(false);
-  const [hidden, setHidden] = React.useState(false);
 
   const menuVisible = menu !== "closed";
 
   React.useEffect(() => setMounted(true), []);
-
-  const reducedMotion = useReducedMotion();
-  const prevScrollRef = React.useRef(0);
-
-  useLenis(
-    ({ scroll }) => {
-      const delta = scroll - prevScrollRef.current;
-
-      if (Math.abs(delta) < HEADER_SCROLL_DELTA) {
-        return;
-      }
-
-      prevScrollRef.current = scroll;
-
-      if (reducedMotion || scroll < HEADER_HIDE_AFTER) {
-        setHidden(false);
-        return;
-      }
-
-      setHidden(delta > 0);
-    },
-    [reducedMotion]
-  );
 
   const closeMenu = React.useCallback(() => {
     setMenu((s) => (s === "open" ? "closing" : "closed"));
@@ -136,13 +106,8 @@ export function SiteHeader() {
       <header
         data-site-header
         className={cx(
-          "fixed inset-x-0 top-0 z-50 transition-transform-color",
+          "fixed inset-x-0 top-0 z-50 transition-colors",
           "motion-reduce:transition-none",
-          // Direction-aware easing: accelerate away when hiding (ease-in, no initial
-          // lurch), smooth expo deceleration when revealing.
-          hidden && !menuVisible
-            ? "-translate-y-full duration-700 ease-[cubic-bezier(0.5,0,0.75,0)]"
-            : "translate-y-0 duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
           isInverted && menu === "closed" ? "text-surface" : "text-ink"
         )}
       >
