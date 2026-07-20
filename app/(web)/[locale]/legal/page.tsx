@@ -42,7 +42,9 @@ export default async function LegalPage({ params }: LegalPageProps) {
             {fields.map(({ label, value }) => (
               <div key={label} className="flex flex-col gap-4">
                 <dt className="type-eyebrow">{label}</dt>
-                <dd className="type-body">{value}</dd>
+                <dd className="type-body whitespace-pre-line">
+                  {value.replaceAll(", ", "\n")}
+                </dd>
               </div>
             ))}
           </dl>

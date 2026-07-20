@@ -49,90 +49,15 @@ function FeaturedEventImage({ event }: { event: FeaturedCard }) {
   );
 }
 
-function FeaturedEventParallaxFrame({ children }: { children: React.ReactNode }) {
-  const outerRef = React.useRef<HTMLDivElement>(null);
-  const frameRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    const el = frameRef.current;
-    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
-
-    let cleanup: (() => void) | undefined;
-
-    loadGsap().then(({ gsap }) => {
-      if (!frameRef.current) {
-        return;
-      }
-
-      const ctx = gsap.context(() => {
-        const images = el.querySelectorAll("img");
-        if (!images.length) {
-          return;
-        }
-
-        gsap.fromTo(
-          images,
-          { yPercent: -20 },
-          {
-            yPercent: 20,
-            ease: "none",
-            scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
-          }
-        );
-      }, el);
-
-      cleanup = () => ctx.revert();
-    });
-
-    return () => cleanup?.();
-  }, []);
-
-  // Reveal-on-scroll: fades the frame in and lifts it slightly the first time it enters the
-  // viewport. Lives on the outer (non-overflow-clipped) wrapper so it doesn't fight the
-  // yPercent parallax tween running on the images above.
-  React.useEffect(() => {
-    const el = outerRef.current;
-    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
-
-    let cleanup: (() => void) | undefined;
-
-    loadGsap().then(({ gsap, CustomEase }) => {
-      if (!outerRef.current) {
-        return;
-      }
-
-      if (!CustomEase.get("featured-reveal")) {
-        CustomEase.create("featured-reveal", "0.65, 0.05, 0.36, 1");
-      }
-
-      const ctx = gsap.context(() => {
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.64,
-            ease: "featured-reveal",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 95%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      }, el);
-
-      cleanup = () => ctx.revert();
-    });
-
-    return () => cleanup?.();
-  }, []);
-
+function FeaturedEventParallaxFrame({
+  children,
+  frameRef,
+  outerRef,
+}: {
+  children: React.ReactNode;
+  frameRef: React.Ref<HTMLDivElement>;
+  outerRef: React.Ref<HTMLDivElement>;
+}) {
   return (
     <div ref={outerRef} className="aspect-3/2 overflow-hidden bg-body/10">
       <div
@@ -143,6 +68,75 @@ function FeaturedEventParallaxFrame({ children }: { children: React.ReactNode })
       </div>
     </div>
   );
+}
+
+// Parallax (image yPercent scrub) + reveal-on-scroll (opacity/y on the outer, non-clipped
+// wrapper) for every rendered card, set up through a single shared gsap context instead of one
+// per card — the desktop grid and mobile stack both mount all cards (CSS-hidden per breakpoint),
+// so per-card contexts meant 2x the independent ScrollTrigger/DOM-measurement work on load.
+function useFeaturedEventsParallax(
+  frameRefs: React.RefObject<(HTMLDivElement | null)[]>,
+  outerRefs: React.RefObject<(HTMLDivElement | null)[]>
+) {
+  React.useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    let cleanup: (() => void) | undefined;
+
+    loadGsap().then(({ gsap, CustomEase }) => {
+      if (!CustomEase.get("featured-reveal")) {
+        CustomEase.create("featured-reveal", "0.65, 0.05, 0.36, 1");
+      }
+
+      const ctx = gsap.context(() => {
+        for (const el of frameRefs.current) {
+          if (!el) {
+            continue;
+          }
+          const images = el.querySelectorAll("img");
+          if (!images.length) {
+            continue;
+          }
+          gsap.fromTo(
+            images,
+            { yPercent: -20 },
+            {
+              yPercent: 20,
+              ease: "none",
+              scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
+            }
+          );
+        }
+
+        for (const el of outerRefs.current) {
+          if (!el) {
+            continue;
+          }
+          gsap.fromTo(
+            el,
+            { opacity: 0, y: 20 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.64,
+              ease: "featured-reveal",
+              scrollTrigger: {
+                trigger: el,
+                start: "top 95%",
+                toggleActions: "play none none reverse",
+              },
+            }
+          );
+        }
+      });
+
+      cleanup = () => ctx.revert();
+    });
+
+    return () => cleanup?.();
+  }, [frameRefs, outerRefs]);
 }
 
 export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | null }) {
@@ -159,6 +153,12 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
   const [isStuck, setIsStuck] = React.useState(false);
   const figureRefs = React.useRef<(HTMLElement | null)[]>([]);
   const stickySentinelRef = React.useRef<HTMLDivElement>(null);
+
+  // Desktop grid and mobile stack each render every card (CSS-hidden per breakpoint), so the
+  // shared parallax/reveal context needs a slot per rendered instance, not per event.
+  const frameRefs = React.useRef<(HTMLDivElement | null)[]>(new Array(featured.length * 2).fill(null));
+  const outerRefs = React.useRef<(HTMLDivElement | null)[]>(new Array(featured.length * 2).fill(null));
+  useFeaturedEventsParallax(frameRefs, outerRefs);
 
   React.useEffect(() => {
     const sentinel = stickySentinelRef.current;
@@ -248,7 +248,14 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
                 }}
                 className={`transition-opacity duration-300 ${i === activeIndex ? "opacity-100" : "opacity-50"}`}
               >
-                <FeaturedEventParallaxFrame>
+                <FeaturedEventParallaxFrame
+                  frameRef={(el) => {
+                    frameRefs.current[i] = el;
+                  }}
+                  outerRef={(el) => {
+                    outerRefs.current[i] = el;
+                  }}
+                >
                   <FeaturedEventImage event={event} />
                 </FeaturedEventParallaxFrame>
               </figure>
@@ -266,9 +273,16 @@ export function FeaturedEvents({ events }: { events?: FeaturedEventInput[] | nul
         className="featured-images-gap section-px flex flex-col items-center py-40 text-ink lg:hidden"
         aria-label="Featured events"
       >
-        {featured.map((event) => (
+        {featured.map((event, i) => (
           <article key={event.id} className="flex flex-col gap-8">
-            <FeaturedEventParallaxFrame>
+            <FeaturedEventParallaxFrame
+              frameRef={(el) => {
+                frameRefs.current[featured.length + i] = el;
+              }}
+              outerRef={(el) => {
+                outerRefs.current[featured.length + i] = el;
+              }}
+            >
               <FeaturedEventImage event={event} />
             </FeaturedEventParallaxFrame>
             <div className="flex justify-between gap-16">
