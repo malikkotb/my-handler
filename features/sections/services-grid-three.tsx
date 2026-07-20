@@ -90,11 +90,13 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
   const layersRef = React.useRef<
     { img: HTMLImageElement; overlay: HTMLDivElement; tween: ReturnType<GsapBundle["gsap"]["to"]> | null }[]
   >([]);
-  // Hover targets are queued and drained one at a time so a fast sweep across rows never
-  // interrupts a curtain reveal mid-flight (the previous bug: starting a new tween, or dimming
-  // a layer, before its own reveal had finished). Each queued item plays to completion before
-  // the next one starts, even if that means the visual lags a moment behind the cursor.
-  const hoverQueueRef = React.useRef<{ service: Service; index: number }[]>([]);
+  // Only the latest hover target is ever remembered, not a history of every row swept over.
+  // A curtain reveal in flight is never interrupted (the previous bug: starting a new tween,
+  // or dimming a layer, before its own reveal had finished) — but once it completes, the next
+  // reveal jumps straight to wherever the cursor currently is, discarding any stale targets it
+  // passed through in between. This keeps a fast sweep from replaying its entire path.
+  const pendingHoverRef = React.useRef<{ service: Service; index: number } | null>(null);
+  const animatingIndexRef = React.useRef<number | null>(null);
   const isAnimatingRef = React.useRef(false);
 
   React.useEffect(() => {
@@ -134,17 +136,21 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     };
   }, []);
 
-  // Drains one queued hover target at a time. Only ever called when idle (queue was empty and
-  // nothing animating) or from a tween's onComplete, so at most one curtain reveal runs at once.
+  // Plays the latest pending hover target. Only ever called when idle (nothing was pending and
+  // nothing animating) or from a tween's onComplete, so at most one curtain reveal runs at once,
+  // and it always jumps to the most recent target rather than replaying stale intermediate ones.
   const processHoverQueue = React.useCallback(() => {
     const bundle = gsapRef.current;
     const followerInner = followerInnerRef.current;
-    const next = hoverQueueRef.current.shift();
+    const next = pendingHoverRef.current;
+    pendingHoverRef.current = null;
     if (!bundle || !followerInner || !next) {
       isAnimatingRef.current = false;
+      animatingIndexRef.current = null;
       return;
     }
     isAnimatingRef.current = true;
+    animatingIndexRef.current = next.index;
 
     const sourceImg = visualRefs.current[next.index];
     const src = resolveImageSrc(next.service.image);
@@ -190,9 +196,9 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     layersRef.current.push(layer);
 
     if (!firstEntryRef.current) {
-      // If more hovers are already queued behind this one, it's just being passed through —
-      // speed it up so the queue catches up to wherever the cursor actually settled.
-      const duration = hoverQueueRef.current.length > 0 ? SLIDE_DURATION_QUEUED : SLIDE_DURATION;
+      // If a newer hover has already arrived behind this one, it's just being passed through —
+      // speed it up so the reveal catches up to wherever the cursor actually settled.
+      const duration = pendingHoverRef.current ? SLIDE_DURATION_QUEUED : SLIDE_DURATION;
       layer.tween = bundle.gsap.fromTo(
         clone,
         { clipPath: CURTAIN_CLIP_HIDDEN, scale: INCOMING_LAYER_START_SCALE },
@@ -223,14 +229,14 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
         return;
       }
 
-      // Skip only true repeats (re-triggering the same row without leaving it) — every
-      // genuinely different row hovered still gets queued and fully animated.
-      const lastQueued = hoverQueueRef.current[hoverQueueRef.current.length - 1];
-      if (lastQueued?.index === index) {
+      // Skip only true repeats (re-triggering the row already showing or already queued next) —
+      // any genuinely different row just becomes the new pending target.
+      const pendingIndex = pendingHoverRef.current?.index ?? animatingIndexRef.current;
+      if (pendingIndex === index) {
         return;
       }
 
-      hoverQueueRef.current.push({ service, index });
+      pendingHoverRef.current = { service, index };
       if (!isAnimatingRef.current) {
         processHoverQueue();
       }
@@ -242,9 +248,10 @@ export function ServicesGridThree({ services: servicesInput }: { services?: Serv
     setHoveredIndex(null);
 
     // Leaving the whole section is a hard boundary, unlike hovering within it — clear the
-    // queue and any in-flight tween immediately rather than letting it finish.
-    hoverQueueRef.current = [];
+    // pending target and any in-flight tween immediately rather than letting it finish.
+    pendingHoverRef.current = null;
     isAnimatingRef.current = false;
+    animatingIndexRef.current = null;
 
     const bundle = gsapRef.current;
     if (!bundle) {
