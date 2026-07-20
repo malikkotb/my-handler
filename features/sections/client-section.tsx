@@ -48,6 +48,7 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
   const liRefs = React.useRef<(HTMLLIElement | null)[]>([]);
   const baseTopRef = React.useRef(0);
   const isDesktopRef = React.useRef(false);
+  const activeIndexRef = React.useRef(0);
 
   const relativeTop = React.useCallback((el: HTMLElement) => {
     const container = containerRef.current;
@@ -66,12 +67,6 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
       previewRef.current.style.top = `${baseTopRef.current}px`;
     }
   }, [relativeTop]);
-
-  const deactivate = React.useCallback(() => {
-    if (previewRef.current) {
-      previewRef.current.style.opacity = "0";
-    }
-  }, []);
 
   const activate = React.useCallback(
     (index: number, positionIndex = index) => {
@@ -99,6 +94,12 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
       s.setProperty("-webkit-mask-size", "contain");
       s.setProperty("-webkit-mask-repeat", "no-repeat");
       s.setProperty("-webkit-mask-position", "center");
+
+      for (const [i, item] of liRefs.current.entries()) {
+        if (item) {
+          item.style.opacity = i === positionIndex ? "1" : "0.5";
+        }
+      }
     },
     [relativeTop]
   );
@@ -120,7 +121,7 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
       mm.add("(min-width: 1024px)", () => {
         isDesktopRef.current = true;
         updateBaseTop();
-        deactivate();
+        activate(activeIndexRef.current);
         return () => {
           isDesktopRef.current = false;
         };
@@ -130,17 +131,12 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
     });
 
     return () => cleanup?.();
-  }, [updateBaseTop, deactivate, activate]);
+  }, [updateBaseTop, activate]);
 
   const onClientEnter = (index: number) => {
     if (isDesktopRef.current) {
+      activeIndexRef.current = index;
       activate(index);
-    }
-  };
-
-  const onListLeave = () => {
-    if (isDesktopRef.current) {
-      deactivate();
     }
   };
 
@@ -154,7 +150,7 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
         </h1>
 
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover preview only */}
-        <ul ref={listRef} className="group col-span-full row-start-2 flex flex-col gap-16" onMouseLeave={onListLeave}>
+        <ul ref={listRef} className="col-span-full row-start-2 flex flex-col gap-16">
           {clients.map((client, index) => (
             // biome-ignore lint/a11y/useKeyWithMouseEvents: decorative hover preview only
             <li
@@ -162,7 +158,7 @@ export function ClientSection({ titleAlign = "left", isHomepage = false }: Clien
               ref={(el) => {
                 liRefs.current[index] = el;
               }}
-              className="layout-grid motion-safe:transition-opacity motion-safe:duration-200 motion-safe:ease-out lg:cursor-pointer lg:group-hover:opacity-50 lg:hover:opacity-100!"
+              className="layout-grid motion-safe:transition-opacity motion-safe:duration-200 motion-safe:ease-out lg:cursor-pointer"
               onMouseEnter={() => onClientEnter(index)}
             >
               <h4 className="type-h4 col-span-6 col-start-3 lg:col-span-6 lg:col-start-5">{client.name}</h4>
