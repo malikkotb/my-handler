@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { screens } from "~/features/dom/constants";
 import { cancelIdle, scheduleIdle } from "~/features/dom/utils";
 import { usePrefersReducedMotion } from "~/features/motion/use-prefers-reduced-motion";
 import { HERO_DEBUG_DEFAULTS } from "./hero-debug-panel";
@@ -28,6 +29,11 @@ type HeroModelProps = {
  * ancestor with `data-hero-model-boundary` (falling back to its own container) —
  * so it only reacts while the cursor is over its own section, not another one
  * rendered on top of or below it.
+ *
+ * Below the `md` breakpoint, touch devices never fire `mousemove`, so the same
+ * window-scoped, boundary-hit-tested approach is used for `touchstart`/`touchmove`
+ * instead — the model rotates as a finger drags across its section and recenters
+ * on `touchend`/`touchcancel`.
  */
 export function HeroModel({
   src,
@@ -137,10 +143,12 @@ export function HeroModel({
         isHovering = false;
       };
 
-      const onMouseMove = (e: MouseEvent) => {
+      // Shared by mouse and touch: hit-tests a point against `hoverBoundary` and, if it's a valid
+      // hit, updates targetX/targetY. Returns whether the point counted as "hovering" so callers
+      // can update `isHovering` accordingly.
+      const applyPointerTarget = (clientX: number, clientY: number): boolean => {
         const rect = hoverBoundary.getBoundingClientRect();
-        const isInsideRect =
-          e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
+        const isInsideRect = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
 
         // A geometric rect check isn't enough: sections like the intro block are pulled up with a
         // negative margin and a higher z-index to visually slide over the pinned hero on scroll, so
@@ -150,33 +158,69 @@ export function HeroModel({
         // The site header is exempt: it's a persistent `position: fixed` chrome element rendered as
         // a sibling above every section (not a competing page section), so hovering it should still
         // count as hovering whatever it's sitting on top of.
-        const topElement = document.elementFromPoint(e.clientX, e.clientY);
+        const topElement = document.elementFromPoint(clientX, clientY);
         const isTopmost = isInsideRect && (hoverBoundary.contains(topElement) || !!topElement?.closest("[data-site-header]"));
 
         if (!isTopmost) {
+          return false;
+        }
+
+        const nx = THREE.MathUtils.clamp(((clientX - rect.left) / rect.width) * 2 - 1, -1, 1);
+        const ny = THREE.MathUtils.clamp(((clientY - rect.top) / rect.height) * 2 - 1, -1, 1);
+        const maxRadX = THREE.MathUtils.degToRad(settings.maxRotationDegX);
+        const maxRadY = THREE.MathUtils.degToRad(settings.maxRotationDegY);
+        targetY = nx * maxRadY;
+        targetX = -ny * maxRadX;
+        return true;
+      };
+
+      const onMouseMove = (e: MouseEvent) => {
+        const isHit = applyPointerTarget(e.clientX, e.clientY);
+        if (!isHit) {
           if (isHovering) {
             onMouseLeave();
           }
           return;
         }
-
-        const nx = THREE.MathUtils.clamp(((e.clientX - rect.left) / rect.width) * 2 - 1, -1, 1);
-        const ny = THREE.MathUtils.clamp(((e.clientY - rect.top) / rect.height) * 2 - 1, -1, 1);
-        const maxRadX = THREE.MathUtils.degToRad(settings.maxRotationDegX);
-        const maxRadY = THREE.MathUtils.degToRad(settings.maxRotationDegY);
-        targetY = nx * maxRadY;
-        targetX = -ny * maxRadX;
         isHovering = true;
       };
 
-      // Pointer listeners are attached only while the model is on screen — the mousemove handler
-      // does a `getBoundingClientRect` + `elementFromPoint` hit-test on every move, which is wasted
-      // work for an off-screen mount (and there can be 2–3 mounts on a page).
+      // Touch equivalent of onMouseMove/onMouseLeave, used below the `md` breakpoint where
+      // `mousemove` never fires. `touchstart` seeds the rotation immediately (no drag needed to
+      // register a hit); `touchend`/`touchcancel` recenter the same way the cursor leaving does.
+      const onTouchMove = (e: TouchEvent) => {
+        const touch = e.touches[0];
+        if (!touch) {
+          return;
+        }
+        isHovering = applyPointerTarget(touch.clientX, touch.clientY);
+      };
+      const onTouchEnd = () => {
+        onMouseLeave();
+      };
+
+      const isSmallScreen = () => !window.matchMedia(`(min-width: ${screens.md})`).matches;
+
+      // Pointer listeners are attached only while the model is on screen — the hit-test does a
+      // `getBoundingClientRect` + `elementFromPoint` on every move, which is wasted work for an
+      // off-screen mount (and there can be 2–3 mounts on a page). Touch listeners are passive: they
+      // never call `preventDefault`, so scrolling over the model on small screens is unaffected.
       const attachPointer = () => {
-        window.addEventListener("mousemove", onMouseMove);
-        document.documentElement.addEventListener("mouseleave", onMouseLeave);
+        if (isSmallScreen()) {
+          window.addEventListener("touchstart", onTouchMove, { passive: true });
+          window.addEventListener("touchmove", onTouchMove, { passive: true });
+          window.addEventListener("touchend", onTouchEnd, { passive: true });
+          window.addEventListener("touchcancel", onTouchEnd, { passive: true });
+        } else {
+          window.addEventListener("mousemove", onMouseMove);
+          document.documentElement.addEventListener("mouseleave", onMouseLeave);
+        }
       };
       const detachPointer = () => {
+        window.removeEventListener("touchstart", onTouchMove);
+        window.removeEventListener("touchmove", onTouchMove);
+        window.removeEventListener("touchend", onTouchEnd);
+        window.removeEventListener("touchcancel", onTouchEnd);
         window.removeEventListener("mousemove", onMouseMove);
         document.documentElement.removeEventListener("mouseleave", onMouseLeave);
       };
