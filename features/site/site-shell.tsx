@@ -13,7 +13,7 @@ export function SiteShell(props: SiteShellProps) {
   const { children, showHeader = true, showFooter = true } = props;
 
   return (
-    <div className="flex min-h-dvh flex-col bg-surface text-ink">
+    <div className="relative flex min-h-dvh flex-col bg-surface text-ink">
       {showHeader && <SiteHeader />}
       <main className="container mx-auto flex-1 bg-surface">{children}</main>
       {showFooter && <SiteFooter />}

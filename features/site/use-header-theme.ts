@@ -5,8 +5,8 @@ import * as React from "react";
 
 /**
  * Tracks whether any `[data-inverted]` section (dark backgrounds) currently sits
- * behind the fixed header, so the header can flip to light text. Re-scans on route
- * change once the new page's DOM has settled.
+ * behind the absolutely-positioned header, so the header can flip to light text.
+ * Re-scans on route change once the new page's DOM has settled.
  */
 export function useHeaderTheme() {
   const [isInverted, setIsInverted] = React.useState(false);

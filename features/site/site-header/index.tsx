@@ -106,7 +106,7 @@ export function SiteHeader() {
       <header
         data-site-header
         className={cx(
-          "fixed inset-x-0 top-0 z-50 transition-colors",
+          "absolute inset-x-0 top-0 z-40 transition-colors",
           "motion-reduce:transition-none",
           isInverted && menu === "closed" ? "text-surface" : "text-ink"
         )}
