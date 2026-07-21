@@ -316,23 +316,32 @@ export function HeroModel({
     };
   }, [src, maxRotationDegX, maxRotationDegY, pivotScale, isDesktop]);
 
-  if (!isDesktop) {
-    return (
-      // Sized to match the live 3D model's on-screen footprint: the model occupies ~43% of the
-      // frame's height (fixed by the scene's 45deg vertical FOV, independent of aspect ratio). Top
-      // offset tuned by eye against the live model.
-      // biome-ignore lint/performance/noImgElement: local SVG fallback — next/image optimization doesn't support SVG without extra config
-      <img src={FALLBACK_IMAGE_SRC} alt={ariaLabel} className="absolute inset-x-0 top-[25%] h-[43%] w-full object-contain" />
-    );
-  }
-
   return (
-    <div
-      ref={containerRef}
-      className="h-full w-full transition-opacity duration-1300 ease-out"
-      style={{ opacity: reduceMotion || loaded ? 1 : 0 }}
-      role="img"
-      aria-label={ariaLabel}
-    />
+    <>
+      {/*
+        Both branches render unconditionally and are switched purely by the `lg:` CSS breakpoint,
+        not by `isDesktop` (which starts `false` until the media query hook settles on the
+        client). Gating the JSX on `isDesktop` caused a flash on desktop: the fallback image
+        mounted first, then swapped to the (empty, pre-load) canvas once the hook resolved. CSS
+        media queries apply at first paint regardless of hydration timing, so there's nothing to
+        swap.
+      */}
+      {/* Sized to match the live 3D model's on-screen footprint: the model occupies ~43% of the
+      frame's height (fixed by the scene's 45deg vertical FOV, independent of aspect ratio). Top
+      offset tuned by eye against the live model. */}
+      {/* biome-ignore lint/performance/noImgElement: local SVG fallback — next/image optimization doesn't support SVG without extra config */}
+      <img
+        src={FALLBACK_IMAGE_SRC}
+        alt={ariaLabel}
+        className="absolute inset-x-0 top-[25%] h-[43%] w-full object-contain lg:hidden"
+      />
+      <div
+        ref={containerRef}
+        className="hidden h-full w-full transition-opacity duration-1300 ease-out lg:block"
+        style={{ opacity: reduceMotion || loaded ? 1 : 0 }}
+        role="img"
+        aria-label={ariaLabel}
+      />
+    </>
   );
 }
