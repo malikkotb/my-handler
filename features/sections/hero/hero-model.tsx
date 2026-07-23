@@ -48,6 +48,7 @@ export function HeroModel({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const reduceMotion = usePrefersReducedMotion();
   const [loaded, setLoaded] = React.useState(false);
+  const [imageLoaded, setImageLoaded] = React.useState(false);
   const isDesktop = useBreakpoint("lg");
 
   React.useEffect(() => {
@@ -333,7 +334,16 @@ export function HeroModel({
       <img
         src={FALLBACK_IMAGE_SRC}
         alt={ariaLabel}
-        className="absolute inset-x-0 top-[25%] h-[43%] w-full object-contain lg:hidden"
+        // A cached SVG can already be `complete` by the time React attaches `onLoad` during
+        // hydration, in which case the load event never fires — check `complete` on mount too.
+        ref={(el) => {
+          if (el?.complete) {
+            setImageLoaded(true);
+          }
+        }}
+        onLoad={() => setImageLoaded(true)}
+        className="absolute inset-x-0 top-[25%] h-[43%] w-full object-contain transition-opacity duration-1300 ease-out lg:hidden"
+        style={{ opacity: reduceMotion || imageLoaded ? 1 : 0 }}
       />
       <div
         ref={containerRef}
